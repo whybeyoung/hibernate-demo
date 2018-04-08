@@ -1,0 +1,6 @@
+/Sources/MiguIaasService/.idea/**
+/Sources/MiguIaasService/.settings/**
+/Sources/MiguIaasService/.mvn/**
+/Sources/MiguIaasService/target/**
+/Sources/logs/**
+**/node_modules/
