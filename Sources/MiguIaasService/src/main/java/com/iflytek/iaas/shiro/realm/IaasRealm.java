@@ -31,10 +31,10 @@ import java.util.List;
 public class IaasRealm extends AuthorizingRealm {
 
     @Autowired
-    public UserService userService;
+    private UserService userService;
 
     @Autowired
-    public PermissionService permissionService;
+    private PermissionService permissionService;
 
     /**
      * 角色授权
