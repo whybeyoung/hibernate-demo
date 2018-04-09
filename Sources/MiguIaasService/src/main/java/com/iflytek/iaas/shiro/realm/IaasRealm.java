@@ -7,6 +7,7 @@
  */
 package com.iflytek.iaas.shiro.realm;
 
+import com.iflytek.iaas.dao.UserDao;
 import com.iflytek.iaas.dto.UserDTO;
 import com.iflytek.iaas.service.PermissionService;
 import com.iflytek.iaas.service.UserService;
@@ -19,6 +20,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
@@ -31,10 +33,10 @@ import java.util.List;
 public class IaasRealm extends AuthorizingRealm {
 
     @Autowired
-    public UserService userService;
+    private UserService userService;
 
     @Autowired
-    public PermissionService permissionService;
+    private PermissionService permissionService;
 
     /**
      * 角色授权

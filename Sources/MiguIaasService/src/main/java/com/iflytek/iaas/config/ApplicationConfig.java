@@ -8,8 +8,8 @@
 package com.iflytek.iaas.config;
 
 import com.iflytek.iaas.shiro.realm.IaasRealm;
-import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -35,14 +35,20 @@ public class ApplicationConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager());
         Map<String,String> filterChains = new LinkedHashMap<String,String>();
-        filterChains.put("/login","anon");
-        filterChains.put("/verfiy","anon");
+        filterChains.put("/api/v1/login","anon");
+        filterChains.put("/api/v1/verify","anon");
         filterChains.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChains);
         return shiroFilterFactoryBean;
     }
 
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAdvisor(){
+        AuthorizationAttributeSourceAdvisor authorizationAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAdvisor.setSecurityManager(securityManager());
+        return authorizationAdvisor;
+    }
 
     @Bean
     public SecurityManager securityManager(){
