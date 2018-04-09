@@ -47,7 +47,7 @@ public class MD5Utils {
             if (hex.length() == 1) {
                 hex = '0' + hex;
             }
-            ret += hex.toUpperCase();
+            ret += hex.toLowerCase();
         }
         return ret;
     }
