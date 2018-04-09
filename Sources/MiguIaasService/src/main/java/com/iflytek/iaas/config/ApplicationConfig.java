@@ -30,10 +30,10 @@ import java.util.Map;
 public class ApplicationConfig {
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(){
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager){
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager());
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String,String> filterChains = new LinkedHashMap<String,String>();
         filterChains.put("/api/v1/login","anon");
         filterChains.put("/api/v1/verify","anon");
@@ -44,16 +44,21 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAdvisor(){
+    public AuthorizationAttributeSourceAdvisor authorizationAdvisor(SecurityManager securityManager){
         AuthorizationAttributeSourceAdvisor authorizationAdvisor = new AuthorizationAttributeSourceAdvisor();
-        authorizationAdvisor.setSecurityManager(securityManager());
+        authorizationAdvisor.setSecurityManager(securityManager);
         return authorizationAdvisor;
     }
 
     @Bean
-    public SecurityManager securityManager(){
+    public IaasRealm iaasRealm() {
+        return new IaasRealm();
+    }
+
+    @Bean
+    public SecurityManager securityManager(IaasRealm iaasRealm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(new IaasRealm());
+        securityManager.setRealm(iaasRealm);
         return securityManager;
     }
 }
