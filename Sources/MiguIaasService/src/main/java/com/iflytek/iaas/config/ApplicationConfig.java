@@ -38,7 +38,7 @@ public class ApplicationConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager());
         Map<String,String> filterChains = new LinkedHashMap<String,String>();
         filterChains.put("/api/v1/login","anon");
-        filterChains.put("/api/v1/verfiy","anon");
+        filterChains.put("/api/v1/verify","anon");
         filterChains.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChains);
