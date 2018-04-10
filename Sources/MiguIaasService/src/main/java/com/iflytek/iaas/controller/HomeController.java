@@ -8,7 +8,9 @@
 package com.iflytek.iaas.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.iflytek.iaas.consts.ReturnCode;
 import com.iflytek.iaas.dto.UserDTO;
+import com.iflytek.iaas.exception.ControllerException;
 import com.iflytek.iaas.service.UserService;
 import com.iflytek.iaas.utils.MD5Utils;
 import com.iflytek.iaas.utils.VerifyCodeUtils;
@@ -39,7 +41,7 @@ import java.security.NoSuchAlgorithmException;
  */
 @RequestMapping(path="/api/v1")
 @RestController
-public class HomeController {
+public class HomeController{
 
     private static final Logger logger = LoggerFactory
             .getLogger(HomeController.class);
@@ -56,23 +58,23 @@ public class HomeController {
      * @return
      */
     @PostMapping("/login")
-    public String login(HttpServletRequest request, String account,String pwd,String code){
+    public String login(HttpServletRequest request, String account,String pwd,String code)throws ControllerException{
         HttpSession session = request.getSession();
         String verCode = (String) session.getAttribute("verCode");
 
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)
                 || StringUtils.isEmpty(code)) {
-            // todo ...
+            throw new ControllerException(ReturnCode.PARAM_UNVALID);
         }
 
         if (StringUtils.isEmpty(verCode) || !verCode.equalsIgnoreCase(code)) {
-            // todo ...
+            throw new ControllerException(ReturnCode.VERIFY_ERROR);
         }
         session.removeAttribute("verCode");
 
         UserDTO userDTO = userService.getUserInfoByAuth(account);
         if(userDTO == null){
-
+            throw new ControllerException(ReturnCode.ACCOUNT_PWD_ERROR);
         }
 
         try {
@@ -81,6 +83,7 @@ public class HomeController {
         } catch (NoSuchAlgorithmException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+            throw new ControllerException(ReturnCode.EXCEPTION);
         }
 
         Subject subject = SecurityUtils.getSubject();
@@ -91,10 +94,8 @@ public class HomeController {
             return JSON.toJSONString(userDTO);
 
         } catch (Exception e) {
-            // TODO: handle exception
+            throw new ControllerException(ReturnCode.ACCOUNT_PWD_ERROR);
         }
-
-        return "";
     }
 
     /**
@@ -113,7 +114,7 @@ public class HomeController {
      * @return
      */
     @GetMapping("/verify")
-    public String verify(HttpServletRequest request){
+    public String verify(HttpServletRequest request) throws ControllerException{
         // 生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
         // 存入会话session
@@ -132,8 +133,8 @@ public class HomeController {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new ControllerException(ReturnCode.VERIFY_FAIL);
         }
-        return "";
     }
 
 }
