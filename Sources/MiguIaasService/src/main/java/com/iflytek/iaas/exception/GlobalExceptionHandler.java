@@ -5,8 +5,9 @@
  * Date:     2018/3/30 17:08
  * Description: 全局异常处理
  */
-package com.iflytek.iaas.Exception;
+package com.iflytek.iaas.exception;
 
+import com.iflytek.iaas.exception.ControllerException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,11 +31,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public Map<String,Object> exceptionHander(Exception e){
+    public Map<String,Object> exceptionHander(ControllerException e){
 
         Map<String,Object> map = new HashMap<String,Object>();
-        map.put("code","12324324");
-        map.put("message","testtesttest");
+        map.put("code",e.getCode());
+        map.put("message",e.getMessage());
         return map;
     }
 }
