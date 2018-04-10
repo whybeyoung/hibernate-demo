@@ -4,5 +4,5 @@
 /Sources/MiguIaasService/target/**
 /Sources/logs/**
 **/node_modules/
-
-*.iml
+**/.vscode/**
+**/*.iml

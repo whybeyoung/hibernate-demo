@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2018-04-09 09:32:22
+Date: 2018-04-10 11:00:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -152,6 +152,7 @@ CREATE TABLE `image` (
   `valid` tinyint(1) DEFAULT NULL COMMENT '0：逻辑删除',
   `git_path` varchar(255) DEFAULT NULL COMMENT '镜像代码git地址',
   `ftp_path` varchar(50) DEFAULT NULL COMMENT '镜像ftp地址',
+  `upload_hub` tinyint(1) DEFAULT NULL COMMENT '上传hub   1:上传成功    0：上传失败',
   `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

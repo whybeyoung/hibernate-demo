@@ -3,5 +3,12 @@
   "extends": [
     "plugin:vue/essential",
     "@vue/airbnb"
-  ]
+  ],
+  "env":{
+    "es6":true
+  },
+  "rules":{
+    "eslint-disable":"no-new",
+    "semi": [2, "always"]
+  }
 }
