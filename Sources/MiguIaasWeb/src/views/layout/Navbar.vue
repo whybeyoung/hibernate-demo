@@ -21,8 +21,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Levelbar from './Levelbar';
 import Hamburger from '@/components/Hamburger';
+import Levelbar from './Levelbar';
 
 export default {
   components: {
@@ -41,7 +41,7 @@ export default {
     },
     logout() {
       this.$store.dispatch('LogOut').then(() => {
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
+        window.location.reload(); // 为了重新实例化vue-router对象 避免bug
       });
     },
   },

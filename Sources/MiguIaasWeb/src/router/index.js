@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
-const _import = require(`./_import_${process.env.NODE_ENV}`);
-// in development env not use Lazy Loading,because Lazy Loading too many pages will cause webpack hot update too slow.so only in production use Lazy Loading
-
 /* layout */
 import Layout from '../views/layout/Layout';
+
+// eslint-disable-next-line import/no-dynamic-require
+const dynamicImport = require(`./_import_${process.env.NODE_ENV}`);
+// in development env not use Lazy Loading,because Lazy Loading too many pages will cause webpack hot update too slow.so only in production use Lazy Loading
 
 Vue.use(Router);
 
@@ -17,15 +17,15 @@ Vue.use(Router);
   * meta : `{ role: ['admin'] }`  will control the page role
   * */
 export const constantRouterMap = [
-  { path: '/login', component: _import('login/index'), hidden: true },
-  { path: '/404', component: _import('404'), hidden: true },
+  { path: '/login', component: dynamicImport('login/index'), hidden: true },
+  { path: '/404', component: dynamicImport('404'), hidden: true },
   {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
     name: 'Dashboard',
     hidden: true,
-    children: [{ path: 'dashboard', component: _import('dashboard/index') }],
+    children: [{ path: 'dashboard', component: dynamicImport('dashboard/index') }],
   },
 ];
 
@@ -44,7 +44,7 @@ export const asyncRouterMap = [
     icon: 'zujian',
     children: [
       {
-        path: 'index', name: 'Form', icon: 'zonghe', component: _import('page/form'),
+        path: 'index', name: 'Form', icon: 'zonghe', component: dynamicImport('page/form'),
       },
     ],
   },
@@ -56,7 +56,7 @@ export const asyncRouterMap = [
     icon: 'tubiao',
     noDropdown: true,
     children: [{
-      path: 'index', name: 'Table', component: _import('table/index'), meta: { role: ['admin'] },
+      path: 'index', name: 'Table', component: dynamicImport('table/index'), meta: { role: ['admin'] },
     }],
   },
 

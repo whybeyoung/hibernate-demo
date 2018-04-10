@@ -14,11 +14,11 @@ function hasPermission(roles, route) {
 
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
- * @param asyncRouterMap
+ * @param asyncRouterMap2
  * @param roles
  */
-function filterAsyncRouter(asyncRouterMap, roles) {
-  const accessedRouters = asyncRouterMap.filter((route) => {
+function filterAsyncRouter(asyncRouterMap2, roles) {
+  const accessedRouters = asyncRouterMap2.filter((route) => {
     if (hasPermission(roles, route)) {
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, roles);
