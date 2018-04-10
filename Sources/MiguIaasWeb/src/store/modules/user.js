@@ -11,19 +11,15 @@ const user = {
 
   mutations: {
     SET_TOKEN: (state, token) => {
-      // eslint-disable-next-line no-param-reassign
       state.token = token;
     },
     SET_NAME: (state, name) => {
-      // eslint-disable-next-line no-param-reassign
       state.name = name;
     },
     SET_AVATAR: (state, avatar) => {
-      // eslint-disable-next-line no-param-reassign
       state.avatar = avatar;
     },
     SET_ROLES: (state, roles) => {
-      // eslint-disable-next-line no-param-reassign
       state.roles = roles;
     },
   },
