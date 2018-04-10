@@ -11,15 +11,19 @@ const user = {
 
   mutations: {
     SET_TOKEN: (state, token) => {
+      // eslint-disable-next-line no-param-reassign
       state.token = token;
     },
     SET_NAME: (state, name) => {
+      // eslint-disable-next-line no-param-reassign
       state.name = name;
     },
     SET_AVATAR: (state, avatar) => {
+      // eslint-disable-next-line no-param-reassign
       state.avatar = avatar;
     },
     SET_ROLES: (state, roles) => {
+      // eslint-disable-next-line no-param-reassign
       state.roles = roles;
     },
   },
@@ -30,7 +34,7 @@ const user = {
       const username = userInfo.username.trim();
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then((response) => {
-          const data = response.data;
+          const { data } = response;
           setToken(data.token);
           commit('SET_TOKEN', data.token);
           resolve();
@@ -44,7 +48,7 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then((response) => {
-          const data = response.data;
+          const { data } = response;
           commit('SET_ROLES', data.role);
           commit('SET_NAME', data.name);
           commit('SET_AVATAR', data.avatar);

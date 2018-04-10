@@ -1,7 +1,3 @@
-/**
- * Created by jiachenpan on 16/11/18.
- */
-
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
     return null;
@@ -11,8 +7,9 @@ export function parseTime(time, cFormat) {
   if (typeof time === 'object') {
     date = time;
   } else {
-    if ((`${time}`).length === 10) time = parseInt(time) * 1000;
-    date = new Date(time);
+    let millisecond;
+    if ((`${time}`).length === 10) millisecond = parseInt(time, 10) * 1000;
+    date = new Date(millisecond || time);
   }
   const formatObj = {
     y: date.getFullYear(),
@@ -23,7 +20,7 @@ export function parseTime(time, cFormat) {
     s: date.getSeconds(),
     a: date.getDay(),
   };
-  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
+  const timeStr = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key];
     if (key === 'a') return ['一', '二', '三', '四', '五', '六', '日'][value - 1];
     if (result.length > 0 && value < 10) {
@@ -31,12 +28,12 @@ export function parseTime(time, cFormat) {
     }
     return value || 0;
   });
-  return time_str;
+  return timeStr;
 }
 
 export function formatTime(time, option) {
-  time = +time * 1000;
-  const d = new Date(time);
+  const millisecond = +time * 1000;
+  const d = new Date(millisecond);
   const now = Date.now();
 
   const diff = (now - d) / 1000;
@@ -51,7 +48,7 @@ export function formatTime(time, option) {
     return '1天前';
   }
   if (option) {
-    return parseTime(time, option);
+    return parseTime(millisecond, option);
   }
   return `${d.getMonth() + 1}月${d.getDate()}日${d.getHours()}时${d.getMinutes()}分`;
 }
