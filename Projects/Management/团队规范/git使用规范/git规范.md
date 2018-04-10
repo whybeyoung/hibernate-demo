@@ -1,3 +1,8 @@
+## 克隆代码库
+
+`git clone git@192.168.65.10:CBG_AI_Cloud2.0/MiguIaas.git`
+
+
 
 ## 代码开发
 
@@ -9,21 +14,10 @@
 
 如果存在本地开发分支，切换到开发分支：`git checkout yourfeature`
 
+    分支命名规范：
+                域账号/分支名
+                xwliu/myfeature
 
-
-## 同步代码
-
-分支开发过程，同步主干代码
-
-`git fetch origin`
-
-`git rebase origin/master`
-
-同步主干代码前，先暂存分支开发状态
-
-`git stash`
-
-`git stash`使用方法参考[这里](https://git-scm.com/book/zh/v1/Git-%E5%B7%A5%E5%85%B7-%E5%82%A8%E8%97%8F%EF%BC%88Stashing%EF%BC%89)
 
 
 ## 提交代码
@@ -35,12 +29,22 @@
 `git commit -m "注释"`
 
 
+## 同步代码
+
+分支开发过程，同步主干代码
+
+`git fetch origin`
+
+`git rebase origin/master`
+
+
+
 ## 代码推送到远程仓库
 
 
 推送到远程仓库
 
-`git push --force origin yourfeature`
+`git push -u origin yourfeature`
 
 
 ## 合并请求
