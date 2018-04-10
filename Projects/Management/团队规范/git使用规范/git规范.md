@@ -43,6 +43,17 @@
 
 `git rebase -i --autosquash `
 
+推送到远程仓库
+
+`git push --force origin myfeature`
+
+
+## 合并请求
+
+登录git.iflytek.com,提交merge request.
+
+
+
 
 
 
