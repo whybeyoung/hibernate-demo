@@ -21,8 +21,10 @@
           登录
         </el-button>
       </el-form-item>
+      <!--
       <div class='tips'>账号:admin 密码随便填</div>
       <div class='tips'>账号:editor  密码随便填</div>
+      -->
     </el-form>
   </div>
 </template>
