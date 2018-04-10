@@ -26,10 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -69,27 +66,28 @@ public class HomeController{
             @ApiImplicitParam(name = "code", value = "验证码", paramType = "form", required = true, dataType = "String"),
     })
     @PostMapping("/login")
-    public String login(HttpServletRequest request, String account,String pwd,String code)throws ControllerException{
+    public String login(HttpServletRequest request, @RequestBody UserDTO requestBody)throws ControllerException{
         HttpSession session = request.getSession();
-        String verCode = (String) session.getAttribute("verCode");
+//        String verCode = (String) session.getAttribute("verCode");
 
-        if (StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)
-                || StringUtils.isEmpty(code)) {
-            throw new ControllerException(ReturnCode.PARAM_UNVALID);
-        }
-
-        if (StringUtils.isEmpty(verCode) || !verCode.equalsIgnoreCase(code)) {
-            throw new ControllerException(ReturnCode.VERIFY_ERROR);
-        }
+//        String account,String pwd,String code
+//        if (StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)
+//                || StringUtils.isEmpty(code)) {
+//            throw new ControllerException(ReturnCode.PARAM_UNVALID);
+//        }
+//
+//        if (StringUtils.isEmpty(verCode) || !verCode.equalsIgnoreCase(code)) {
+//            throw new ControllerException(ReturnCode.VERIFY_ERROR);
+//        }
         session.removeAttribute("verCode");
 
-        UserDTO userDTO = userService.getUserInfoByAuth(account);
+        UserDTO userDTO = userService.getUserInfoByAuth(requestBody.getAccount());
         if(userDTO == null){
             throw new ControllerException(ReturnCode.ACCOUNT_PWD_ERROR);
         }
 
         try {
-            pwd = MD5Utils.encrypt(pwd, userDTO.getSalt());
+            requestBody.setPassword(MD5Utils.encrypt(requestBody.getPassword(), userDTO.getSalt()));
 
         } catch (NoSuchAlgorithmException e1) {
             // TODO Auto-generated catch block
@@ -98,7 +96,7 @@ public class HomeController{
         }
 
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(account, pwd);
+        UsernamePasswordToken token = new UsernamePasswordToken(requestBody.getAccount(), requestBody.getPassword());
 
         try {
             subject.login(token);
@@ -114,7 +112,7 @@ public class HomeController{
      * @return
      */
     @ApiOperation(value = "logout",notes = "用户登出")
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(){
         SecurityUtils.getSubject().logout();
         return "success";
