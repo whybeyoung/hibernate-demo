@@ -37,15 +37,10 @@
 
 ## 代码推送到远程仓库
 
-如果推送代码前有多次commit，建议合并commit
-
-`git commit --fixup`
-
-`git rebase -i --autosquash `
 
 推送到远程仓库
 
-`git push --force origin myfeature`
+`git push --force origin yourfeature`
 
 
 ## 合并请求
