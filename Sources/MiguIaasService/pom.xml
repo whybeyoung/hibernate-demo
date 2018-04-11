@@ -20,6 +20,8 @@
         <druid.version>1.1.9</druid.version>
         <shiro.version>1.4.0</shiro.version>
         <swagger.version>2.6.1</swagger.version>
+        <kubernetes-java.version>1.0.0-beta3</kubernetes-java.version>
+
     </properties>
 
     <dependencies>
@@ -55,6 +57,12 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java</artifactId>
+            <version>${kubernetes-java.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--swagger2-->
