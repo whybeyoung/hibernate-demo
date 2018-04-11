@@ -40,7 +40,7 @@ export const asyncRouterMap = [
     path: '/example',
     component: Layout,
     redirect: 'noredirect',
-    name: 'Example',
+    name: 'Cluster Management',
     icon: 'zujian',
     children: [
       {

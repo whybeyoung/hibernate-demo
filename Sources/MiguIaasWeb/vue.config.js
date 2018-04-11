@@ -14,6 +14,22 @@ module.exports = {
         '@': resolve('src'),
       },
     },
+    module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          loader: 'svg-sprite-loader',
+          include: [resolve('src/icons')],
+          options: {
+            symbolId: 'icon-[name]',
+          },
+        },
+      ],
+    },
+  },
+  chainWebpack: (config) => {
+    // remove the old loader
+    config.module.rules.delete('svg');
   },
   lintOnSave: true,
 };
