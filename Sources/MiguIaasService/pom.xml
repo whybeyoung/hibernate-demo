@@ -19,13 +19,8 @@
         <fastjson.version>1.2.28</fastjson.version>
         <druid.version>1.1.9</druid.version>
         <shiro.version>1.4.0</shiro.version>
-<<<<<<< HEAD
         <swagger.version>2.6.1</swagger.version>
         <kubernetes-java.version>1.0.0-beta3</kubernetes-java.version>
-
-=======
-        <kubernetes-java.version>1.0.0-beta3</kubernetes-java.version>
->>>>>>> 97c9e8d8daf5c614f39d783282b0b671b1224905
     </properties>
 
     <dependencies>
@@ -68,7 +63,6 @@
             <version>${kubernetes-java.version}</version>
             <scope>compile</scope>
         </dependency>
-<<<<<<< HEAD
 
         <!--swagger2-->
         <dependency>
@@ -76,15 +70,11 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-=======
->>>>>>> 97c9e8d8daf5c614f39d783282b0b671b1224905
-
 
         <!--TEST-->
         <dependency>
