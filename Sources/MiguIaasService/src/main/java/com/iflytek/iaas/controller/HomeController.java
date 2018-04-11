@@ -75,11 +75,11 @@ public class HomeController{
 
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)
                 || StringUtils.isEmpty(code)) {
-            throw new ControllerException(ReturnCode.PARAM_UNVALID);
+//            throw new ControllerException(ReturnCode.PARAM_UNVALID);
         }
 
         if (StringUtils.isEmpty(verCode) || !verCode.equalsIgnoreCase(code)) {
-            throw new ControllerException(ReturnCode.VERIFY_ERROR);
+//            throw new ControllerException(ReturnCode.VERIFY_ERROR);
         }
         session.removeAttribute("verCode");
 
