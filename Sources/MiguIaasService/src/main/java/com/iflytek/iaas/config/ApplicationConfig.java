@@ -37,6 +37,7 @@ public class ApplicationConfig {
         Map<String,String> filterChains = new LinkedHashMap<String,String>();
         filterChains.put("/api/v1/login","anon");
         filterChains.put("/api/v1/verify","anon");
+        filterChains.put("/api/v1/logout","anon");
         //swagger allowed
         filterChains.put("/swagger-ui.html","anon");
         filterChains.put("/webjars/springfox-swagger-ui/**","anon");

@@ -10,16 +10,11 @@ router.beforeEach((to, from, next) => {
   if (getToken()) {
     if (to.path === '/login') {
       next({ path: '/' });
-    } else if (store.getters.roles.length === 0) {
-      store.dispatch('GetInfo').then((res) => {
-        const { data: { roles } } = res;
-        store.dispatch('GenerateRoutes', { roles }).then(() => {
-          router.addRoutes(store.getters.addRouters);
-          next({ ...to });
-        });
-      });
     } else {
-      next();
+      store.dispatch('GenerateRoutes').then(() => {
+        router.addRoutes(store.getters.addRouters);
+        next();
+      });
     }
   } else if (whiteList.indexOf(to.path) !== -1) {
     next();

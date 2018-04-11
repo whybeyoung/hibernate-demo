@@ -30,9 +30,9 @@ const user = {
       const username = userInfo.username.trim();
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then((response) => {
-          const { data } = response;
-          setToken(data.token);
-          commit('SET_TOKEN', data.token);
+          setToken(response);
+          commit('SET_TOKEN', response);
+          commit('SET_ROLES', ['admin']);
           resolve();
         }).catch((error) => {
           reject(error);
@@ -44,10 +44,9 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then((response) => {
-          const { data } = response;
-          commit('SET_ROLES', data.role);
-          commit('SET_NAME', data.name);
-          commit('SET_AVATAR', data.avatar);
+          commit('SET_ROLES', response.roles);
+          commit('SET_NAME', response.name);
+          commit('SET_AVATAR', response.avatar);
           resolve(response);
         }).catch((error) => {
           reject(error);
