@@ -37,6 +37,13 @@ public class ApplicationConfig {
         Map<String,String> filterChains = new LinkedHashMap<String,String>();
         filterChains.put("/api/v1/login","anon");
         filterChains.put("/api/v1/verify","anon");
+        //swagger allowed
+        filterChains.put("/swagger-ui.html","anon");
+        filterChains.put("/webjars/springfox-swagger-ui/**","anon");
+        filterChains.put("/swagger-resources","anon");
+        filterChains.put("/swagger-resources/**","anon");
+        filterChains.put("/v2/api-docs","anon");
+
         filterChains.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChains);
