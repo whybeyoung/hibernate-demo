@@ -8,6 +8,7 @@ export function login(username, password) {
       account: username,
       password,
     },
+    headers:{'Content-Type':'text/plain;charset=UTF-8'}
   });
 }
 

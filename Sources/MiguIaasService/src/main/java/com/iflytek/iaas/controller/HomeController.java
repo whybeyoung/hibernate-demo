@@ -67,18 +67,19 @@ public class HomeController{
     })
     @PostMapping("/login")
     public String login(HttpServletRequest request, @RequestBody UserDTO requestBody)throws ControllerException{
+
         HttpSession session = request.getSession();
 
         String verCode = (String) session.getAttribute("verCode");
 
-        if (StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)
-                || StringUtils.isEmpty(code)) {
-//            throw new ControllerException(ReturnCode.PARAM_UNVALID);
-        }
-
-        if (StringUtils.isEmpty(verCode) || !verCode.equalsIgnoreCase(code)) {
-//            throw new ControllerException(ReturnCode.VERIFY_ERROR);
-        }
+//        if (StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)
+//                || StringUtils.isEmpty(code)) {
+////            throw new ControllerException(ReturnCode.PARAM_UNVALID);
+//        }
+//
+//        if (StringUtils.isEmpty(verCode) || !verCode.equalsIgnoreCase(code)) {
+////            throw new ControllerException(ReturnCode.VERIFY_ERROR);
+//        }
 
         session.removeAttribute("verCode");
 
