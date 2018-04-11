@@ -8,6 +8,9 @@
 package com.iflytek.iaas.service;
 
 
+import com.iflytek.iaas.dto.ClusterDTO;
+import org.springframework.data.domain.Page;
+
 /**
  * 〈集群服务接口〉
  *
@@ -15,5 +18,12 @@ package com.iflytek.iaas.service;
  * @create 2018/4/2
  */
 public interface ClusterService {
+
+
+    Page<ClusterDTO> findByNameLike(String name, Integer page, Integer pagesize);
+
+
+    public Boolean saveClusterInfo(ClusterDTO clusterDTO);
+
 
 }

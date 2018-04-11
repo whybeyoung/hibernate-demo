@@ -14,6 +14,10 @@ import com.iflytek.iaas.exception.ControllerException;
 import com.iflytek.iaas.service.UserService;
 import com.iflytek.iaas.utils.MD5Utils;
 import com.iflytek.iaas.utils.VerifyCodeUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.codec.Base64;
@@ -39,6 +43,7 @@ import java.security.NoSuchAlgorithmException;
  * @author xwliu
  * @create 2018/4/2
  */
+@Api(value = "Home-API", description = "登录，登出，验证码等")
 @RequestMapping(path="/api/v1")
 @RestController
 public class HomeController{
@@ -57,6 +62,12 @@ public class HomeController{
      * @param code 验证码
      * @return
      */
+    @ApiOperation(value = "login",notes = "用户登录")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "account", value = "账号/邮件/手机号", paramType = "form", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "pwd", value = "密码", paramType = "form", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "code", value = "验证码", paramType = "form", required = true, dataType = "String"),
+    })
     @PostMapping("/login")
     public String login(HttpServletRequest request, String account,String pwd,String code)throws ControllerException{
         HttpSession session = request.getSession();
@@ -102,6 +113,7 @@ public class HomeController{
      * 退出登录
      * @return
      */
+    @ApiOperation(value = "logout",notes = "用户登出")
     @GetMapping("/logout")
     public String logout(){
         SecurityUtils.getSubject().logout();
@@ -113,6 +125,7 @@ public class HomeController{
      * @param request request
      * @return
      */
+    @ApiOperation(value = "verify",notes = "验证码")
     @GetMapping("/verify")
     public String verify(HttpServletRequest request) throws ControllerException{
         // 生成随机字串
