@@ -33,46 +33,26 @@
           </el-form-item>
 
           <el-table
-              :data="tableData"
+              :data="userableHosts"
               stripe
               border
               height="398"
               style="width: 100%">
             <el-table-column
-                prop="date"
-                label="日期"
+                prop="ip"
+                label="IP"
                 fixed
                 width="180">
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="姓名"
+                label="主机名"
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="address"
+                prop="SN"
                 width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
+                label="SN">
             </el-table-column>
             <el-table-column
                 fixed="right"
@@ -93,46 +73,26 @@
           </div>
 
           <el-table
-              :data="tableData"
+              :data="cluster.hosts"
               stripe
               border
               height="398"
               style="width: 100%">
             <el-table-column
-                prop="date"
-                label="日期"
+                prop="ip"
+                label="IP"
                 fixed
                 width="180">
             </el-table-column>
             <el-table-column
                 prop="name"
-                label="姓名"
+                label="主机名"
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="address"
+                prop="sn"
                 width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                width="300"
-                label="地址">
+                label="SN">
             </el-table-column>
             <el-table-column
                 fixed="right"
@@ -158,14 +118,66 @@
     </el-form>
 
     <el-dialog
-        title="提示"
+        title="添加主机"
         :visible.sync="addHostDialogVisible"
-        :fullscreen=true
         :before-close="addHostDialogClose">
-      <span>这是一段信息</span>
+      <el-form :inline="true" :model="hostParams">
+        <el-form-item label="服务器IP：">
+          <el-input v-model="hostParams.ip" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="主机名：">
+          <el-input v-model="hostParams.name" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="状态：">
+          <el-input v-model="hostParams.status" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button>查询</el-button>
+        </el-form-item>
+      </el-form>
+      <!--
+      <el-form-item label="：">
+        <el-input v-model="hostParams." placeholder=""></el-input>
+      </el-form-item>
+      -->
+
+        <el-table
+            :data="userableHosts"
+            stripe
+            border
+            height="398"
+            style="width: 100%">
+          <el-table-column
+              prop="ip"
+              label="IP"
+              fixed
+              width="180">
+          </el-table-column>
+          <el-table-column
+              prop="name"
+              label="主机名"
+              width="180">
+          </el-table-column>
+          <el-table-column
+              prop="SN"
+              width="300"
+              label="SN">
+          </el-table-column>
+          <el-table-column
+              fixed="right"
+              width="80"
+              align="center"
+              label="操作">
+            <template slot-scope="scope">
+              <el-button @click="selectHost(scope.row)" type="text" size="small">选中</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+
       <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button @click="addHostDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="addHostDialogVisible = false">确 定</el-button>
     </span>
     </el-dialog>
 
@@ -180,28 +192,14 @@ export default {
       cluster: {
         name: '',
         comment: '',
+        hosts: [],
       },
       host: {
         name: '',
         ip: '',
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄',
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄',
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄',
-      }],
+      userableHosts: [],
+      hostParams: {},
     };
   },
   methods: {
@@ -218,7 +216,8 @@ export default {
 
     },
     save() {
-
+      console.log(this.cluster);
+      debugger;
     },
   },
 };
