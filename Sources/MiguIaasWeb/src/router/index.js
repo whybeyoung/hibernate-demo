@@ -60,5 +60,18 @@ export const asyncRouterMap = [
     }],
   },
 
+  {
+    path: '/clusters',
+    component: Layout,
+    redirect: '/clusters/index',
+    icon: 'tubiao',
+    noDropdown: true,
+    children: [{
+      path: 'index',
+      name: 'Cluster',
+      component: dynamicImport('clusters/index'),
+    }],
+  },
+
   { path: '*', redirect: '/404', hidden: true },
 ];

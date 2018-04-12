@@ -11,11 +11,10 @@ export function login(username, password) {
   });
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return fetch({
-    url: '/user/info',
+    url: '/users/current',
     method: 'get',
-    params: { token },
   });
 }
 

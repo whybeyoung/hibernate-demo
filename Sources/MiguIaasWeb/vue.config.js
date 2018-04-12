@@ -28,7 +28,7 @@ module.exports = {
     },
   },
   chainWebpack: (config) => {
-    // remove the old loader
+    // remove the vue-cli default loader for .svg files
     config.module.rules.delete('svg');
   },
   lintOnSave: true,

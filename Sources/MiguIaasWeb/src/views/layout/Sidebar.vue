@@ -3,7 +3,7 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
-    <sidebar-item :routes='permission_routers'></sidebar-item>
+    <sidebar-item :routes='permissionRouters'></sidebar-item>
   </el-menu>
 </template>
 
@@ -15,7 +15,7 @@ export default {
   components: { SidebarItem },
   computed: {
     ...mapGetters([
-      'permission_routers',
+      'permissionRouters',
     ]),
   },
 };
