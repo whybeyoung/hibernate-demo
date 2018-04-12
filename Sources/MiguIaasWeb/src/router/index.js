@@ -40,7 +40,7 @@ export const asyncRouterMap = [
     path: '/example',
     component: Layout,
     redirect: 'noredirect',
-    name: 'Example',
+    name: 'Cluster Management',
     icon: 'zujian',
     children: [
       {
@@ -57,6 +57,19 @@ export const asyncRouterMap = [
     noDropdown: true,
     children: [{
       path: 'index', name: 'Table', component: dynamicImport('table/index'), meta: { role: ['admin'] },
+    }],
+  },
+
+  {
+    path: '/clusters',
+    component: Layout,
+    redirect: '/clusters/index',
+    icon: 'tubiao',
+    noDropdown: true,
+    children: [{
+      path: 'index',
+      name: 'Cluster',
+      component: dynamicImport('clusters/index'),
     }],
   },
 

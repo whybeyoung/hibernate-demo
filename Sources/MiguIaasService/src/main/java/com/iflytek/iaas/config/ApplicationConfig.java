@@ -38,6 +38,7 @@ public class ApplicationConfig {
         filterChains.put("/api/v1/login","anon");
         filterChains.put("/api/v1/verify","anon");
         filterChains.put("/api/v1/logout","anon");
+        filterChains.put("/api/v1/users/current","anon");
         //swagger allowed
         filterChains.put("/swagger-ui.html","anon");
         filterChains.put("/webjars/springfox-swagger-ui/**","anon");

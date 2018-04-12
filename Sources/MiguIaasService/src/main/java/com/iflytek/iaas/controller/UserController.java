@@ -7,13 +7,17 @@
  */
 package com.iflytek.iaas.controller;
 
+import com.iflytek.iaas.dto.UserDTO;
 import com.iflytek.iaas.service.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 〈用户controller〉
@@ -23,17 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(value = "User-API", description = "用户信息相关")
 @RestController
+@RequestMapping(path="/api/v1")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @ApiOperation(value = "test",notes = "test for demo")
-    @GetMapping("/test")
+    @GetMapping("/users/current")
     @ResponseBody
-    public String test(){
-
-        return "success";
+    public UserDTO current(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        return (UserDTO) session.getAttribute("CURRENT_USER");
     }
 
 }

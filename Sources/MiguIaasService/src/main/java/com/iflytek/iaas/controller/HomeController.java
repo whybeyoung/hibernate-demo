@@ -102,6 +102,7 @@ public class HomeController{
 
         try {
             subject.login(token);
+            session.setAttribute("CURRENT_USER", userDTO);
             return JSON.toJSONString(userDTO);
 
         } catch (Exception e) {
