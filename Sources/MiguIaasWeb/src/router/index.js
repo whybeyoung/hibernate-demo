@@ -26,15 +26,23 @@ export const constantRouterMap = [
     hidden: true,
   },
   {
-    path: '',
+    path: '/clusters',
     component: Layout,
-    redirect: '/clusters',
+    redirect: '/clusters/index',
     icon: 'tubiao',
-    noDropdown: true,
+    name: 'clusters',
+    displayName: '集群管理',
+    noDropdown: false,
     children: [{
-      path: 'clusters',
-      name: '集群管理',
+      path: 'index',
+      name: 'clusters.index',
+      displayName: '集群总览',
       component: dynamicImport('clusters/index'),
+    }, {
+      path: 'create',
+      name: 'clusters.create',
+      displayName: '新增集群',
+      component: dynamicImport('clusters/create'),
     }],
   },
 
