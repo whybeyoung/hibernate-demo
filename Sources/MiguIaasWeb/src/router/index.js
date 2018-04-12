@@ -22,11 +22,22 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
+    redirect: '/clusters',
     hidden: true,
-    children: [{ path: 'dashboard', component: dynamicImport('dashboard/index') }],
   },
+  {
+    path: '',
+    component: Layout,
+    redirect: '/clusters',
+    icon: 'tubiao',
+    noDropdown: true,
+    children: [{
+      path: 'clusters',
+      name: '集群管理',
+      component: dynamicImport('clusters/index'),
+    }],
+  },
+  { path: '*', component: dynamicImport('404'), hidden: true },
 ];
 
 export default new Router({
@@ -35,43 +46,4 @@ export default new Router({
   routes: constantRouterMap,
 });
 
-export const asyncRouterMap = [
-  {
-    path: '/example',
-    component: Layout,
-    redirect: 'noredirect',
-    name: 'Cluster Management',
-    icon: 'zujian',
-    children: [
-      {
-        path: 'index', name: 'Form', icon: 'zonghe', component: dynamicImport('page/form'),
-      },
-    ],
-  },
-
-  {
-    path: '/table',
-    component: Layout,
-    redirect: '/table/index',
-    icon: 'tubiao',
-    noDropdown: true,
-    children: [{
-      path: 'index', name: 'Table', component: dynamicImport('table/index'), meta: { role: ['admin'] },
-    }],
-  },
-
-  {
-    path: '/clusters',
-    component: Layout,
-    redirect: '/clusters/index',
-    icon: 'tubiao',
-    noDropdown: true,
-    children: [{
-      path: 'index',
-      name: 'Cluster',
-      component: dynamicImport('clusters/index'),
-    }],
-  },
-
-  { path: '*', redirect: '/404', hidden: true },
-];
+export const asyncRouterMap = [];
