@@ -18,7 +18,7 @@ router.beforeEach((to, from, next) => {
     store.dispatch('GetCurrentUserInfo').then(() => {
       store.dispatch('GenerateRoutes').then(() => {
         router.addRoutes(store.getters.addRouters);
-        next(to);
+        next({ ...to });
       }).catch(() => {
         next('/login');
       });
