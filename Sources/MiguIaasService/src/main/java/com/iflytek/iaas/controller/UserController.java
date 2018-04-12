@@ -8,6 +8,7 @@
 package com.iflytek.iaas.controller;
 
 import com.iflytek.iaas.dto.UserDTO;
+import com.iflytek.iaas.exception.MiguForbiddenException;
 import com.iflytek.iaas.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,13 @@ public class UserController {
 
     @GetMapping("/users/current")
     @ResponseBody
-    public UserDTO current(HttpServletRequest request){
+    public UserDTO current(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        return (UserDTO) session.getAttribute("CURRENT_USER");
+        UserDTO user = (UserDTO) session.getAttribute("CURRENT_USER");
+        if(user == null) {
+            throw new MiguForbiddenException("not login");
+        }
+        return user;
     }
 
 }

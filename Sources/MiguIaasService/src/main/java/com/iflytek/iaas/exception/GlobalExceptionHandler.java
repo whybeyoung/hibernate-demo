@@ -7,11 +7,15 @@
  */
 package com.iflytek.iaas.exception;
 
+import com.iflytek.iaas.dto.ErrorResponse;
 import com.iflytek.iaas.exception.ControllerException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,5 +41,12 @@ public class GlobalExceptionHandler {
         map.put("code",e.getCode());
         map.put("message",e.getMessage());
         return map;
+    }
+
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    @ExceptionHandler(MiguForbiddenException.class)
+    @ResponseBody
+    public ErrorResponse handleCustomException(HttpServletRequest req, Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 }
