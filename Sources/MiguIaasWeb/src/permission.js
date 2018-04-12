@@ -22,6 +22,8 @@ router.beforeEach((to, from, next) => {
       }).catch(() => {
         next('/login');
       });
+    }).catch(() => {
+      next('/login');
     });
   }
 });

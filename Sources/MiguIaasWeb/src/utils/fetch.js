@@ -19,9 +19,12 @@ service.interceptors.request.use(config => config, (error) => {
 service.interceptors.response.use(
   response => response.data,
   (error) => {
-    console.error(`error: ${error}`);// for debug
+    if (error.response.status === 403) {
+      return Promise.reject(error);
+    }
+    console.error(error);// for debug
     Message({
-      message: error.message,
+      message: error.response.data.message,
       type: 'error',
       duration: 5 * 1000,
     });
