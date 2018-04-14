@@ -1,6 +1,7 @@
 package com.iflytek.iaas.domain;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,13 +23,15 @@ public class Cluster implements Serializable{
     @ColumnDefault("default name")
     private String name;
     private String annotation;
+    @ColumnDefault("1")
     private boolean valid;
     private Date createtime;
     @Column
     private String creator;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     @Column(name = "id")
     public Integer getId() {
         return id;

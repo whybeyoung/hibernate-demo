@@ -3,6 +3,7 @@
     <h3 style="margin-left: 20px;" v-if="mode === 'create'">新建集群</h3>
     <h3 style="margin-left: 20px;" v-else>修改集群</h3>
 
+
     <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 
       <el-row type="flex" class="row-bg" justify="center">
@@ -108,14 +109,12 @@
 
         </el-col>
       </el-row>
-
-      <el-row justify="center">
-        <el-col>
-          <el-form-item>
-            <el-button type="primary" @click="save('clusterForm')">保存</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <div class="justify-center">
+        <el-form-item>
+          <el-button @click="back">取消</el-button>
+          <el-button type="primary" @click="save('clusterForm')">保存</el-button>
+        </el-form-item>
+      </div>
     </el-form>
 
     <el-dialog
@@ -231,9 +230,8 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.cluster);
-          ClusterApi.create(this.cluster).then((res) => {
-            console.log(res);
+          ClusterApi.create(this.cluster).then(() => {
+            this.$router.push({ name: 'clusters.index' });
           });
         }
       });
@@ -250,3 +248,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
+</style>
