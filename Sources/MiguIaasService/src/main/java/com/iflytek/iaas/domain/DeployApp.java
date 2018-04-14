@@ -2,32 +2,33 @@ package com.iflytek.iaas.domain;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "deploy_app", schema = "migu_iaas", catalog = "")
+@Table(name = "deploy_app")
 public class DeployApp {
-    private int id;
+    private Integer id;
     private String name;
     private String creator;
     private String annotation;
-    private byte status;
-    private byte valid;
+    private boolean status;
+    private boolean valid;
     private String namespace;
     private String ip;
     private String port;
     private String hostname;
     private Byte isService;
-    private Timestamp createtime;
-    private Timestamp updatetime;
+    private Date createtime;
+    private Date updatetime;
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -63,21 +64,21 @@ public class DeployApp {
 
     @Basic
     @Column(name = "status")
-    public byte getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
     @Basic
     @Column(name = "valid")
-    public byte getValid() {
+    public boolean getValid() {
         return valid;
     }
 
-    public void setValid(byte valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 
@@ -133,21 +134,21 @@ public class DeployApp {
 
     @Basic
     @Column(name = "createtime")
-    public Timestamp getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
     @Basic
     @Column(name = "updatetime")
-    public Timestamp getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(Timestamp updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 

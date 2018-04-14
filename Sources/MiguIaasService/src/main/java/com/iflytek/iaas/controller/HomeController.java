@@ -60,11 +60,7 @@ public class HomeController{
      * @return
      */
     @ApiOperation(value = "login",notes = "用户登录")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "account", value = "账号/邮件/手机号", paramType = "form", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "pwd", value = "密码", paramType = "form", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "code", value = "验证码", paramType = "form", required = true, dataType = "String"),
-    })
+    @ApiImplicitParam(name = "requestBody", value = "账号/邮件/手机号", required = true, dataType = "UserDTO")
     @PostMapping("/login")
     public String login(HttpServletRequest request, @RequestBody UserDTO requestBody)throws ControllerException{
 

@@ -33,7 +33,8 @@ public class GlobalExceptionHandler {
       * @param e
      * @return
      */
-    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({Exception.class, BusiException.class})
     @ResponseBody
     public Map<String,Object> exceptionHander(ControllerException e){
 

@@ -1,32 +1,45 @@
 package com.iflytek.iaas.domain;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
+/**
+ * 〈镜像实体〉
+ *
+ * @author ruizhao3
+ * @create 2018/4/10
+ */
 @Entity
-public class Image {
-    private int id;
+@Table(name="image")
+public class Image implements Serializable{
+    private static final long serialVersionUID = -645029156901008040L;
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    @Column(name = "id")
+    private Integer id;
     private String name;
     private String version;
     private String annotation;
     private String creator;
-    private Byte valid;
+    private boolean valid;
     private String gitPath;
     private String ftpPath;
-    private Timestamp createtime;
-    private Timestamp updatetime;
+    private String hubPath;
+    private Date createtime;
+    private Date updatetime;
 
-    @Id
-    @Column(name = "id")
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -72,11 +85,11 @@ public class Image {
 
     @Basic
     @Column(name = "valid")
-    public Byte getValid() {
+    public boolean getValid() {
         return valid;
     }
 
-    public void setValid(Byte valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 
@@ -101,22 +114,32 @@ public class Image {
     }
 
     @Basic
+    @Column(name = "hub_path")
+    public String getHubPath() {
+        return hubPath;
+    }
+
+    public void setHubPath(String hubPath) {
+        this.hubPath = hubPath;
+    }
+
+    @Basic
     @Column(name = "createtime")
-    public Timestamp getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
     @Basic
     @Column(name = "updatetime")
-    public Timestamp getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(Timestamp updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
@@ -125,7 +148,7 @@ public class Image {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return id == image.id &&
+        return id.equals(image.id) &&
                 Objects.equals(name, image.name) &&
                 Objects.equals(version, image.version) &&
                 Objects.equals(annotation, image.annotation) &&
@@ -133,6 +156,7 @@ public class Image {
                 Objects.equals(valid, image.valid) &&
                 Objects.equals(gitPath, image.gitPath) &&
                 Objects.equals(ftpPath, image.ftpPath) &&
+                Objects.equals(hubPath, image.hubPath) &&
                 Objects.equals(createtime, image.createtime) &&
                 Objects.equals(updatetime, image.updatetime);
     }
@@ -140,6 +164,6 @@ public class Image {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, version, annotation, creator, valid, gitPath, ftpPath, createtime, updatetime);
+        return Objects.hash(id, name, version, annotation, creator, valid, gitPath, ftpPath, hubPath, createtime, updatetime);
     }
 }
