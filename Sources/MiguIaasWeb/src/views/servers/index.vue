@@ -1,6 +1,31 @@
 <template>
   <div class="content-container">
-    <div slot="header">主机管理</div>
+    <h3>主机管理</h3>
+    <el-form :inline="true" :model="serverParams" ref="queryServersForm">
+      <el-form-item label="服务器IP" prop="">
+        <el-input v-model="serverParams.ip"></el-input>
+      </el-form-item>
+      <el-form-item label="主机名" prop="">
+        <el-input v-model="serverParams.hostname"></el-input>
+      </el-form-item>
+      <el-form-item label="操作系统" prop="">
+        <el-input v-model="serverParams.os"></el-input>
+      </el-form-item>
+      <el-form-item label="集群名称" prop="">
+        <el-input v-model="serverParams.clusterName"></el-input>
+      </el-form-item>
+      <el-form-item label="状态" prop="">
+        <el-input v-model="serverParams.status"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="queryServers">
+          查询
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <el-row>
+      <el-col></el-col>
+    </el-row>
     <el-table
         :data="addedServers"
         stripe
@@ -35,6 +60,22 @@
     </el-table>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      serverParams: {
+        ip: '',
+        hostname: '',
+        os: '',
+        status: '',
+        clusterName: '',
+      },
+    };
+  },
+};
+</script>
 
 <style>
   .content-container {
