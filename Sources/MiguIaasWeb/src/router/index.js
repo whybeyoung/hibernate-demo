@@ -37,6 +37,23 @@ export const constantRouterMap = [
       component: dynamicImport('clusters/index'),
     }],
   },
+
+  {
+    path: '/image',
+    component: Layout,
+    redirect: '/image/index',
+    icon: 'zujian',
+    name: '镜像管理',
+    children: [
+      {
+        path: 'index', name: '镜像列表', icon: 'zonghe', component: dynamicImport('image/index'), meta: { role: ['admin'] },
+      },
+      {
+        path: 'upload', name: '镜像上传', icon: 'zonghe', component: dynamicImport('image/upload'), meta: { role: ['admin'] },
+      },
+    ],
+  },
+
   { path: '*', component: dynamicImport('404'), hidden: true },
 ];
 

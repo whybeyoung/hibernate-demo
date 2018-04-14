@@ -23,6 +23,14 @@ public enum ReturnCode {
     //主机类
 
     //镜像类
+    IMAGE_NULL_NAME("300001", "镜像名不能为空"),
+    IMAGE_NULL_VERSION("300002", "版本号不能为空"),
+    IMAGE_NULL_FTPPATH("300003", "FTP路径不能为空"),
+    IMAGEHUB_FAILED_PUSH("300004", "镜像安装到仓库失败"),
+    IMAGEHUB_EXISTS("300005", "镜像文件已存在Hub仓库中"),
+    IMAGE_NOTESISTS_FTPPATH("300006", "镜像文件路径不存在"),
+    IMAGE_FAILED_LOAD("300007", "镜像加载失败"),
+    IMAGE_FAILED_REMOVE("300008", "镜像文件删除失败"),
 
     //部署类
 

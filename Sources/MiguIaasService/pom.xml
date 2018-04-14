@@ -21,6 +21,7 @@
         <shiro.version>1.4.0</shiro.version>
         <swagger.version>2.6.1</swagger.version>
         <kubernetes-java.version>1.0.0-beta3</kubernetes-java.version>
+        <httpclient.version>4.5.2</httpclient.version>
     </properties>
 
     <dependencies>
@@ -76,6 +77,20 @@
             <version>${swagger.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/ch.ethz.ganymed/ganymed-ssh2 -->
+        <dependency>
+            <groupId>ch.ethz.ganymed</groupId>
+            <artifactId>ganymed-ssh2</artifactId>
+            <version>build210</version>
+        </dependency>
+
+        <!--httpclient-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+
         <!--TEST-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -102,16 +117,16 @@
         </plugins>
     </build>
 
-    <repositories>
+    <!--<repositories>
         <repository>
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
-    </repositories>
-    <pluginRepositories>
+    </repositories>-->
+    <!--<pluginRepositories>
         <pluginRepository>
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
-    </pluginRepositories>
+    </pluginRepositories>-->
 </project>

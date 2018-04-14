@@ -8,6 +8,10 @@
 package com.iflytek.iaas.service;
 
 
+import com.iflytek.iaas.dto.ImageDTO;
+import com.iflytek.iaas.vo.ImageVO;
+import org.springframework.data.domain.Page;
+
 /**
  * 〈镜像服务接口〉
  *
@@ -16,4 +20,31 @@ package com.iflytek.iaas.service;
  */
 public interface ImageService {
 
+
+    /**
+     * 查询镜像
+     *
+     * @param name
+     * @param version
+     * @param page
+     * @param pagesize
+     * @return
+     */
+    public Page<ImageDTO> findByNameLike(String name, String version, Integer page, Integer pagesize);
+
+
+    /**
+     * 保存镜像
+     *
+     * @param imageVO
+     * @return
+     */
+    public Boolean saveImage(ImageVO imageVO);
+
+    /**
+     * 删除镜像
+     * @param imageId
+     * @return
+     */
+    public Boolean deleteImage(Integer imageId);
 }
