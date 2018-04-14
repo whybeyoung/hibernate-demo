@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 〈集群相关controller〉
@@ -30,9 +31,6 @@ public class ClusterController {
     @Autowired
     private ClusterDao clusterDao;
 
-    @Autowired
-    private UserDao userDao;
-
     @GetMapping("/clusters")
     public List<Cluster> index() {
         return clusterDao.findAll();
@@ -43,6 +41,11 @@ public class ClusterController {
         User user = (User) request.getSession().getAttribute("CURRENT_USER");
         cluster.setCreator(user.getId());
         return clusterDao.save(cluster);
+    }
+
+    @GetMapping("/clusters/{id}")
+    public Optional<Cluster> show(@PathVariable Integer id) {
+        return clusterDao.findById(id);
     }
 
 }

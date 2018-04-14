@@ -8,6 +8,7 @@
 package com.iflytek.iaas.dao;
 
 import com.iflytek.iaas.domain.Cluster;
+import io.swagger.models.auth.In;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,4 @@ public interface ClusterDao extends JpaRepository<Cluster,Integer> {
      * @return
      */
     Page<Cluster> findByNameLike(String name, Pageable pageable);
-
 }

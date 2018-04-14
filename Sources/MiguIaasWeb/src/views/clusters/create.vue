@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h3 style="margin-left: 20px;">新建集群</h3>
+    <h3 style="margin-left: 20px;" v-if="mode === 'create'">新建集群</h3>
+    <h3 style="margin-left: 20px;" v-else>修改集群</h3>
 
     <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 
@@ -111,7 +112,7 @@
       <el-row justify="center">
         <el-col>
           <el-form-item>
-            <el-button type="primary" @click="save('clusterForm')">提交</el-button>
+            <el-button type="primary" @click="save('clusterForm')">保存</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -190,6 +191,7 @@ import ClusterApi from '@/api/cluster';
 export default {
   data() {
     return {
+      mode: 'create',
       addHostDialogVisible: false,
       cluster: {
         name: '',
@@ -236,6 +238,15 @@ export default {
         }
       });
     },
+
+  },
+  mounted() {
+    if (this.$router.currentRoute.name === 'clusters.edit') {
+      this.mode = 'edit';
+      ClusterApi.show(this.$router.currentRoute.params.id).then((response) => {
+        this.cluster = response;
+      });
+    }
   },
 };
 </script>

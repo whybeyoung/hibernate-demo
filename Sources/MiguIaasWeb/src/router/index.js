@@ -43,6 +43,35 @@ export const constantRouterMap = [
       name: 'clusters.create',
       displayName: '新增集群',
       component: dynamicImport('clusters/create'),
+    }, {
+      path: ':id/detail',
+      name: 'clusters.detail',
+      hidden: true,
+      component: dynamicImport('clusters/detail'),
+    }, {
+      path: ':id/edit',
+      name: 'clusters.edit',
+      hidden: true,
+      component: dynamicImport('clusters/create'),
+    }],
+  },
+  {
+    path: '/servers',
+    component: Layout,
+    redirect: '/servers/index',
+    icon: 'tubiao',
+    name: 'hosts',
+    displayName: '主机管理',
+    children: [{
+      path: 'index',
+      name: 'servers.index',
+      displayName: '主机列表',
+      component: dynamicImport('servers/index'),
+    }, {
+      path: 'create',
+      name: 'servers.create',
+      displayName: '新建主机',
+      component: dynamicImport('servers/create'),
     }],
   },
 

@@ -27,4 +27,9 @@ ClusterApi.list = () => fetch({
   method: 'get',
 });
 
+ClusterApi.show = clusterId => fetch({
+  url: `clusters/${clusterId}`,
+  method: 'get',
+});
+
 export default ClusterApi;
