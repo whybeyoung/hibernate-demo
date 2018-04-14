@@ -7,6 +7,7 @@
  */
 package com.iflytek.iaas.shiro.realm;
 
+import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.UserDTO;
 import com.iflytek.iaas.service.PermissionService;
 import com.iflytek.iaas.service.UserService;
@@ -47,7 +48,7 @@ public class IaasRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String account = (String) principals.fromRealm(getName()).iterator().next();
-        UserDTO userDTO = userService.getUserInfoByAuth(account);
+        User userDTO = userService.getUserByAuth(account);
         if(userDTO == null){
             return null;
         }else{
@@ -70,11 +71,11 @@ public class IaasRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String account = (String)token.getPrincipal();
         String password = new String((char[])token.getCredentials());
-        UserDTO userDTO = userService.getUserInfoByAuth(account);
-        if(userDTO == null){
+        User user = userService.getUserByAuth(account);
+        if(user == null){
             return null;
         }else{
-            if(password.equalsIgnoreCase(userDTO.getPassword())){
+            if(password.equalsIgnoreCase(user.getPassword())){
                 return new SimpleAuthenticationInfo(account, password, this.getName());
             }else{
                 return null;

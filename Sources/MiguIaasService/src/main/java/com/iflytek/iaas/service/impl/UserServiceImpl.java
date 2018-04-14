@@ -46,8 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserInfoByAuth(String auth) {
-        UserDTO userDTO = new UserDTO();
+    public User getUserByAuth(String auth) {
         User user ;
         if(RegularUtils.isEmail(auth)){
             user = userDao.findByEmail(auth);
@@ -56,11 +55,7 @@ public class UserServiceImpl implements UserService {
         }else{
             user = userDao.findByAccount(auth);
         }
-        if(user != null){
-            BeanUtils.copyProperties(user,userDTO);
-            userDTO.setPermissions(permissionService.getPermissionsByRoleId(user.getRoleId()));
-        }
-        return userDTO;
+        return user;
     }
 
     @Override

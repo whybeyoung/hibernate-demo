@@ -8,6 +8,7 @@
 package com.iflytek.iaas.service;
 
 
+import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.UserDTO;
 
 /**
@@ -30,7 +31,7 @@ public interface UserService {
      * @param auth  账号/邮箱/手机号
      * @return
      */
-    UserDTO getUserInfoByAuth(String auth);
+    User getUserByAuth(String auth);
 
 
     /**

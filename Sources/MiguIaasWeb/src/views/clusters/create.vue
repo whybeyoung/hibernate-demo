@@ -2,17 +2,17 @@
   <div>
     <h3 style="margin-left: 20px;">新建集群</h3>
 
-    <el-form :inline="true" :model="cluster" class="demo-form-inline">
+    <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 
       <el-row type="flex" class="row-bg" justify="center">
         <el-col :span="6" style="">
-          <el-form-item label="集群名称:">
+          <el-form-item label="集群名称:" prop="name">
             <el-input v-model="cluster.name" placeholder="请输入集群名称"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" style="">
-          <el-form-item label="备注:">
-            <el-input v-model="cluster.comment" placeholder="请输入备注"></el-input>
+          <el-form-item label="备注:" prop="annotation">
+            <el-input v-model="cluster.annotation" placeholder="请输入备注"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -111,7 +111,7 @@
       <el-row justify="center">
         <el-col>
           <el-form-item>
-            <el-button type="primary" @click="save">提交</el-button>
+            <el-button type="primary" @click="save('clusterForm')">提交</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -185,14 +185,25 @@
 </template>
 
 <script>
+import ClusterApi from '@/api/cluster';
+
 export default {
   data() {
     return {
       addHostDialogVisible: false,
       cluster: {
         name: '',
-        comment: '',
+        annotation: '',
         hosts: [],
+      },
+      clusterRules: {
+        name: [
+          { required: true, message: '请输入集群名称', trigger: 'blur' },
+          { max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
+        ],
+        annotation: [
+          { max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
+        ],
       },
       host: {
         name: '',
@@ -215,9 +226,15 @@ export default {
     unselect() {
 
     },
-    save() {
-      console.log(this.cluster);
-      debugger;
+    save(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log(this.cluster);
+          ClusterApi.create(this.cluster).then((res) => {
+            console.log(res);
+          });
+        }
+      });
     },
   },
 };

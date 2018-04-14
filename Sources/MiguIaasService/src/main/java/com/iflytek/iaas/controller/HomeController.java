@@ -9,6 +9,7 @@ package com.iflytek.iaas.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.iflytek.iaas.consts.ReturnCode;
+import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.UserDTO;
 import com.iflytek.iaas.exception.ControllerException;
 import com.iflytek.iaas.service.UserService;
@@ -62,7 +63,7 @@ public class HomeController{
     @ApiOperation(value = "login",notes = "用户登录")
     @ApiImplicitParam(name = "requestBody", value = "账号/邮件/手机号", required = true, dataType = "UserDTO")
     @PostMapping("/login")
-    public String login(HttpServletRequest request, @RequestBody UserDTO requestBody)throws ControllerException{
+    public User login(HttpServletRequest request, @RequestBody UserDTO requestBody)throws ControllerException{
 
         HttpSession session = request.getSession();
 
@@ -79,13 +80,13 @@ public class HomeController{
 
         session.removeAttribute("verCode");
 
-        UserDTO userDTO = userService.getUserInfoByAuth(requestBody.getAccount());
-        if(userDTO == null){
+        User user = userService.getUserByAuth(requestBody.getAccount());
+        if(user == null){
             throw new ControllerException(ReturnCode.ACCOUNT_PWD_ERROR);
         }
 
         try {
-            requestBody.setPassword(MD5Utils.encrypt(requestBody.getPassword(), userDTO.getSalt()));
+            requestBody.setPassword(MD5Utils.encrypt(requestBody.getPassword(), user.getSalt()));
 
         } catch (NoSuchAlgorithmException e1) {
             // TODO Auto-generated catch block
@@ -98,8 +99,8 @@ public class HomeController{
 
         try {
             subject.login(token);
-            session.setAttribute("CURRENT_USER", userDTO);
-            return JSON.toJSONString(userDTO);
+            session.setAttribute("CURRENT_USER", user);
+            return user;
 
         } catch (Exception e) {
             throw new ControllerException(ReturnCode.ACCOUNT_PWD_ERROR);

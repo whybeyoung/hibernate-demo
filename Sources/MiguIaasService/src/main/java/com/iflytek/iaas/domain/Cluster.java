@@ -1,5 +1,7 @@
 package com.iflytek.iaas.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -17,13 +19,16 @@ public class Cluster implements Serializable{
     private static final long serialVersionUID = -5352050506682810176L;
 
     private Integer id;
+    @ColumnDefault("default name")
     private String name;
     private String annotation;
-    private String creator;
     private boolean valid;
     private Date createtime;
+    @Column
+    private String creator;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     public Integer getId() {
         return id;
@@ -54,17 +59,8 @@ public class Cluster implements Serializable{
     }
 
     @Basic
-    @Column(name = "creator")
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    @Basic
     @Column(name = "valid")
+    @ColumnDefault("true")
     public boolean getValid() {
         return valid;
     }
@@ -83,22 +79,11 @@ public class Cluster implements Serializable{
         this.createtime = createtime;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cluster cluster = (Cluster) o;
-        return id.equals(cluster.id) &&
-                valid == cluster.valid &&
-                Objects.equals(name, cluster.name) &&
-                Objects.equals(annotation, cluster.annotation) &&
-                Objects.equals(creator, cluster.creator) &&
-                Objects.equals(createtime, cluster.createtime);
+    public String getCreator() {
+        return creator;
     }
 
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, name, annotation, creator, valid, createtime);
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }
