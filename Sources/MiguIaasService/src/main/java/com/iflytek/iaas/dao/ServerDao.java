@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * 〈集群操作dao〉
  *
@@ -26,5 +28,7 @@ public interface ServerDao extends JpaRepository<Server,Integer> {
      * @return
      */
     Page<Server> findByHostname(String hostname, Pageable pageable);
+
+    List<Server> findByClusterIdIsNull();
 
 }

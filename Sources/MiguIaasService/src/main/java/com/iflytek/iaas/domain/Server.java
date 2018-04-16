@@ -1,6 +1,10 @@
 package com.iflytek.iaas.domain;
 
 
+import com.iflytek.iaas.dto.k8s.ServerInfoDTO;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,6 +33,8 @@ public class Server implements Serializable {
     private Date updatetime;
 
     @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     @Column(name = "id")
     public Integer getId() {
         return id;
@@ -226,5 +232,11 @@ public class Server implements Serializable {
     public int hashCode() {
 
         return Objects.hash(id, ipv4, ipv6, hostname, sn, os, kernel, disk, memory, status, valid, annotation, positionCode, dockerVersion, clusterId, createtime, updatetime);
+    }
+
+    public ServerInfoDTO toServerInfoDTO() {
+        ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
+        BeanUtils.copyProperties(this, serverInfoDTO);
+        return serverInfoDTO;
     }
 }

@@ -4,8 +4,12 @@
  */
 package com.iflytek.iaas.dto.k8s;
 
+import com.iflytek.iaas.domain.Server;
+import org.springframework.beans.BeanUtils;
+
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 〈主机信息〉
@@ -33,6 +37,12 @@ public class ServerInfoDTO {
     private String dockerVersion;
     private Map<String, String> labels;
     private String clusterId;
+
+    public Server toServer() {
+        Server s = new Server();
+        BeanUtils.copyProperties(this, s);
+        return s;
+    }
 
     public Integer getId() {
         return id;
@@ -176,5 +186,19 @@ public class ServerInfoDTO {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServerInfoDTO that = (ServerInfoDTO) o;
+        return Objects.equals(hostname, that.hostname);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(hostname);
     }
 }

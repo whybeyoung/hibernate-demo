@@ -1,5 +1,8 @@
 package com.iflytek.iaas.dto;
 
+import com.iflytek.iaas.domain.Cluster;
+import org.springframework.beans.BeanUtils;
+
 import java.util.Date;
 
 /**
@@ -16,6 +19,13 @@ public class ClusterDTO{
     private String creator;
     private boolean valid;
     private Date createtime;
+    private String labelName;
+
+    public Cluster toCluster() {
+        Cluster cluster = new Cluster();
+        BeanUtils.copyProperties(this, cluster);
+        return cluster;
+    }
 
     public Integer getId() {
         return id;
@@ -63,5 +73,13 @@ public class ClusterDTO{
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public String getLabelName() {
+        return labelName;
+    }
+
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
     }
 }

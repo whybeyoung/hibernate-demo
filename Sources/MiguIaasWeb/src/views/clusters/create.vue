@@ -7,19 +7,24 @@
     <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 
       <el-row type="flex" class="row-bg" justify="center">
-        <el-col :span="6" style="">
+        <el-col :span="5" style="">
           <el-form-item label="集群名称:" prop="name">
             <el-input v-model="cluster.name" placeholder="请输入集群名称"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" style="">
+        <el-col :span="5" style="">
+          <el-form-item label="标签名" prop="labelName">
+            <el-input v-model="cluster.labelName" placeholder="请输入标签名"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
           <el-form-item label="备注:" prop="annotation">
             <el-input v-model="cluster.annotation" placeholder="请输入备注"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-row style="height: 500px;">
+      <el-row style="height: 500px;" type="flex">
         <el-col :span="12" style="height: inherit; padding: 20px;">
           <el-form-item label="IP:">
             <el-input v-model="host.ip" placeholder="请输入IP"></el-input>
@@ -30,29 +35,31 @@
           <el-form-item>
             <el-button type="primary" @click="queryHost">查询</el-button>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="addHostDialogVisible = true">添加</el-button>
-          </el-form-item>
+          <!--
+          <el-form-item>-->
+            <!--<el-button type="primary" @click="addHostDialogVisible = true">添加</el-button>-->
+          <!--</el-form-item>
+          -->
 
           <el-table
-              :data="userableHosts"
+              :data="addedServers"
               stripe
               border
               height="398"
               style="width: 100%">
             <el-table-column
-                prop="ip"
+                prop="ipv4"
                 label="IP"
                 fixed
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="hostname"
                 label="主机名"
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="SN"
+                prop="sn"
                 width="300"
                 label="SN">
             </el-table-column>
@@ -62,7 +69,7 @@
                 align="center"
                 label="操作">
               <template slot-scope="scope">
-                <el-button @click="selectHost(scope.row)" type="text" size="small">选中</el-button>
+                <el-button @click="selectServer(scope.row)" type="text" size="small">选中</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -75,7 +82,7 @@
           </div>
 
           <el-table
-              :data="cluster.hosts"
+              :data="cluster.servers"
               stripe
               border
               height="398"
@@ -142,7 +149,7 @@
       -->
 
         <el-table
-            :data="userableHosts"
+            :data="usableServers"
             stripe
             border
             height="398"
@@ -169,13 +176,12 @@
               align="center"
               label="操作">
             <template slot-scope="scope">
-              <el-button @click="selectHost(scope.row)" type="text" size="small">选中</el-button>
+              <el-button @click="selectServer(scope.row)" type="text" size="small">选中</el-button>
             </template>
           </el-table-column>
         </el-table>
 
-
-      <span slot="footer" class="dialog-footer">
+    <span slot="footer" class="dialog-footer">
       <el-button @click="addHostDialogVisible = false">取 消</el-button>
       <el-button type="primary" @click="addHostDialogVisible = false">确 定</el-button>
     </span>
@@ -186,6 +192,7 @@
 
 <script>
 import ClusterApi from '@/api/cluster';
+import ServerApi from '@/api/server';
 
 export default {
   data() {
@@ -196,6 +203,7 @@ export default {
         name: '',
         annotation: '',
         hosts: [],
+        labelName: '',
       },
       clusterRules: {
         name: [
@@ -205,13 +213,17 @@ export default {
         annotation: [
           { max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
         ],
+        labelName: [
+          { required: true, message: '请输入标签名', trigger: 'blur' },
+        ],
       },
       host: {
         name: '',
         ip: '',
       },
-      userableHosts: [],
+      usableServers: [],
       hostParams: {},
+      addedServers: [],
     };
   },
   methods: {
@@ -221,7 +233,7 @@ export default {
     addHostDialogClose() {
 
     },
-    selectHost() {
+    selectServer() {
 
     },
     unselect() {
@@ -236,15 +248,20 @@ export default {
         }
       });
     },
-
+    back() {
+      this.$router.go(-1);
+    },
   },
-  mounted() {
+  created() {
     if (this.$router.currentRoute.name === 'clusters.edit') {
       this.mode = 'edit';
       ClusterApi.show(this.$router.currentRoute.params.id).then((response) => {
         this.cluster = response;
       });
     }
+    ServerApi.index().then((resp) => {
+      this.addedServers = resp;
+    });
   },
 };
 </script>
