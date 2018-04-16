@@ -8,7 +8,6 @@
 package com.iflytek.iaas.controller;
 
 import com.iflytek.iaas.dao.ClusterDao;
-import com.iflytek.iaas.dao.UserDao;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +45,11 @@ public class ClusterController {
     @GetMapping("/clusters/{id}")
     public Optional<Cluster> show(@PathVariable Integer id) {
         return clusterDao.findById(id);
+    }
+
+    @DeleteMapping("clusters/{id}")
+    public void remove(@PathVariable Integer id) {
+        clusterDao.deleteById(id);
     }
 
 }

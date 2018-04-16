@@ -14,8 +14,8 @@ ClusterApi.update = cluster => fetch({
   data: cluster,
 });
 
-ClusterApi.delete = clusterId => fetch({
-  url: 'clusters',
+ClusterApi.remove = clusterId => fetch({
+  url: `clusters/${clusterId}`,
   method: 'delete',
   params: {
     clusterId,
