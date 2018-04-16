@@ -4,7 +4,8 @@
  */
 package com.iflytek.iaas.dto.k8s;
 
-import java.awt.*;
+import com.iflytek.iaas.consts.K8sAPPType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +17,47 @@ import java.util.List;
  */
 public class ServiceConfigDTO {
 
+    private K8sAPPType type;
     private String serverName;
     private List<String> imgNames;
     private String namespace;
+    /**
+     * 部署标签，根据部署标签创建服务
+     */
     private List<LabelDTO> deployLabels;
+    private Integer podPort;
+    /**
+     * 只有type是EXTERNAL时，才需要有servicePort，只能指定30000-32767之间的值
+     */
+    private Integer NodePort;
+
+    public K8sAPPType getType() {
+        return type;
+    }
+
+    public void setType(K8sAPPType type) {
+        this.type = type;
+    }
+
+    public int getPodPort() {
+        return podPort;
+    }
+
+    public void setPodPort(int podPort) {
+        this.podPort = podPort;
+    }
+
+    public Integer getNodePort() {
+        return NodePort;
+    }
+
+    public void setNodePort(Integer nodePort) {
+        NodePort = nodePort;
+    }
+
+    public void setDeployLabels(List<LabelDTO> deployLabels) {
+        this.deployLabels = deployLabels;
+    }
 
     public String getServerName() {
         return serverName;

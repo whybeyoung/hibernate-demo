@@ -37,6 +37,10 @@ public class MountVolumeDTO {
     }
 
     public String getName() {
-        return "volume_"+ ToolUtils.getUniqueId();
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

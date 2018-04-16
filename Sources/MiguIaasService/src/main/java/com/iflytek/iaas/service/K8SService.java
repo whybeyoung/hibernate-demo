@@ -74,7 +74,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    DeployInfoDTO getImageDeploymentInfo(String namespace,String name)throws IOException, ApiException;
+    ImageDeployInfoDTO getImageDeploymentInfo(String namespace,String name)throws IOException, ApiException;
     /**
      * 新建服务部署
      * @return
@@ -94,6 +94,16 @@ public interface K8SService {
     boolean deleteServiceDeployment(String namespace,String name)throws IOException, ApiException;
 
     /**
+     * 获取服务部署详情
+     * @param namespace 命名空间
+     * @param name 服务部署名
+     * @return
+     * @throws IOException
+     * @throws ApiException
+     */
+    ServiceDeployInfoDTO getServiceDeploymentInfo(String namespace,String name)throws IOException, ApiException;
+
+    /**
      * 根据部署名称更新pod数量（扩容/缩容）
      * @param namespace 命名空间
      * @param deployName 部署名称
@@ -104,12 +114,11 @@ public interface K8SService {
      */
     boolean updateDeployPodsByName(String namespace,String deployName,int pods)throws IOException, ApiException;
 
-
     /**
      * 获取k8s集群中所有可用主机节点信息
      * @return
      */
-    List<ServerInfoDTO> getOnlineServerNodes()throws IOException, ApiException;
+    List<ServerInfoDTO> getAllServerNodes()throws IOException, ApiException;
 
     /**
      * 根据主机名获取主机信息
@@ -119,6 +128,15 @@ public interface K8SService {
      * @throws ApiException
      */
     ServerInfoDTO getServerInfoByName(String hostName) throws IOException, ApiException;
+
+    /**
+     * 根据主机标签获取主机列表
+     * @param label 主机标签
+     * @return
+     * @throws IOException
+     * @throws ApiException
+     */
+    List<ServerInfoDTO> getServerNodesByLabel(LabelDTO label)throws IOException, ApiException;
 
 
     /**
@@ -177,5 +195,13 @@ public interface K8SService {
      * @return
      */
     String getServerDiskByHostname(String hostName);
+
+    /**
+     * k8s接口测试
+     * @return
+     * @throws IOException
+     * @throws ApiException
+     */
+    boolean testK8s()throws IOException, ApiException;
 
 }

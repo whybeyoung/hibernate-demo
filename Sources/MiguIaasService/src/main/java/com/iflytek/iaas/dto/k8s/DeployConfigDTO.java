@@ -17,6 +17,9 @@ public class DeployConfigDTO {
     private String imgName;
     private String namespace;
     private String imgPath;
+    /**
+     * 部署标签
+     */
     private LabelDTO deployLabel;
     private String initCmd;
     private List<EnvDTO> envs;
@@ -68,10 +71,11 @@ public class DeployConfigDTO {
     }
 
     public LabelDTO getDeployLabel() {
-        LabelDTO label = new LabelDTO();
-        label.setKey(this.namespace);
-        label.setValue(this.imgName);
-        return label;
+        return deployLabel;
+    }
+
+    public void setDeployLabel(LabelDTO deployLabel) {
+        this.deployLabel = deployLabel;
     }
 
     public String getInitCmd() {
