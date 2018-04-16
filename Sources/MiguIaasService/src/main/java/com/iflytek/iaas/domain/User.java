@@ -7,9 +7,13 @@
  */
 package com.iflytek.iaas.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 〈用户实体〉
@@ -36,6 +40,7 @@ public class User implements Serializable {
     private String salt;
 
     @Column
+    @JsonIgnore
     private String password;
 
     @Column
@@ -53,11 +58,24 @@ public class User implements Serializable {
     @Column
     private boolean valid;
 
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="creator")
+    private List<Cluster> clusters;
+
     @Column
     private Date createtime;
 
     @Column
     private Date updatetime;
+
+    public void addCluster(Cluster cluster) {
+        if(cluster != null) {
+            if(clusters == null){
+                clusters = new ArrayList<Cluster>();
+            }
+            clusters.add(cluster);
+        }
+    }
 
     public String getId() {
         return id;
@@ -153,5 +171,13 @@ public class User implements Serializable {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public List<Cluster> getClusters() {
+        return clusters;
+    }
+
+    public void setClusters(List<Cluster> clusters) {
+        this.clusters = clusters;
     }
 }

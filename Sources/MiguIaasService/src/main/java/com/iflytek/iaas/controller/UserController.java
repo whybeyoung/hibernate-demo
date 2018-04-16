@@ -7,6 +7,7 @@
  */
 package com.iflytek.iaas.controller;
 
+import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.UserDTO;
 import com.iflytek.iaas.exception.MiguForbiddenException;
 import com.iflytek.iaas.service.UserService;
@@ -36,9 +37,9 @@ public class UserController {
 
     @GetMapping("/users/current")
     @ResponseBody
-    public UserDTO current(HttpServletRequest request) throws Exception {
+    public User current(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        UserDTO user = (UserDTO) session.getAttribute("CURRENT_USER");
+        User user = (User) session.getAttribute("CURRENT_USER");
         if(user == null) {
             throw new MiguForbiddenException("not login");
         }
