@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.iflytek.iaas.consts.K8sAPPType;
 import com.iflytek.iaas.dto.k8s.*;
 import com.iflytek.iaas.service.K8SService;
 import com.iflytek.iaas.utils.HttpClientUtil;
@@ -18,9 +19,12 @@ import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
 import io.kubernetes.client.apis.AppsV1beta1Api;
 import io.kubernetes.client.apis.CoreV1Api;
+import io.kubernetes.client.apis.ExtensionsV1beta1Api;
+import io.kubernetes.client.custom.IntOrString;
 import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.models.*;
 import io.kubernetes.client.util.Config;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,16 +95,17 @@ public class k8sServiceImpl  implements K8SService {
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
 
-        V1Preconditions preconditions = new V1Preconditions();
-        preconditions.setUid(ns.getUid());
         V1DeleteOptions options = new V1DeleteOptions();
-//        options.setKind("Namespace");
-        options.setPreconditions(preconditions);
+        options.setGracePeriodSeconds((long)0);
+        options.setPropagationPolicy("Background");
 
         try {
-            coreV1Api.deleteNamespace(ns.getNameSpace(), options, "", 0, false, "");
+            coreV1Api.deleteNamespace(ns.getNameSpace(), options, null, null, null, null);
             return true;
         }catch(Exception e){
+            if(e.getMessage().contains("BEGIN_OBJECT")){
+                return true;
+            }
             logger.error(e.getMessage());
         }
         return false;
@@ -145,7 +150,10 @@ public class k8sServiceImpl  implements K8SService {
             }
             //启动命令
             List<String> cmds = new ArrayList<>();
-            cmds.add(deployConfigDTO.getInitCmd());
+            if(StringUtils.isNotEmpty(deployConfigDTO.getInitCmd())){
+                cmds.add(deployConfigDTO.getInitCmd());
+            }
+
             //环境变量
             List<V1EnvVar> envs = new ArrayList<>();
             for(EnvDTO env: deployConfigDTO.getEnvs()){
@@ -177,6 +185,12 @@ public class k8sServiceImpl  implements K8SService {
                 container.setImage(deployConfigDTO.getImgPath());
                 container.setName(deployConfigDTO.getImgName()+"-"+Integer.toString(i));
                 container.setEnv(envs);
+                V1ContainerPort port = new V1ContainerPort();
+                port.setContainerPort(3306);
+                port.setProtocol("TCP");
+                List<V1ContainerPort> ports = new ArrayList<>();
+                ports.add(port);
+                container.setPorts(ports);
 //                container.setLivenessProbe(probe);
                 container.setVolumeMounts(containerVolumes);
                 container.setResources(resource);
@@ -224,7 +238,7 @@ public class k8sServiceImpl  implements K8SService {
             serviceLabel.put(serviceConfigDTO.getNamespace(),serviceConfigDTO.getServerName());
 
             V1ObjectMeta meta = new V1ObjectMeta();
-            meta.setNamespace(serviceConfigDTO.getServerName());
+            meta.setNamespace(serviceConfigDTO.getNamespace());
             meta.setName(serviceConfigDTO.getServerName());
             meta.setLabels(serviceLabel);
 
@@ -236,6 +250,21 @@ public class k8sServiceImpl  implements K8SService {
 
             V1ServiceSpec serviceSpec = new V1ServiceSpec();
             serviceSpec.setSelector(podLabel);
+            V1ServicePort port = new V1ServicePort();
+            port.setPort(serviceConfigDTO.getPodPort());
+            IntOrString val = new IntOrString(serviceConfigDTO.getPodPort());
+            port.setTargetPort(val);
+            if(serviceConfigDTO.getType().equals(K8sAPPType.EXTERNAL_SERVICE)){
+                port.setNodePort(serviceConfigDTO.getNodePort());
+            }
+            List<V1ServicePort> ports = new ArrayList<>();
+            ports.add(port);
+            serviceSpec.setPorts(ports);
+            if(serviceConfigDTO.getType().equals(K8sAPPType.EXTERNAL_SERVICE)){
+                serviceSpec.setType("NodePort");
+            }else if(serviceConfigDTO.getType().equals(K8sAPPType.EXTERNAL_SERVICE)){
+                serviceSpec.setType("ClusterIP");
+            }
 
             V1Service service = new V1Service();
             service.setMetadata(meta);
@@ -250,8 +279,8 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public DeployInfoDTO getImageDeploymentInfo(String namespace,String name)throws IOException, ApiException{
-        DeployInfoDTO deployInfoDTO = new DeployInfoDTO();
+    public ImageDeployInfoDTO getImageDeploymentInfo(String namespace,String name)throws IOException, ApiException{
+        ImageDeployInfoDTO deployInfoDTO = new ImageDeployInfoDTO();
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         AppsV1beta1Api apiInstance = new AppsV1beta1Api();
@@ -282,23 +311,51 @@ public class k8sServiceImpl  implements K8SService {
         CoreV1Api coreV1Api = new CoreV1Api();
 
         try{
-            V1Status status = coreV1Api.deleteNamespacedService(name,namespace,"");
+            V1Status status = coreV1Api.deleteNamespacedService(name,namespace,null);
             return true;
         }catch(Exception e){
             logger.error(e.getMessage());
         }
         return false;
     }
+    @Override
+    public ServiceDeployInfoDTO getServiceDeploymentInfo(String namespace,String name)throws IOException, ApiException{
+        ServiceDeployInfoDTO serviceInfoDTO = new ServiceDeployInfoDTO();
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        CoreV1Api coreV1Api = new CoreV1Api();
+        try{
+            V1Service result = coreV1Api.readNamespacedService(name,namespace,null,null,null);
+            String type = result.getSpec().getType();
+            switch (type){
+                case "NodePort":
+                    serviceInfoDTO.setType(K8sAPPType.EXTERNAL_SERVICE);
+                    break;
+                case "ClusterIP":
+                    serviceInfoDTO.setType(K8sAPPType.INTERNAL_SERVICE);
+                    break;
+            }
+            V1ServicePort servicePort = result.getSpec().getPorts().get(0);
+            serviceInfoDTO.setPodPort(servicePort.getPort());
+            serviceInfoDTO.setPodPort(servicePort.getNodePort());
+            serviceInfoDTO.setIp(result.getSpec().getClusterIP());
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }
+        return serviceInfoDTO;
+    }
 
     @Override
     public boolean deleteImageDeployment(String namespace,String name)throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
-        AppsV1beta1Api apiInstance = new AppsV1beta1Api();
+        ExtensionsV1beta1Api  apiInstance = new ExtensionsV1beta1Api ();
         try{
             V1DeleteOptions options = new V1DeleteOptions();
+            options.setGracePeriodSeconds((long)0);
+            options.setPropagationPolicy("Background");
 
-            V1Status status = apiInstance.deleteNamespacedDeployment(name,namespace,options,"pretty",10,true,"policy");
+            V1Status status = apiInstance.deleteNamespacedDeployment(name,namespace,options,null,null,null,null);
             return true;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -310,14 +367,15 @@ public class k8sServiceImpl  implements K8SService {
     public boolean updateDeployPodsByName(String namespace,String deployName, int pods)throws IOException, ApiException {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
-        AppsV1beta1Api apiInstance = new AppsV1beta1Api();
+        ExtensionsV1beta1Api apiInstance = new ExtensionsV1beta1Api();
+        pods = pods==0?1:pods;
 
         try{
             String patchStr = "{\"op\":\"replace\",\"path\":\"/spec/replicas\",\"value\":"+ pods +"}";
             Object patchObj = deserialize(patchStr);
             ArrayList<JsonObject> patchList = new ArrayList<>();
             patchList.add(((JsonElement) patchObj).getAsJsonObject());
-            AppsV1beta1Scale deploymentInfo = apiInstance.patchNamespacedDeploymentScale(deployName,namespace,patchList,"");
+            ExtensionsV1beta1Scale deploymentInfo = apiInstance.patchNamespacedDeploymentScale(deployName,namespace,patchList,"");
             return true;
         }catch(Exception e){
             logger.error(e.getMessage());
@@ -326,7 +384,7 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public List<ServerInfoDTO> getOnlineServerNodes() throws IOException, ApiException{
+    public List<ServerInfoDTO> getAllServerNodes() throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -345,14 +403,13 @@ public class k8sServiceImpl  implements K8SService {
             }
             List<V1NodeCondition> conditions = node.getStatus().getConditions();
             for(V1NodeCondition condition: conditions){
-                if(condition.getType().equalsIgnoreCase("True")){
+                if(condition.getType().equalsIgnoreCase("Ready") &&
+                        condition.getStatus().equalsIgnoreCase("True")){
                     serverInfoDTO.setStatus(true);
-                }else{
-                    serverInfoDTO.setStatus(false);
                 }
             }
             Map<String,Quantity> capacitys = node.getStatus().getCapacity();
-            serverInfoDTO.setCpu(capacitys.get("cup").getNumber().toString());
+            serverInfoDTO.setCpu(capacitys.get("cpu").getNumber().toString());
             serverInfoDTO.setMemory(capacitys.get("memory").getNumber().toString());
             serverInfoDTO.setUid(node.getMetadata().getUid());
             serverInfoDTO.setLabels(node.getMetadata().getLabels());
@@ -435,10 +492,9 @@ public class k8sServiceImpl  implements K8SService {
             serverInfoDTO.setMemory(capacitys.get("memory").getNumber().toString());
             List<V1NodeCondition> conditions = node.getStatus().getConditions();
             for (V1NodeCondition condition : conditions) {
-                if (condition.getType().equalsIgnoreCase("True")) {
+                if (condition.getType().equalsIgnoreCase("Ready") &&
+                        condition.getStatus().equalsIgnoreCase("True")) {
                     serverInfoDTO.setStatus(true);
-                }else{
-                    serverInfoDTO.setStatus(false);
                 }
             }
             serverInfoDTO.setUid(node.getMetadata().getUid());
@@ -451,6 +507,50 @@ public class k8sServiceImpl  implements K8SService {
             logger.error(e.getMessage());
         }
         return serverInfoDTO;
+    }
+
+    @Override
+    public List<ServerInfoDTO> getServerNodesByLabel(LabelDTO label)throws IOException, ApiException{
+        List<ServerInfoDTO> serverList = new ArrayList<>();
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        CoreV1Api apiInstance = new CoreV1Api();
+        try{
+            String labelSelector=label.getKey()+"="+label.getValue();
+            V1NodeList result = apiInstance.listNode(null,null, null, null, labelSelector, null, null, null, null);
+            for(V1Node node:result.getItems()){
+                ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
+                List<V1NodeAddress> addressList = node.getStatus().getAddresses();
+                for (V1NodeAddress address : addressList) {
+                    if (address.getType().equalsIgnoreCase("InternalIP")) {
+                        serverInfoDTO.setIpv4(address.getAddress());
+                    }
+                    if (address.getType().equalsIgnoreCase("HostName")) {
+                        serverInfoDTO.setHostname(address.getAddress());
+                    }
+                }
+                Map<String,Quantity> capacitys = node.getStatus().getCapacity();
+                serverInfoDTO.setCpu(capacitys.get("cpu").getNumber().toString());
+                serverInfoDTO.setMemory(capacitys.get("memory").getNumber().toString());
+                List<V1NodeCondition> conditions = node.getStatus().getConditions();
+                for (V1NodeCondition condition : conditions) {
+                    if (condition.getType().equalsIgnoreCase("Ready") &&
+                            condition.getStatus().equalsIgnoreCase("True")) {
+                        serverInfoDTO.setStatus(true);
+                    }
+                }
+                serverInfoDTO.setUid(node.getMetadata().getUid());
+                serverInfoDTO.setLabels(node.getMetadata().getLabels());
+                V1NodeSystemInfo nodeInfo = node.getStatus().getNodeInfo();
+                serverInfoDTO.setDockerVersion(nodeInfo.getContainerRuntimeVersion());
+                serverInfoDTO.setKernel(nodeInfo.getKernelVersion());
+                serverInfoDTO.setOs(nodeInfo.getOsImage());
+                serverList.add(serverInfoDTO);
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return serverList;
     }
 
     @Override
@@ -509,6 +609,35 @@ public class k8sServiceImpl  implements K8SService {
     public String getServerDiskByHostname(String hostName){
         String diskQuery = "sum(container_fs_limit_bytes{device=~\"^/.*$\",id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"})";
         return getHardRes(diskQuery);
+    }
+
+    @Override
+    public boolean testK8s()throws IOException, ApiException{
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        CoreV1Api apiInstance = new CoreV1Api();
+        Map<String,String> labels = new HashMap<>();
+        labels.put("test","busybox-latest");
+        String namespace = "test"; // String | object name and auth scope, such as for teams and projects
+        String pretty = ""; // String | If 'true', then the output is pretty printed.
+        String _continue = ""; // String | The continue option should be set when retrieving more results from the server. Since this value is server defined, clients may only use the continue value from a previous query result with identical query parameters (except for the value of continue) and the server may reject a continue value it does not recognize. If the specified continue value is no longer valid whether due to expiration (generally five to fifteen minutes) or a configuration change on the server the server will respond with a 410 ResourceExpired error indicating the client must restart their list without the continue field. This field is not supported when watch is true. Clients may start a watch from the last resourceVersion value returned by the server and not miss any modifications.
+        String fieldSelector = ""; // String | A selector to restrict the list of returned objects by their fields. Defaults to everything.
+        Boolean includeUninitialized = false; // Boolean | If true, partially initialized resources are included in the response.
+//        String labelSelector = "test=node-exporter-latest";
+        String labelSelector = "ftp=yes"; // String | A selector to restrict the list of returned objects by their labels. Defaults to everything.
+        Integer limit = 56; // Integer | limit is a maximum number of responses to return for a list call. If more items exist, the server will set the `continue` field on the list metadata to a value that can be used with the same initial query to retrieve the next set of results. Setting a limit may return fewer than the requested amount of items (up to zero items) in the event all requested objects are filtered out and clients should only use the presence of the continue field to determine whether more results are available. Servers may choose not to support the limit argument and will return all of the available results. If limit is specified and the continue field is empty, clients may assume that no more results are available. This field is not supported if watch is true.  The server guarantees that the objects returned when using continue will be identical to issuing a single list call without a limit - that is, no objects created, modified, or deleted after the first request is issued will be included in any subsequent continued requests. This is sometimes referred to as a consistent snapshot, and ensures that a client that is using limit to receive smaller chunks of a very large result can ensure they see all possible objects. If objects are updated during a chunked list the version of the object that was present at the time the first list result was calculated is returned.
+        String resourceVersion = ""; // String | When specified with a watch call, shows changes that occur after that particular version of a resource. Defaults to changes from the beginning of history. When specified for list: - if unset, then the result is returned from remote storage based on quorum-read flag; - if it's 0, then we simply return what we currently have in cache, no guarantee; - if set to non zero, then the result is at least as fresh as given rv.
+        Integer timeoutSeconds = 56; // Integer | Timeout for the list/watch call.
+        Boolean watch = false; // Boolean | Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.
+        try {
+//            V1PodList result = apiInstance.listNamespacedPod(namespace, pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch);
+            V1NodeList result = apiInstance.listNode(pretty, _continue, fieldSelector, includeUninitialized, labelSelector, limit, resourceVersion, timeoutSeconds, watch);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CoreV1Api#listNamespacedPod");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -578,44 +707,4 @@ public class k8sServiceImpl  implements K8SService {
         return obj;
     }
 
-    public static void main(String[] args) throws IOException, ApiException {
-
-
-        ApiClient client = Config.defaultClient();
-        Configuration.setDefaultApiClient(client);
-
-        CoreV1Api api = new CoreV1Api();
-
-        V1Status stat = api.deleteNamespace("test",new V1DeleteOptions(),"",0,false,"");
-
-
-
-//        V1NodeList result = api.listNode("","","",false,"",0,"",0,false);
-//        V1Node result = api.readNodeStatus("itesttech-172-31-1-157","");
-
-        V1NodeSpec spec1 = new V1NodeSpec();
-        V1Taint taint = new V1Taint();
-//        taint.setEffect("NoExecute");
-//        taint.setKey("fdfsfd");
-//        taint.setValue("hhhh");
-        List<V1Taint> taints = new ArrayList<>();
-        taints.add(taint);
-        spec1.setTaints(taints);
-        V1ObjectMeta meta2 = new V1ObjectMeta();
-        meta2.setName("itesttech-172-31-1-157");
-//        meta2.setUid("58e889c8-3d70-11e8-bae2-d00dc25c8537");
-        Map<String,String> labels = new HashMap<>();
-        labels.put("beta.kubernetes.io/arch","amd64");
-        labels.put("beta.kubernetes.io/os","linux");
-        labels.put("kubernetes.io/hostname","itesttech-172-31-1-157");
-        labels.put("testlabel","testlabel");
-        meta2.setLabels(labels);
-
-        Object obj = deserialize(JSON.toJSONString(meta2));
-        V1Node result = api.patchNode("itesttech-172-31-1-157",obj,"");
-
-//        AppsV1beta1DeploymentList result = appApi.listNamespacedDeployment("database","","","",false,"",0,"",0,false);
-
-        System.out.print(JSON.toJSONString(result));
-    }
 }

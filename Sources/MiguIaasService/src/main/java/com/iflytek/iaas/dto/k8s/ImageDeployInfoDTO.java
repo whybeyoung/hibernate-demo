@@ -1,16 +1,16 @@
 /**
  * Copyright (C), 科大讯飞股份有限公司
- * FileName: DeployInfoDTO
+ * FileName: ImageDeployInfoDTO
  */
 package com.iflytek.iaas.dto.k8s;
 
 /**
- * 〈部署信息DTO〉
+ * 〈镜像部署信息DTO〉
  *
  * @author xwliu
- * @create 2018/4/14
+ * @create 2018/4/16
  */
-public class DeployInfoDTO {
+public class ImageDeployInfoDTO {
     private boolean available;
     private int pods;
     private int availablePods;
