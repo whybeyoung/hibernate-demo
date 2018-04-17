@@ -188,9 +188,15 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          ClusterApi.create(this.cluster).then(() => {
-            this.$router.push({ name: 'clusters.index' });
-          });
+          if (this.$router.currentRoute.name === 'clusters.edit') {
+            ClusterApi.update(this.cluster).then(() => {
+              this.$router.push({ name: 'clusters.index' });
+            });
+          } else {
+            ClusterApi.create(this.cluster).then(() => {
+              this.$router.push({ name: 'clusters.index' });
+            });
+          }
         }
       });
     },

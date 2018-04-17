@@ -66,18 +66,37 @@ public class ClusterController {
         return cluster;
     }
 
+    @PatchMapping("/clusters")
+    public Cluster update(HttpServletRequest request, @RequestBody ClusterDTO clusterDTO) {
+        Cluster cluster = clusterDTO.toCluster();
+        cluster = clusterDao.save(cluster);
+
+        List<Server> servers = clusterDTO.getServers();
+        for(Server s : servers) {
+            s.setClusterId(cluster.getId());
+            s = serverDao.save(s);
+        }
+
+        ClusterLabel clusterLabel = clusterLabelDao.findOneByClusterId(cluster.getId());
+        clusterLabel.setValue(clusterDTO.getLabelName());
+        clusterLabelDao.save(clusterLabel);
+
+        return cluster;
+    }
+
     @GetMapping("/clusters/{id}")
     public ClusterDTO show(@PathVariable Integer id) {
         Optional<Cluster> cluster = clusterDao.findById(id);
         ClusterDTO clusterDTO = cluster.get().toClusterDTO();
         clusterDTO.setServers(serverDao.findByClusterId(cluster.get().getId()));
+        clusterDTO.setLabelName(clusterLabelDao.findOneByClusterId(id).getValue());
         return clusterDTO;
     }
 
     @DeleteMapping("clusters/{id}")
     public void remove(@PathVariable Integer id) {
 
-        List<Server> servers = serverDao.findByClusterId(id2);
+        List<Server> servers = serverDao.findByClusterId(id);
         for(Server s : servers) {
             s.setClusterId(null);
             serverDao.save(s);

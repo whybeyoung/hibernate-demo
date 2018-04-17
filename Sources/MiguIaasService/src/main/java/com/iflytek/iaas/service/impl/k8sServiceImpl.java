@@ -474,10 +474,10 @@ public class k8sServiceImpl  implements K8SService {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
-        ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
+
         try {
             V1Node node = coreV1Api.readNode(hostname, "", false, false);
-
+            ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
             List<V1NodeAddress> addressList = node.getStatus().getAddresses();
             for (V1NodeAddress address : addressList) {
                 if (address.getType().equalsIgnoreCase("InternalIP")) {
@@ -488,7 +488,7 @@ public class k8sServiceImpl  implements K8SService {
                 }
             }
             Map<String,Quantity> capacitys = node.getStatus().getCapacity();
-            serverInfoDTO.setCpu(capacitys.get("cup").getNumber().toString());
+            serverInfoDTO.setCpu(capacitys.get("cpu").getNumber().toString());
             serverInfoDTO.setMemory(capacitys.get("memory").getNumber().toString());
             List<V1NodeCondition> conditions = node.getStatus().getConditions();
             for (V1NodeCondition condition : conditions) {
@@ -503,10 +503,11 @@ public class k8sServiceImpl  implements K8SService {
             serverInfoDTO.setDockerVersion(nodeInfo.getContainerRuntimeVersion());
             serverInfoDTO.setKernel(nodeInfo.getKernelVersion());
             serverInfoDTO.setOs(nodeInfo.getOsImage());
+            return serverInfoDTO;
         }catch (Exception e){
             logger.error(e.getMessage());
+            return null;
         }
-        return serverInfoDTO;
     }
 
     @Override
