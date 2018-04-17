@@ -77,7 +77,7 @@ public class k8sServiceTest {
     @Test
     public void getServerInfoByNameTest() throws IOException, ApiException{
         String hostName= "itesttech-172-31-1-157";
-        ServerInfoDTO server = k8SService.getServerInfoByName(hostName);
+        ServerInfoDTO server = k8SService.getServerInfoByHostname(hostName);
         System.out.print(JSON.toJSONString(server));
     }
 
@@ -202,11 +202,6 @@ public class k8sServiceTest {
         label.setValue("amd64");
         List<ServerInfoDTO> servers = k8SService.getServerNodesByLabel(label);
         System.out.print(JSON.toJSONString(servers));
-    }
-
-    @Test
-    public void testK8sTest()throws IOException, ApiException{
-        k8SService.testK8s();
     }
 
     @Test

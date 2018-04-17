@@ -29,6 +29,7 @@ public class DeployConfigDTO {
     private int pods;
     private int minPods;
     private int maxPods;
+    private int containerPort;
     private String memoryLimits;
     private String cpuLimits;
     private boolean uniqueDeploy;
@@ -132,6 +133,14 @@ public class DeployConfigDTO {
 
     public void setMaxPods(int maxPods) {
         this.maxPods = maxPods;
+    }
+
+    public int getContainerPort() {
+        return containerPort;
+    }
+
+    public void setContainerPort(int containerPort) {
+        this.containerPort = containerPort;
     }
 
     public String getMemoryLimits() {

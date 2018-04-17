@@ -122,12 +122,12 @@ public interface K8SService {
 
     /**
      * 根据主机名获取主机信息
-     * @param hostName 主机名
+     * @param hostname 主机名
      * @return
      * @throws IOException
      * @throws ApiException
      */
-    ServerInfoDTO getServerInfoByName(String hostName) throws IOException, ApiException;
+    ServerInfoDTO getServerInfoByHostname(String hostname) throws IOException, ApiException;
 
     /**
      * 根据主机标签获取主机列表
@@ -195,13 +195,5 @@ public interface K8SService {
      * @return
      */
     String getServerDiskByHostname(String hostName);
-
-    /**
-     * k8s接口测试
-     * @return
-     * @throws IOException
-     * @throws ApiException
-     */
-    boolean testK8s()throws IOException, ApiException;
 
 }
