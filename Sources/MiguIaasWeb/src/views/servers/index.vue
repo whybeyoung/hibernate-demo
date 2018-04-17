@@ -32,22 +32,14 @@
         border
         height="398"
         style="width: 100%">
-      <el-table-column
-          prop="ipv4"
-          label="IPV4"
-          fixed
-          width="180">
-      </el-table-column>
-      <el-table-column
-          prop="hostname"
-          label="主机名">
-      </el-table-column>
-      <el-table-column
-          fixed="right"
-          align="center"
-          label="操作">
+      <el-table-column prop="ipv4" label="IP" fixed width="180"></el-table-column>
+      <el-table-column prop="hostname" label="主机名" width="180"></el-table-column>
+      <el-table-column prop="os" label="操作系统"></el-table-column>
+      <el-table-column prop="kernel" label="kernel"></el-table-column>
+      <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
+      <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
-          <el-button @click="forbidServer(scope.row)" type="text" size="small">禁用</el-button>
+          <!--<el-button @click="forbidServer(scope.row)" type="text" size="small">禁用</el-button>-->
           <el-button @click="serverStatus(scope.row)" type="text" size="small">状态详情</el-button>
         </template>
       </el-table-column>
@@ -72,7 +64,10 @@ export default {
     };
   },
   methods: {
-    queryServers: () => {
+    queryServers() {
+
+    },
+    serverStatus() {
 
     },
   },

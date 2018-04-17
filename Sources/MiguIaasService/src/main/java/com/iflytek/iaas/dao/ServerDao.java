@@ -27,8 +27,10 @@ public interface ServerDao extends JpaRepository<Server,Integer> {
      * @param hostname
      * @return
      */
-    Page<Server> findByHostname(String hostname, Pageable pageable);
+    Server findByHostname(String hostname);
 
     List<Server> findByClusterIdIsNull();
+
+    List<Server> findByClusterId();
 
 }

@@ -28,7 +28,7 @@ public class Server implements Serializable {
     private String annotation;
     private String positionCode;
     private String dockerVersion;
-    private String clusterId;
+    private Integer clusterId;
     private Date createtime;
     private Date updatetime;
 
@@ -176,11 +176,11 @@ public class Server implements Serializable {
 
     @Basic
     @Column(name = "cluster_id")
-    public String getClusterId() {
+    public Integer getClusterId() {
         return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(Integer clusterId) {
         this.clusterId = clusterId;
     }
 

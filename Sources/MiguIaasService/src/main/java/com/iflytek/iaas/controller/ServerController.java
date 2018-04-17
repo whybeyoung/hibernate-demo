@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,13 +37,24 @@ public class ServerController {
     @Autowired
     private ServerDao serverDao;
 
-
     @GetMapping("/servers")
     public List<ServerInfoDTO>  index(String hostname, String from) throws IOException, ApiException {
         if("k8s-local".equals(from)) {
-            List<ServerInfoDTO> k8sServerInfoDTOs = k8SService.getOnlineServerNodes();
-            List<ServerInfoDTO> localServerInfoDTOs = serverDao.findAll().stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
-            k8sServerInfoDTOs.removeAll(localServerInfoDTOs);
+            List<ServerInfoDTO> k8sServerInfoDTOs = new ArrayList<ServerInfoDTO>();
+            if(hostname != null) {
+                //查询未添加到本地数据库中的主机
+                Server localServer = serverDao.findByHostname(hostname);
+                if(localServer != null) {
+                    return new ArrayList<>();
+                } else {
+                    ServerInfoDTO serverInfoDTO = k8SService.getServerInfoByHostname(hostname);
+                    k8sServerInfoDTOs.add(serverInfoDTO);
+                }
+            } else {
+                k8sServerInfoDTOs = k8SService.getAllServerNodes();
+                List<ServerInfoDTO> localServerInfoDTOs = serverDao.findAll().stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
+                k8sServerInfoDTOs.removeAll(localServerInfoDTOs);
+            }
             return k8sServerInfoDTOs;
         } else if("local".equals(from)) {
             return serverDao.findAll().stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
@@ -50,12 +62,12 @@ public class ServerController {
             List<Server> localunaddedServers = serverDao.findByClusterIdIsNull();
             return localunaddedServers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @GetMapping("/servers/{hostname}")
     public ServerInfoDTO show(@PathVariable String hostname) throws IOException, ApiException {
-        return k8SService.getServerInfoByName(hostname);
+        return k8SService.getServerInfoByHostname(hostname);
     }
 
     @PostMapping("/servers")

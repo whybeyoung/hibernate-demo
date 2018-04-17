@@ -9,8 +9,10 @@ package com.iflytek.iaas.controller;
 
 import com.iflytek.iaas.dao.ClusterDao;
 import com.iflytek.iaas.dao.ClusterLabelDao;
+import com.iflytek.iaas.dao.ServerDao;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.ClusterLabel;
+import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class ClusterController {
     private ClusterDao clusterDao;
 
     @Autowired
+    private ServerDao serverDao;
+
+    @Autowired
     private ClusterLabelDao clusterLabelDao;
 
     @GetMapping("/clusters")
@@ -49,6 +54,12 @@ public class ClusterController {
         cluster.setCreator(user.getId());
         cluster = clusterDao.save(cluster);
 
+        List<Server> servers = clusterDTO.getServers();
+        for(Server s : servers) {
+            s.setClusterId(cluster.getId());
+            s = serverDao.save(s);
+        }
+
         ClusterLabel clusterLabel = new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName(), cluster.getId());
         clusterLabelDao.save(clusterLabel);
 
@@ -57,12 +68,23 @@ public class ClusterController {
 
     @GetMapping("/clusters/{id}")
     public Optional<Cluster> show(@PathVariable Integer id) {
-        return clusterDao.findById(id);
+        Optional<Cluster> cluster = clusterDao.findById(id);
+//        cluster.
+        return cluster;
     }
 
     @DeleteMapping("clusters/{id}")
     public void remove(@PathVariable Integer id) {
+
+        List<Server> servers = serverDao.findByClusterId();
+        for(Server s : servers) {
+            s.setClusterId(null);
+            serverDao.save(s);
+        }
+        clusterLabelDao.deleteAllByClusterId(id);
+        
         clusterDao.deleteById(id);
+
     }
 
 }

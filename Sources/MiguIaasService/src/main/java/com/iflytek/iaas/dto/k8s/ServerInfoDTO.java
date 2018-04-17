@@ -36,7 +36,7 @@ public class ServerInfoDTO {
     private String positionCode;
     private String dockerVersion;
     private Map<String, String> labels;
-    private String clusterId;
+    private Integer clusterId;
 
     public Server toServer() {
         Server s = new Server();
@@ -164,11 +164,11 @@ public class ServerInfoDTO {
         this.dockerVersion = dockerVersion;
     }
 
-    public String getClusterId() {
+    public Integer getClusterId() {
         return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(Integer clusterId) {
         this.clusterId = clusterId;
     }
 
