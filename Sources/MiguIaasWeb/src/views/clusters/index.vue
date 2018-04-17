@@ -40,6 +40,7 @@
             <div style="justify-content: center; display: flex;">
               <el-button @click="edit(cluster.id)">编辑</el-button>
               <el-button @click="detail(cluster.id)">详情</el-button>
+              <el-button @click="remove(cluster)">删除</el-button>
             </div>
           </el-card>
         </el-col>
@@ -72,6 +73,11 @@ export default {
     },
     edit(clusterId) {
       this.$router.push({ name: 'clusters.edit', params: { id: clusterId } });
+    },
+    remove(cluster) {
+      ClusterApi.remove(cluster.id).then(() => {
+        this.clusters.splice(this.clusters.indexOf(cluster));
+      });
     },
   },
   mounted() {

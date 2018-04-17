@@ -57,6 +57,8 @@
     <logger name="log.sync" level="DEBUG" addtivity="true">
         <appender-ref ref="SYNC_FILE" />
     </logger>
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.type" level="TRACE" />
 
     <root>
         <level value="INFO" />

@@ -1,11 +1,14 @@
 package com.iflytek.iaas.domain;
 
+import com.iflytek.iaas.dto.ClusterDTO;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,6 +31,12 @@ public class Cluster implements Serializable{
     private Date createtime;
     @Column
     private String creator;
+
+    public ClusterDTO toClusterDTO() {
+        ClusterDTO clusterDTO = new ClusterDTO();
+        BeanUtils.copyProperties(this, clusterDTO);
+        return clusterDTO;
+    }
 
     @Id
     @GeneratedValue(generator="increment")

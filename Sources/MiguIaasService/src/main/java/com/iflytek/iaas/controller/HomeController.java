@@ -95,6 +95,7 @@ public class HomeController{
         }
 
         Subject subject = SecurityUtils.getSubject();
+        subject.getPrincipal();
         UsernamePasswordToken token = new UsernamePasswordToken(requestBody.getAccount(), requestBody.getPassword());
 
         try {

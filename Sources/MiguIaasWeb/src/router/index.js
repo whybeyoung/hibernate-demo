@@ -70,7 +70,7 @@ export const constantRouterMap = [
     }, {
       path: 'create',
       name: 'servers.create',
-      displayName: '新建主机',
+      displayName: '添加主机',
       component: dynamicImport('servers/create'),
     }],
   },

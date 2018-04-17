@@ -1,5 +1,7 @@
 package com.iflytek.iaas.domain;
 
+import io.swagger.models.auth.In;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -9,12 +11,22 @@ import java.util.Objects;
 public class ClusterLabel {
     private int id;
     private String name;
-    private String key;
+    private String key = "clusterName";
     private String value;
-    private String clusterId;
-    private byte valid;
+    private Integer clusterId;
+    private byte valid = 1;
     private Timestamp createtime;
     private Timestamp updatetime;
+
+    public ClusterLabel() {
+
+    }
+
+    public ClusterLabel(String name, String value, Integer clusterId) {
+        this.name = name;
+        this.value = value;
+        this.clusterId = clusterId;
+    }
 
     @Id
     @Column(name = "id")
@@ -37,7 +49,7 @@ public class ClusterLabel {
     }
 
     @Basic
-    @Column(name = "key")
+    @Column(name = "`key`")
     public String getKey() {
         return key;
     }
@@ -47,7 +59,7 @@ public class ClusterLabel {
     }
 
     @Basic
-    @Column(name = "value")
+    @Column(name = "`value`")
     public String getValue() {
         return value;
     }
@@ -58,11 +70,11 @@ public class ClusterLabel {
 
     @Basic
     @Column(name = "cluster_id")
-    public String getClusterId() {
+    public Integer getClusterId() {
         return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(Integer clusterId) {
         this.clusterId = clusterId;
     }
 

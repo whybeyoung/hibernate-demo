@@ -27,34 +27,20 @@
       <el-col></el-col>
     </el-row>
     <el-table
-        :data="addedServers"
+        :data="servers"
         stripe
         border
         height="398"
         style="width: 100%">
-      <el-table-column
-          prop="ip"
-          label="IP"
-          fixed
-          width="180">
-      </el-table-column>
-      <el-table-column
-          prop="name"
-          label="主机名"
-          width="180">
-      </el-table-column>
-      <el-table-column
-          prop="SN"
-          width="300"
-          label="SN">
-      </el-table-column>
-      <el-table-column
-          fixed="right"
-          width="80"
-          align="center"
-          label="操作">
+      <el-table-column prop="ipv4" label="IP" fixed width="180"></el-table-column>
+      <el-table-column prop="hostname" label="主机名" width="180"></el-table-column>
+      <el-table-column prop="os" label="操作系统"></el-table-column>
+      <el-table-column prop="kernel" label="kernel"></el-table-column>
+      <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
+      <el-table-column fixed="right" align="center" label="操作">
         <template slot-scope="scope">
-          <el-button @click="selectHost(scope.row)" type="text" size="small">选中</el-button>
+          <!--<el-button @click="forbidServer(scope.row)" type="text" size="small">禁用</el-button>-->
+          <el-button @click="serverStatus(scope.row)" type="text" size="small">状态详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,6 +48,8 @@
 </template>
 
 <script>
+import ServerApi from '@/api/server';
+
 export default {
   data() {
     return {
@@ -72,7 +60,21 @@ export default {
         status: '',
         clusterName: '',
       },
+      servers: [],
     };
+  },
+  methods: {
+    queryServers() {
+
+    },
+    serverStatus() {
+
+    },
+  },
+  created() {
+    ServerApi.index({ from: 'local' }).then((resp) => {
+      this.servers = resp;
+    });
   },
 };
 </script>
