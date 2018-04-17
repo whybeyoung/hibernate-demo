@@ -67,22 +67,23 @@ public class ClusterController {
     }
 
     @GetMapping("/clusters/{id}")
-    public Optional<Cluster> show(@PathVariable Integer id) {
+    public ClusterDTO show(@PathVariable Integer id) {
         Optional<Cluster> cluster = clusterDao.findById(id);
-//        cluster.
-        return cluster;
+        ClusterDTO clusterDTO = cluster.get().toClusterDTO();
+        clusterDTO.setServers(serverDao.findByClusterId(cluster.get().getId()));
+        return clusterDTO;
     }
 
     @DeleteMapping("clusters/{id}")
     public void remove(@PathVariable Integer id) {
 
-        List<Server> servers = serverDao.findByClusterId();
+        List<Server> servers = serverDao.findByClusterId(id2);
         for(Server s : servers) {
             s.setClusterId(null);
             serverDao.save(s);
         }
         clusterLabelDao.deleteAllByClusterId(id);
-        
+
         clusterDao.deleteById(id);
 
     }
