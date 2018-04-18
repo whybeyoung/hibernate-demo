@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class k8sServiceTest {
     @Test
     public void createDeployNamespaceTest()throws IOException, ApiException{
 
-        String namespace = "test111";
+        String namespace = "test";
         boolean flag = k8SService.createDeployNamespace(namespace);
 
         System.out.print(flag);
@@ -55,16 +56,15 @@ public class k8sServiceTest {
 
     @Test
     public void getNamespacesTest() throws IOException, ApiException{
-        List<NamespaceDTO> nsList = k8SService.getNamespaces();
+        List<String> nsList = k8SService.getNamespaces();
         System.out.print(JSON.toJSONString(nsList));
     }
 
     @Test
     public void deleteNamespaceTest()throws IOException, ApiException{
-        NamespaceDTO  nsDto = new NamespaceDTO();
-        nsDto.setNameSpace("test111");
+        String namespace = "test";
 //        nsDto.setUid("cf6ccf08-3ebd-11e8-bae2-d00dc25c8537");
-        boolean flag = k8SService.deleteNamespace(nsDto);
+        boolean flag = k8SService.deleteNamespace(namespace);
         System.out.print(flag);
     }
 
@@ -75,15 +75,15 @@ public class k8sServiceTest {
     }
 
     @Test
-    public void getServerInfoByNameTest() throws IOException, ApiException{
-        String hostName= "itesttech-172-31-1-157";
+    public void getServerInfoByHostnameTest() throws IOException, ApiException{
+        String hostName= "itesttech-172-31-205-28";
         ServerInfoDTO server = k8SService.getServerInfoByHostname(hostName);
         System.out.print(JSON.toJSONString(server));
     }
 
     @Test
     public void createServerLabel()throws IOException, ApiException{
-        String hostName="itesttech-172-31-1-157";
+        String hostName="itesttech-172-31-205-28";
         List<LabelDTO> labels = new ArrayList<>();
         LabelDTO labelDTO = new LabelDTO();
         labelDTO.setKey("label/server");
@@ -95,10 +95,10 @@ public class k8sServiceTest {
 
     @Test
     public void deleteServerLabelTest() throws IOException, ApiException{
-        String hostName="itesttech-172-31-1-157";
+        String hostName="itesttech-172-31-205-27";
         List<LabelDTO> labels = new ArrayList<>();
         LabelDTO labelDTO = new LabelDTO();
-        labelDTO.setKey("test");
+        labelDTO.setKey("label/server");
         labelDTO.setValue("test");
         labels.add(labelDTO);
         boolean flag = k8SService.deleteServerLabel(hostName,labels);
@@ -118,26 +118,26 @@ public class k8sServiceTest {
         mountVolumeDTO.setServerDir("/var/lib/mysql");
         mountVolumeDTO.setName("volume-"+ ToolUtils.getUniqueId());
         mountVolumes.add(mountVolumeDTO);
+        LabelDTO deployLabel = new LabelDTO();
+        deployLabel.setKey("test-deploy");
+        deployLabel.setValue("node-exporter-latest");
         LabelDTO serverLabel = new LabelDTO();
         serverLabel.setKey("label/server");
         serverLabel.setValue("test");
         DeployConfigDTO deployConfigDTO = new DeployConfigDTO();
-        deployConfigDTO.setImgName("mysql-5-7");
-//        deployConfigDTO.setImgName("node-exporter-latest");
-        deployConfigDTO.setNamespace("test");
-        deployConfigDTO.setImgPath("harbour.iflytek.com/library/mysql:5.7");
-//        deployConfigDTO.setImgPath("harbour.iflytek.com/migu/node-exporter:latest");
-        deployConfigDTO.setEnvs(envs);
-        deployConfigDTO.setMountDirs(mountVolumes);
+//        deployConfigDTO.setImgName("mysql-5-7");
+        deployConfigDTO.setImgName("node-exporter-latest");
+        deployConfigDTO.setNamespace("test1");
+//        deployConfigDTO.setImgPath("harbour.iflytek.com/library/mysql:5.7");
+        deployConfigDTO.setImgPath("harbour.iflytek.com/migu/node-exporter:latest");
+//        deployConfigDTO.setEnvs(envs);
+//        deployConfigDTO.setMountDirs(mountVolumes);
         deployConfigDTO.setInitCmd("");
-        deployConfigDTO.setPods(1);
-        deployConfigDTO.setMinPods(0);
-        deployConfigDTO.setMaxPods(0);
-        deployConfigDTO.setMemoryLimits("200");
+        deployConfigDTO.setPods(3);
+//        deployConfigDTO.setMemoryLimits(1024*1024);
+        deployConfigDTO.setDeployLabel(deployLabel);
         deployConfigDTO.setServerLabel(serverLabel);
         deployConfigDTO.setTimeOut(2000);
-        deployConfigDTO.setUniqueDeploy(false);
-        deployConfigDTO.setHealthCheck(false);
 
         boolean flag = k8SService.createImageDeployment(deployConfigDTO);
         System.out.print(flag);
@@ -145,8 +145,8 @@ public class k8sServiceTest {
 
     @Test
     public void deleteImageDeploymentTest()throws IOException, ApiException{
-        String namespace="test";
-        String name = "mysql-5-7";
+        String namespace="test1";
+        String name = "node-exporter-latest";
         boolean flag = k8SService.deleteImageDeployment(namespace,name);
         System.out.print(flag);
     }
@@ -202,6 +202,16 @@ public class k8sServiceTest {
         label.setValue("amd64");
         List<ServerInfoDTO> servers = k8SService.getServerNodesByLabel(label);
         System.out.print(JSON.toJSONString(servers));
+    }
+
+    @Test
+    public void getPodsByServerLabel() throws IOException, ApiException{
+        LabelDTO label = new LabelDTO();
+        label.setKey("label/server");
+        label.setValue("test");
+
+        List<PodDTO> pods = k8SService.getPodsByCluster(label, Arrays.asList("itesttech-172-31-205-28"));
+        System.out.print(JSON.toJSONString(pods));
     }
 
     @Test

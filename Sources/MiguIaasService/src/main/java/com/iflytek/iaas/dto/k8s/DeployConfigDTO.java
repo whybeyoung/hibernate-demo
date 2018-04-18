@@ -25,16 +25,14 @@ public class DeployConfigDTO {
     private List<EnvDTO> envs;
     private List<MountVolumeDTO> mountDirs;
     private LabelDTO serverLabel;
-    private int podContainers;
-    private int pods;
-    private int minPods;
-    private int maxPods;
-    private int containerPort;
-    private String memoryLimits;
-    private String cpuLimits;
-    private boolean uniqueDeploy;
-    private int timeOut;
-    private boolean healthCheck;
+    private Integer podContainers;
+    private Integer pods;
+    private Integer containerPort;
+    private Long memoryLimits;
+    private Integer cpuLimits;
+    private Boolean uniqueDeploy;
+    private Integer timeOut;
+    private String healthCheckExec;
 
     public String getImgName() {
         return imgName;
@@ -60,13 +58,9 @@ public class DeployConfigDTO {
         this.namespace = namespace;
     }
 
-    public int getPodContainers() {
-        if(this.podContainers ==0 ){
-            this.podContainers = 1;
-        }
+    public Integer getPodContainers() {
         return podContainers;
     }
-
     public void setPodContainers(int podContainers) {
         this.podContainers = podContainers;
     }
@@ -111,75 +105,68 @@ public class DeployConfigDTO {
         this.serverLabel = serverLabel;
     }
 
-    public int getPods() {
-        return pods;
-    }
 
-    public void setPods(int pods) {
-        this.pods = pods;
-    }
-
-    public int getMinPods() {
-        return minPods;
-    }
-
-    public void setMinPods(int minPods) {
-        this.minPods = minPods;
-    }
-
-    public int getMaxPods() {
-        return maxPods;
-    }
-
-    public void setMaxPods(int maxPods) {
-        this.maxPods = maxPods;
-    }
-
-    public int getContainerPort() {
-        return containerPort;
-    }
-
-    public void setContainerPort(int containerPort) {
-        this.containerPort = containerPort;
-    }
-
-    public String getMemoryLimits() {
-        return memoryLimits;
-    }
-
-    public void setMemoryLimits(String memoryLimits) {
+    public void setMemoryLimits(long memoryLimits) {
         this.memoryLimits = memoryLimits;
     }
 
-    public String getCpuLimits() {
+    public void setPodContainers(Integer podContainers) {
+        this.podContainers = podContainers;
+    }
+
+    public Integer getPods() {
+        return pods;
+    }
+
+    public void setPods(Integer pods) {
+        this.pods = pods;
+    }
+
+    public Integer getContainerPort() {
+        return containerPort;
+    }
+
+    public void setContainerPort(Integer containerPort) {
+        this.containerPort = containerPort;
+    }
+
+    public Long getMemoryLimits() {
+        return memoryLimits;
+    }
+
+    public void setMemoryLimits(Long memoryLimits) {
+        this.memoryLimits = memoryLimits;
+    }
+
+    public Integer getCpuLimits() {
         return cpuLimits;
     }
 
-    public void setCpuLimits(String cpuLimits) {
+    public void setCpuLimits(Integer cpuLimits) {
         this.cpuLimits = cpuLimits;
     }
 
-    public boolean isUniqueDeploy() {
+    public Boolean getUniqueDeploy() {
         return uniqueDeploy;
     }
 
-    public void setUniqueDeploy(boolean uniqueDeploy) {
+    public void setUniqueDeploy(Boolean uniqueDeploy) {
         this.uniqueDeploy = uniqueDeploy;
     }
 
-    public int getTimeOut() {
+    public Integer getTimeOut() {
         return timeOut;
     }
 
-    public void setTimeOut(int timeOut) {
+    public void setTimeOut(Integer timeOut) {
         this.timeOut = timeOut;
     }
 
-    public boolean isHealthCheck() {
-        return healthCheck;
+    public String getHealthCheckExec() {
+        return healthCheckExec;
     }
 
-    public void setHealthCheck(boolean healthCheck) {
-        this.healthCheck = healthCheck;
+    public void setHealthCheckExec(String healthCheckExec) {
+        this.healthCheckExec = healthCheckExec;
     }
 }

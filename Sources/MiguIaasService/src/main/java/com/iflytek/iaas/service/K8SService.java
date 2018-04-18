@@ -28,16 +28,16 @@ public interface K8SService {
      * @param namespace 命名空间字符串
      * @return
      */
-    boolean createDeployNamespace(String namespace)throws IOException, ApiException;
+    Boolean createDeployNamespace(String namespace)throws IOException, ApiException;
 
     /**
      * 删除命名空间
-     * @param ns 命名空间
+     * @param namespace 命名空间
      * @return
      * @throws IOException
      * @throws ApiException
      */
-    boolean deleteNamespace(NamespaceDTO ns)throws IOException, ApiException;
+    Boolean deleteNamespace(String namespace)throws IOException, ApiException;
 
     /**
      *  获取k8s集群中命名空间列表
@@ -45,7 +45,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    List<NamespaceDTO> getNamespaces() throws IOException, ApiException;;
+    List<String> getNamespaces() throws IOException, ApiException;;
 
     /**
      * 新建镜像部署
@@ -54,7 +54,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean createImageDeployment(DeployConfigDTO deployConfigDTO)throws IOException, ApiException;
+    Boolean createImageDeployment(DeployConfigDTO deployConfigDTO)throws IOException, ApiException;
 
     /**
      * 删除镜像部署
@@ -64,7 +64,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean deleteImageDeployment(String namespace,String name)throws IOException, ApiException;
+    Boolean deleteImageDeployment(String namespace,String name)throws IOException, ApiException;
 
     /**
      * 获取镜像部署详情
@@ -81,7 +81,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException;
+    Boolean createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException;
 
     /**
      * 删除服务部署
@@ -91,7 +91,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean deleteServiceDeployment(String namespace,String name)throws IOException, ApiException;
+    Boolean deleteServiceDeployment(String namespace,String name)throws IOException, ApiException;
 
     /**
      * 获取服务部署详情
@@ -112,7 +112,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean updateDeployPodsByName(String namespace,String deployName,int pods)throws IOException, ApiException;
+    Boolean updateDeployPodsByName(String namespace,String deployName,int pods)throws IOException, ApiException;
 
     /**
      * 获取k8s集群中所有可用主机节点信息
@@ -147,7 +147,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean createServerLabel(String hostName, List<LabelDTO> labels)throws IOException, ApiException;
+    Boolean createServerLabel(String hostName, List<LabelDTO> labels)throws IOException, ApiException;
 
     /**
      * 删除主机标签
@@ -157,7 +157,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    boolean deleteServerLabel(String hostName,List<LabelDTO> labels) throws IOException, ApiException;
+    Boolean deleteServerLabel(String hostName,List<LabelDTO> labels) throws IOException, ApiException;
 
     /**
      * 获取服务器CPU平均使用率，如果只传一个hostname,获取的就是单台服务器cpu使用率，多个hostname,获取的就是多个服务器平均的cpu使用率
@@ -188,6 +188,16 @@ public interface K8SService {
      * @return 返回json字符串
      */
     NetworkFlowDTO getServerNetworkUsageRateByHostname(List<String> hostNames, long start, long end, int step);
+
+    /**
+     * 获取集群中部署在主机hostname上，并且有标签label的pod列表
+     * @param label 集群标签
+     * @param hostnames 集群中的主机名列表
+     * @return
+     * @throws IOException
+     * @throws ApiException
+     */
+    List<PodDTO>  getPodsByCluster(LabelDTO label,List<String> hostnames) throws IOException, ApiException;
 
     /**
      * 根据服务器hostname获取服务器硬盘信息

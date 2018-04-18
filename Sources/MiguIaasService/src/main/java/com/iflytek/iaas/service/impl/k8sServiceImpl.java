@@ -48,13 +48,14 @@ public class k8sServiceImpl  implements K8SService {
     private String prometheusUrl;
 
     @Override
-    public boolean createDeployNamespace(String namespace)throws IOException, ApiException{
+    public Boolean createDeployNamespace(String namespace)throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
         V1NamespaceList nsObj = coreV1Api.listNamespace("","","",false,"",0,"",5000,false);
         for(V1Namespace nsItem: nsObj.getItems()){
-            if(nsItem.getMetadata().getName().equals(namespace)){
+            if(nsItem.getMetadata().getName().equals(namespace) &&
+                    nsItem.getStatus().getPhase().equalsIgnoreCase("Active")){
                 return true;
             }
         }
@@ -74,23 +75,20 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public List<NamespaceDTO> getNamespaces() throws IOException, ApiException{
+    public List<String> getNamespaces() throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
         V1NamespaceList nsObj = coreV1Api.listNamespace("","","",false,"",0,"",5000,false);
-        List<NamespaceDTO> nsList = new ArrayList<>();
+        List<String> nsList = new ArrayList<>();
         for(V1Namespace nsItem: nsObj.getItems()){
-            NamespaceDTO namespaceDTO = new NamespaceDTO();
-            namespaceDTO.setNameSpace(nsItem.getMetadata().getName());
-            namespaceDTO.setUid(nsItem.getMetadata().getUid());
-            nsList.add(namespaceDTO);
+            nsList.add(nsItem.getMetadata().getName());
         }
         return nsList;
     }
 
     @Override
-    public boolean deleteNamespace(NamespaceDTO ns)throws IOException, ApiException {
+    public Boolean deleteNamespace(String namespace)throws IOException, ApiException {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -100,7 +98,7 @@ public class k8sServiceImpl  implements K8SService {
         options.setPropagationPolicy("Background");
 
         try {
-            coreV1Api.deleteNamespace(ns.getNameSpace(), options, null, null, null, null);
+            coreV1Api.deleteNamespace(namespace, options, null, null, null, null);
             return true;
         }catch(Exception e){
             if(e.getMessage().contains("BEGIN_OBJECT")){
@@ -112,10 +110,10 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public boolean createImageDeployment(DeployConfigDTO deployConfigDTO)throws IOException, ApiException {
+    public Boolean createImageDeployment(DeployConfigDTO deployConfigDTO)throws IOException, ApiException {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
-        AppsV1beta1Api apiInstance = new AppsV1beta1Api();
+        ExtensionsV1beta1Api  apiInstance = new ExtensionsV1beta1Api ();
 
         try{
             //部署标签
@@ -139,15 +137,18 @@ public class k8sServiceImpl  implements K8SService {
             serverLabels.put(deployConfigDTO.getServerLabel().getKey(),deployConfigDTO.getServerLabel().getValue());
             //服务器中待挂载的目录
             List<V1Volume> serverVolumes = new ArrayList<>();
-            for(MountVolumeDTO mountVolumeDTO:deployConfigDTO.getMountDirs()){
-                V1Volume volume = new V1Volume();
-                volume.setName(mountVolumeDTO.getName());
-                V1HostPathVolumeSource volumeSource = new V1HostPathVolumeSource();
-                volumeSource.setPath(mountVolumeDTO.getServerDir());
-                volumeSource.setType("DirectoryOrCreate");
-                volume.setHostPath(volumeSource);
-                serverVolumes.add(volume);
+            if(deployConfigDTO.getMountDirs() != null){
+                for(MountVolumeDTO mountVolumeDTO:deployConfigDTO.getMountDirs()){
+                    V1Volume volume = new V1Volume();
+                    volume.setName(mountVolumeDTO.getName());
+                    V1HostPathVolumeSource volumeSource = new V1HostPathVolumeSource();
+                    volumeSource.setPath(mountVolumeDTO.getServerDir());
+                    volumeSource.setType("DirectoryOrCreate");
+                    volume.setHostPath(volumeSource);
+                    serverVolumes.add(volume);
+                }
             }
+
             //启动命令
             List<String> cmds = new ArrayList<>();
             if(StringUtils.isNotEmpty(deployConfigDTO.getInitCmd())){
@@ -156,69 +157,104 @@ public class k8sServiceImpl  implements K8SService {
 
             //环境变量
             List<V1EnvVar> envs = new ArrayList<>();
-            for(EnvDTO env: deployConfigDTO.getEnvs()){
-                V1EnvVar item = new V1EnvVar();
-                item.setName(env.getKey());
-                item.setValue(env.getValue());
-                envs.add(item);
+            if(deployConfigDTO.getEnvs() != null){
+                for(EnvDTO env: deployConfigDTO.getEnvs()){
+                    V1EnvVar item = new V1EnvVar();
+                    item.setName(env.getKey());
+                    item.setValue(env.getValue());
+                    envs.add(item);
+                }
             }
-            //健康检查
+            //健康检查,目前只支持命令行方式校验
             V1Probe probe = new V1Probe();
+            V1ExecAction exec = new V1ExecAction();
+            exec.setCommand(Arrays.asList(deployConfigDTO.getHealthCheckExec()));
+            probe.setExec(exec);
             //容器中需要挂载的目录
             List<V1VolumeMount> containerVolumes = new ArrayList<>();
-            for(MountVolumeDTO mountVolumeDTO:deployConfigDTO.getMountDirs()){
-                V1VolumeMount volumeMount = new V1VolumeMount();
-                volumeMount.setName(mountVolumeDTO.getName());
-                volumeMount.setMountPath(mountVolumeDTO.getContainerDir());
-                containerVolumes.add(volumeMount);
+            if(deployConfigDTO.getMountDirs() != null){
+                for(MountVolumeDTO mountVolumeDTO:deployConfigDTO.getMountDirs()){
+                    V1VolumeMount volumeMount = new V1VolumeMount();
+                    volumeMount.setName(mountVolumeDTO.getName());
+                    volumeMount.setMountPath(mountVolumeDTO.getContainerDir());
+                    containerVolumes.add(volumeMount);
+                }
             }
             //资源限制
             V1ResourceRequirements resource = new V1ResourceRequirements();
-            Quantity cpuQuantity = new Quantity(new BigDecimal(deployConfigDTO.getMemoryLimits()),Quantity.Format.BINARY_SI);
             Map<String,Quantity> limit = new HashMap<>();
-            limit.put("memory",cpuQuantity);
+            if(deployConfigDTO.getCpuLimits() != null){
+                Quantity cpuQuantity = new Quantity(new BigDecimal(deployConfigDTO.getCpuLimits()),Quantity.Format.DECIMAL_SI);
+                limit.put("cpu",cpuQuantity);
+            }
+            if(deployConfigDTO.getMemoryLimits() != null){
+                Quantity memoryQuantity = new Quantity(new BigDecimal(deployConfigDTO.getMemoryLimits()),Quantity.Format.BINARY_SI);
+                limit.put("memory",memoryQuantity);
+            }
+            resource.setLimits(limit);
 
             List<V1Container> containers = new ArrayList<>();
-            for(int i=0;i <deployConfigDTO.getPodContainers();i++){
+            int podNum=1;
+            if(deployConfigDTO.getPodContainers() != null){
+                podNum = deployConfigDTO.getPodContainers();
+            }
+            for(int i=0;i <podNum;i++){
                 V1Container container = new V1Container();
                 container.setCommand(cmds);
                 container.setImage(deployConfigDTO.getImgPath());
                 container.setName(deployConfigDTO.getImgName()+"-"+Integer.toString(i));
                 container.setEnv(envs);
-                V1ContainerPort port = new V1ContainerPort();
-                port.setContainerPort(deployConfigDTO.getContainerPort());
-                port.setProtocol("TCP");
-                List<V1ContainerPort> ports = new ArrayList<>();
-                ports.add(port);
-                container.setPorts(ports);
-//                container.setLivenessProbe(probe);
+                if(deployConfigDTO.getContainerPort() != null){
+                    V1ContainerPort port = new V1ContainerPort();
+                    port.setContainerPort(deployConfigDTO.getContainerPort());
+                    port.setProtocol("TCP");
+                    List<V1ContainerPort> ports = new ArrayList<>();
+                    ports.add(port);
+                    container.setPorts(ports);
+                }
+                if(StringUtils.isNotEmpty(deployConfigDTO.getHealthCheckExec())){
+                    container.setLivenessProbe(probe);
+                }
                 container.setVolumeMounts(containerVolumes);
                 container.setResources(resource);
 
                 containers.add(container);
             }
-
+            //亲和性实现唯一性部署
+            V1NodeSelectorRequirement nodeRequire = new V1NodeSelectorRequirement();
+            nodeRequire.setKey(deployConfigDTO.getServerLabel().getKey());
+            nodeRequire.setOperator("Lt");
+            nodeRequire.setValues(Arrays.asList(deployConfigDTO.getServerLabel().getValue()));
+            V1NodeSelectorTerm nodeTerm = new V1NodeSelectorTerm();
+            nodeTerm.addMatchExpressionsItem(nodeRequire);
+            V1PreferredSchedulingTerm schedulingTerm = new V1PreferredSchedulingTerm();
+            schedulingTerm.setPreference(nodeTerm);
+            schedulingTerm.setWeight(100);
+            V1NodeAffinity nodeAffinity = new V1NodeAffinity();
+            nodeAffinity.setPreferredDuringSchedulingIgnoredDuringExecution(Arrays.asList(schedulingTerm));
+            V1Affinity affinity = new V1Affinity();
+            affinity.setNodeAffinity(nodeAffinity);
 
             V1PodSpec podSpec = new V1PodSpec();
             podSpec.setNodeSelector(serverLabels);
             podSpec.setVolumes(serverVolumes);
             podSpec.setContainers(containers);
+//            podSpec.setAffinity(affinity);
 
             V1PodTemplateSpec  podTemplateSpec = new V1PodTemplateSpec();
             podTemplateSpec.setMetadata(podMeta);
             podTemplateSpec.setSpec(podSpec);
 
-
-            AppsV1beta1DeploymentSpec deploymentSpec = new AppsV1beta1DeploymentSpec();
+            ExtensionsV1beta1DeploymentSpec deploymentSpec = new ExtensionsV1beta1DeploymentSpec();
             deploymentSpec.setProgressDeadlineSeconds(deployConfigDTO.getTimeOut());
             deploymentSpec.setReplicas(deployConfigDTO.getPods());
             deploymentSpec.setTemplate(podTemplateSpec);
 
-            AppsV1beta1Deployment appDeployment = new AppsV1beta1Deployment();
+            ExtensionsV1beta1Deployment appDeployment = new ExtensionsV1beta1Deployment();
             appDeployment.setMetadata(meta);
             appDeployment.setSpec(deploymentSpec);
             appDeployment.setKind("Deployment");
-            AppsV1beta1Deployment deploymentInfo = apiInstance.createNamespacedDeployment(deployConfigDTO.getNamespace(),appDeployment,"");
+            ExtensionsV1beta1Deployment  deploymentInfo = apiInstance.createNamespacedDeployment(deployConfigDTO.getNamespace(),appDeployment,"");
             return true;
         }catch(Exception e){
             logger.error(e.getMessage());
@@ -227,7 +263,52 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public boolean createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException{
+    public ImageDeployInfoDTO getImageDeploymentInfo(String namespace,String name)throws IOException, ApiException{
+        ImageDeployInfoDTO deployInfoDTO = new ImageDeployInfoDTO();
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        AppsV1beta1Api apiInstance = new AppsV1beta1Api();
+        try{
+            AppsV1beta1Deployment deployment =apiInstance.readNamespacedDeployment(name,namespace,"",false,false);
+            AppsV1beta1DeploymentStatus status = deployment.getStatus();
+            for(AppsV1beta1DeploymentCondition condition: status.getConditions()){
+                if(condition.getType().equalsIgnoreCase("Available")){
+                    if(condition.getStatus().equalsIgnoreCase("True")){
+                        deployInfoDTO.setAvailable(true);
+                    }else{
+                        deployInfoDTO.setAvailable(false);
+                    }
+                }
+            }
+            deployInfoDTO.setPods(status.getReplicas()==null?0:status.getReplicas());
+            deployInfoDTO.setAvailablePods(status.getReadyReplicas()==null?0:status.getReadyReplicas());
+            deployInfoDTO.setUnavailablePods(status.getUnavailableReplicas()==null?0:status.getUnavailableReplicas());
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            deployInfoDTO=null;
+        }
+        return deployInfoDTO;
+    }
+
+    @Override
+    public Boolean deleteImageDeployment(String namespace,String name)throws IOException, ApiException{
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        ExtensionsV1beta1Api  apiInstance = new ExtensionsV1beta1Api ();
+        try{
+            V1DeleteOptions options = new V1DeleteOptions();
+            options.setGracePeriodSeconds((long)0);
+            options.setPropagationPolicy("Background");
+            V1Status status = apiInstance.deleteNamespacedDeployment(name,namespace,options,null,null,null,null);
+            return true;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -279,33 +360,7 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public ImageDeployInfoDTO getImageDeploymentInfo(String namespace,String name)throws IOException, ApiException{
-        ImageDeployInfoDTO deployInfoDTO = new ImageDeployInfoDTO();
-        ApiClient client = Config.defaultClient();
-        Configuration.setDefaultApiClient(client);
-        AppsV1beta1Api apiInstance = new AppsV1beta1Api();
-        try{
-            AppsV1beta1Deployment deployment =apiInstance.readNamespacedDeployment(name,namespace,"",false,false);
-            AppsV1beta1DeploymentStatus status = deployment.getStatus();
-            for(AppsV1beta1DeploymentCondition condition: status.getConditions()){
-                if(condition.getType().equalsIgnoreCase("Available")){
-                    if(condition.getStatus().equalsIgnoreCase("True")){
-                        deployInfoDTO.setAvailable(true);
-                    }else{
-                        deployInfoDTO.setAvailable(false);
-                    }
-                }
-            }
-            deployInfoDTO.setPods(status.getReplicas()==null?0:status.getReplicas());
-            deployInfoDTO.setAvailablePods(status.getReadyReplicas()==null?0:status.getReadyReplicas());
-            deployInfoDTO.setUnavailablePods(status.getUnavailableReplicas()==null?0:status.getUnavailableReplicas());
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return deployInfoDTO;
-    }
-    @Override
-    public boolean deleteServiceDeployment(String namespace,String name)throws IOException, ApiException{
+    public Boolean deleteServiceDeployment(String namespace,String name)throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -341,30 +396,13 @@ public class k8sServiceImpl  implements K8SService {
             serviceInfoDTO.setIp(result.getSpec().getClusterIP());
         }catch(Exception e){
             logger.error(e.getMessage());
+            serviceInfoDTO=null;
         }
         return serviceInfoDTO;
     }
 
     @Override
-    public boolean deleteImageDeployment(String namespace,String name)throws IOException, ApiException{
-        ApiClient client = Config.defaultClient();
-        Configuration.setDefaultApiClient(client);
-        ExtensionsV1beta1Api  apiInstance = new ExtensionsV1beta1Api ();
-        try{
-            V1DeleteOptions options = new V1DeleteOptions();
-            options.setGracePeriodSeconds((long)0);
-            options.setPropagationPolicy("Background");
-
-            V1Status status = apiInstance.deleteNamespacedDeployment(name,namespace,options,null,null,null,null);
-            return true;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return false;
-    }
-
-    @Override
-    public boolean updateDeployPodsByName(String namespace,String deployName, int pods)throws IOException, ApiException {
+    public Boolean updateDeployPodsByName(String namespace,String deployName, int pods)throws IOException, ApiException {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         ExtensionsV1beta1Api apiInstance = new ExtensionsV1beta1Api();
@@ -422,7 +460,7 @@ public class k8sServiceImpl  implements K8SService {
         return serversList;
     }
     @Override
-    public boolean createServerLabel(String hostName, List<LabelDTO> labels)throws IOException, ApiException{
+    public Boolean createServerLabel(String hostName, List<LabelDTO> labels)throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -445,7 +483,7 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public boolean deleteServerLabel(String hostName,List<LabelDTO> labels) throws IOException, ApiException{
+    public Boolean deleteServerLabel(String hostName,List<LabelDTO> labels) throws IOException, ApiException{
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -564,7 +602,7 @@ public class k8sServiceImpl  implements K8SService {
                 hostName = hostNames.get(i);
             }
         }
-        String query = "sum (rate (container_cpu_usage_seconds_total{id=\"/\",kubernetes_io_hostname=~\"\"+ hostName +\"\\\"}[5m])) / sum (machine_cpu_cores{kubernetes_io_hostname=~\\\"\"+ hostName +\"\"})*10000";
+        String query = "sum (rate (container_cpu_usage_seconds_total{id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"}[5m])) / sum (machine_cpu_cores{kubernetes_io_hostname=~\""+ hostName +"\"})*100";
 
         return getServerResourceInfo(query,start,end,step);
     }
@@ -579,7 +617,7 @@ public class k8sServiceImpl  implements K8SService {
                 hostName = hostNames.get(i);
             }
         }
-        String query = "sum (rate (container_memory_working_set_bytes{id=\"/\",kubernetes_io_hostname=~\"\"+ hostName +\"\\\"}[5m])) / sum (machine_memory_bytes{kubernetes_io_hostname=~\\\"\"+ hostName +\"\"})*10000";
+        String query = "sum (rate (container_memory_working_set_bytes{id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"}[5m])) / sum (machine_memory_bytes{kubernetes_io_hostname=~\""+ hostName +"\"})*100";
 
         return getServerResourceInfo(query,start,end,step);
     }
@@ -596,8 +634,8 @@ public class k8sServiceImpl  implements K8SService {
             }
         }
         String receiveQuery = "sum (rate (container_network_receive_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[5m]))";
-        String tramsmitQuery = "sum (rate (container_network_transmit_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[2m]))";
-        String totalQuery = "sum (rate (container_network_receive_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[2m])+rate (container_network_transmit_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[2m]))";
+        String tramsmitQuery = "sum (rate (container_network_transmit_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[5m]))";
+        String totalQuery = "sum (rate (container_network_receive_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[5m])+rate (container_network_transmit_bytes_total{kubernetes_io_hostname=~\""+ hostName +"\"}[5m]))";
 
         networkFlowDTO.setReceiveResult(getServerResourceInfo(receiveQuery,start,end,step));
         networkFlowDTO.setTransmitResult(getServerResourceInfo(tramsmitQuery,start,end,step));
@@ -610,6 +648,36 @@ public class k8sServiceImpl  implements K8SService {
     public String getServerDiskByHostname(String hostName){
         String diskQuery = "sum(container_fs_limit_bytes{device=~\"^/.*$\",id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"})";
         return getHardRes(diskQuery);
+    }
+
+    @Override
+    public List<PodDTO>  getPodsByCluster(LabelDTO label,List<String> hostnames) throws IOException, ApiException{
+        List<PodDTO> podList = new ArrayList<>();
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        CoreV1Api apiInstance = new CoreV1Api();
+        try{
+            for(String hostname: hostnames){
+                String fieldSelector= "spec.nodeName="+hostname;
+                V1PodList result = apiInstance.listPodForAllNamespaces(null, fieldSelector, null, null, null, null, null, null, null);
+                for(V1Pod pod: result.getItems()){
+                    PodDTO podDTO = new PodDTO();
+                    V1PodSpec podSpec = pod.getSpec();
+                    if(podSpec.getNodeSelector() != null &&
+                            podSpec.getNodeSelector().get(label.getKey()).equalsIgnoreCase(label.getValue())){
+                        podDTO.setName(pod.getMetadata().getName());
+                        podDTO.setPodIp(pod.getStatus().getPodIP());
+                        podDTO.setStauts(pod.getStatus().getPhase());
+                        podDTO.setPodContainers(podSpec.getContainers().size());
+
+                        podList.add(podDTO);
+                    }
+                }
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return podList;
     }
 
     /**
