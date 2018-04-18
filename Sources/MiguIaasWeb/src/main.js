@@ -9,9 +9,11 @@ import moment from 'moment';
 import VueMomentJS from 'vue-momentjs';
 import '@/icons'; // icon
 import '@/permission'; // 权限
+import ViserVue from 'viser-vue';
 
 Vue.use(ElementUI, { locale });
 Vue.use(VueMomentJS, moment);
+Vue.use(ViserVue);
 
 Vue.config.productionTip = false;
 // eslint-disable-next-line no-new

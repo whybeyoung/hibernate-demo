@@ -611,7 +611,7 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public String getServerCPUUsageRateByHostname(List<String> hostNames,long start,long end,int step){
+    public JSONArray getServerCPUUsageRateByHostname(List<String> hostNames,long start,long end,int step){
         String hostName="";
         for(int i=0; i<hostNames.size(); i++){
             if(i > 0){
@@ -620,13 +620,13 @@ public class k8sServiceImpl  implements K8SService {
                 hostName = hostNames.get(i);
             }
         }
-        String query = "sum (rate (container_cpu_usage_seconds_total{id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"}[5m])) / sum (machine_cpu_cores{kubernetes_io_hostname=~\""+ hostName +"\"})*100";
+        String query = "sum (rate (container_cpu_usage_seconds_total{id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"}[5m])) / sum (machine_cpu_cores{kubernetes_io_hostname=~\""+ hostName +"\"})";
 
         return getServerResourceInfo(query,start,end,step);
     }
 
     @Override
-    public String getServerMemoryUsageRateByHostname(List<String> hostNames,long start,long end,int step){
+    public JSONArray getServerMemoryUsageRateByHostname(List<String> hostNames,long start,long end,int step){
         String hostName="";
         for(int i=0; i<hostNames.size(); i++){
             if(i > 0){
@@ -635,7 +635,7 @@ public class k8sServiceImpl  implements K8SService {
                 hostName = hostNames.get(i);
             }
         }
-        String query = "sum (rate (container_memory_working_set_bytes{id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"}[5m])) / sum (machine_memory_bytes{kubernetes_io_hostname=~\""+ hostName +"\"})*100";
+        String query = "sum (rate (container_memory_working_set_bytes{id=\"/\",kubernetes_io_hostname=~\""+ hostName +"\"}[5m])) / sum (machine_memory_bytes{kubernetes_io_hostname=~\""+ hostName +"\"})";
 
         return getServerResourceInfo(query,start,end,step);
     }
@@ -706,7 +706,7 @@ public class k8sServiceImpl  implements K8SService {
      * @param step 步长，单位是s，按多少秒取数据点，默认是60s
      * @return 返回json字符串
      */
-    private String getServerResourceInfo(String query,long start,long end,int step){
+    private JSONArray getServerResourceInfo(String query,long start,long end,int step){
         Map<String,String> params = new HashMap<>();
         params.put("query",query);
         params.put("start",Long.toString(start/1000));
@@ -719,14 +719,14 @@ public class k8sServiceImpl  implements K8SService {
             if(obj.get("status").equals("success")){
                 JSONObject dataObj = (JSONObject) obj.get("data");
                 JSONArray reslutObj = (JSONArray) dataObj.get("result");
-                return reslutObj.toJSONString();
+                return reslutObj;
             }else{
-                return "";
+                return new JSONArray();
             }
         }catch (Exception e){
             logger.error(e.getMessage());
         }
-        return "";
+        return new JSONArray();
     }
 
     /**

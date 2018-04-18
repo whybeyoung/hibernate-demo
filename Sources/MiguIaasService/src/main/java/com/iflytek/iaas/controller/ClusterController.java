@@ -7,6 +7,8 @@
  */
 package com.iflytek.iaas.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.iflytek.iaas.dao.ClusterDao;
 import com.iflytek.iaas.dao.ClusterLabelDao;
 import com.iflytek.iaas.dao.ServerDao;
@@ -126,15 +128,11 @@ public class ClusterController {
 
     private void setUsage(ClusterDTO clusterDTO, List<Server> servers) {
         List<String> hostnames = servers.stream().map(s -> s.getHostname()).collect(Collectors.toList());
-//        clusterDTO = cluster.toClusterDTO();
         Long end = System.currentTimeMillis();
         Long start = end - 1000*60*60*6;
-        String cpuUsage = k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, 60);
-        String memoryUsage =k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, 60);
-        NetworkFlowDTO networkUsage =k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, 60);
-        clusterDTO.setCpuUsage(cpuUsage);
-        clusterDTO.setMemoryUsage(memoryUsage);
-        clusterDTO.setNetworkUsage(networkUsage);
+        clusterDTO.setCpuUsage(k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, 60*30));
+        clusterDTO.setMemoryUsage(k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, 60*30));
+        clusterDTO.setNetworkUsage(k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, 60*30));
     }
 
 }

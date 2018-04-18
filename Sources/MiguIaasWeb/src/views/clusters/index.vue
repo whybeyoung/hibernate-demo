@@ -16,7 +16,6 @@
             <div class="cluster-name" slot="header">{{cluster.name}}</div>
             <el-row>
               <el-col :span="8">机器数量: 88</el-col>
-              <el-col :span="6">RC: 79</el-col>
               <el-col :span="10">POD: 83</el-col>
             </el-row>
             <el-row>
