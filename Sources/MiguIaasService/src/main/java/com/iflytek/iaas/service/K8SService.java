@@ -8,6 +8,7 @@
 package com.iflytek.iaas.service;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.iflytek.iaas.dto.k8s.*;
 import io.kubernetes.client.ApiException;
 
@@ -166,7 +167,7 @@ public interface K8SService {
      * @param step 步长，单位是s，按多少秒取数据点，默认是60s
      * @return 返回json字符串
      */
-    String getServerCPUUsageRateByHostname(List<String> hostNames,long start,long end,int step);
+    JSONArray getServerCPUUsageRateByHostname(List<String> hostNames,long start,long end,int step);
 
     /**
      * 获取服务器内存平均使用率，如果只传一个hostname,获取的就是单台服务器内存使用率，多个hostname,获取的就是多个服务器平均的内存使用率
@@ -176,7 +177,7 @@ public interface K8SService {
      * @param step 步长，单位是s，按多少秒取数据点，默认是60s
      * @return 返回json字符串
      */
-    String getServerMemoryUsageRateByHostname(List<String> hostNames,long start,long end,int step);
+    JSONArray getServerMemoryUsageRateByHostname(List<String> hostNames, long start, long end, int step);
 
     /**
      * 获取服务器网络平均使用率，如果只传一个hostname,获取的就是单台服务器内存使用率，多个hostname,获取的就是多个服务器平均的内存使用率

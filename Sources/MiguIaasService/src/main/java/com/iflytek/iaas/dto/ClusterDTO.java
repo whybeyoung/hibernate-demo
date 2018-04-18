@@ -1,7 +1,10 @@
 package com.iflytek.iaas.dto;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.Server;
+import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
@@ -23,6 +26,9 @@ public class ClusterDTO{
     private Date createtime;
     private String labelName;
     private List<Server> servers;
+    private JSONArray cpuUsage;
+    private NetworkFlowDTO networkUsage;
+    private JSONArray memoryUsage;
 
     public Cluster toCluster() {
         Cluster cluster = new Cluster();
@@ -93,5 +99,29 @@ public class ClusterDTO{
 
     public void setServers(List<Server> servers) {
         this.servers = servers;
+    }
+
+    public JSONArray getCpuUsage() {
+        return cpuUsage;
+    }
+
+    public void setCpuUsage(JSONArray cpuUsage) {
+        this.cpuUsage = cpuUsage;
+    }
+
+    public NetworkFlowDTO getNetworkUsage() {
+        return networkUsage;
+    }
+
+    public void setNetworkUsage(NetworkFlowDTO networkUsage) {
+        this.networkUsage = networkUsage;
+    }
+
+    public JSONArray getMemoryUsage() {
+        return memoryUsage;
+    }
+
+    public void setMemoryUsage(JSONArray memoryUsage) {
+        this.memoryUsage = memoryUsage;
     }
 }

@@ -16,25 +16,24 @@
             <div class="cluster-name" slot="header">{{cluster.name}}</div>
             <el-row>
               <el-col :span="8">机器数量: 88</el-col>
-              <el-col :span="6">RC: 79</el-col>
               <el-col :span="10">POD: 83</el-col>
             </el-row>
             <el-row>
               <el-col :span="3">CPU</el-col>
               <el-col :span="20">
-                <el-progress :text-inside="true" :stroke-width="18" :percentage="70"></el-progress>
+                <el-progress :text-inside="true" :stroke-width="18" :percentage="cluster.cpuPercentage"></el-progress>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="3">内存</el-col>
               <el-col :span="20">
-                <el-progress :text-inside="true" :stroke-width="18" :percentage="70"></el-progress>
+                <el-progress :text-inside="true" :stroke-width="18" :percentage="cluster.memoryPercentage"></el-progress>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="3">网络</el-col>
-              <el-col :span="20">
-                <el-progress :text-inside="true" :stroke-width="18" :percentage="70"></el-progress>
+              <el-col>
+                上行速率：{{cluster.transmit}}kb/s
+                下行速率：{{cluster.receive}}kb/s
               </el-col>
             </el-row>
             <div style="justify-content: center; display: flex;">
@@ -53,6 +52,14 @@
 <script>
 import ClusterApi from '@/api/cluster';
 
+function currentPercentage(usage) {
+  return (parseFloat(usage[0].values[0][1]) * 100).toFixed(2);
+}
+
+function currentNetwork(result) {
+  return (parseFloat(result[0].values[0][1]) / 1000).toFixed(2);
+}
+
 export default {
   data() {
     return {
@@ -66,6 +73,17 @@ export default {
     getClusters() {
       ClusterApi.list().then((response) => {
         this.clusters = response;
+        this.clusters.map((cluster) => {
+          cluster.cpuPercentage = currentPercentage(cluster.cpuUsage);
+          cluster.memoryPercentage = currentPercentage(cluster.memoryUsage);
+          // disable-eslint-next-line
+          console.log('===', cluster.networkUsage.transmitResult[0].values[0][1] / 1000);
+          cluster.transmit = currentNetwork(cluster.networkUsage.transmitResult);
+          console.log('transmit=', cluster.transmit);
+          cluster.receive = currentNetwork(cluster.networkUsage.receiveResult);
+
+          return cluster;
+        });
       });
     },
     detail(clusterId) {
@@ -104,5 +122,9 @@ export default {
 
   .servers-overview {
     height: 291px;
+  }
+
+  .el-progress-bar__innerText {
+    color: #381717;
   }
 </style>
