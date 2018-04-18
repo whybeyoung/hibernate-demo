@@ -30,8 +30,8 @@ public class ServerInfoDTO {
     private String disk;
     private String cpu;
     private String memory;
-    private Boolean status;
-    private Boolean valid;
+    private boolean status;
+    private boolean valid;
     private String annotation;
     private String positionCode;
     private String dockerVersion;
@@ -124,19 +124,19 @@ public class ServerInfoDTO {
         this.memory = memory;
     }
 
-    public Boolean getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
-    public Boolean getValid() {
+    public boolean getValid() {
         return valid;
     }
 
-    public void setValid(Boolean valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 
