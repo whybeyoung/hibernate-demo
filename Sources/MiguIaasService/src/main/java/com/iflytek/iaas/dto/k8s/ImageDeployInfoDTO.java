@@ -11,40 +11,40 @@ package com.iflytek.iaas.dto.k8s;
  * @create 2018/4/16
  */
 public class ImageDeployInfoDTO {
-    private boolean available;
-    private int pods;
-    private int availablePods;
-    private int unavailablePods;
+    private Boolean available;
+    private Integer pods;
+    private Integer availablePods;
+    private Integer unavailablePods;
 
-    public boolean isAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 
-    public int getPods() {
+    public Integer getPods() {
         return pods;
     }
 
-    public void setPods(int pods) {
+    public void setPods(Integer pods) {
         this.pods = pods;
     }
 
-    public int getAvailablePods() {
+    public Integer getAvailablePods() {
         return availablePods;
     }
 
-    public void setAvailablePods(int availablePods) {
+    public void setAvailablePods(Integer availablePods) {
         this.availablePods = availablePods;
     }
 
-    public int getUnavailablePods() {
+    public Integer getUnavailablePods() {
         return unavailablePods;
     }
 
-    public void setUnavailablePods(int unavailablePods) {
+    public void setUnavailablePods(Integer unavailablePods) {
         this.unavailablePods = unavailablePods;
     }
 }

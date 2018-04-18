@@ -1,0 +1,1339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- V1.3 -->
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="pmd_rules"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+   <description>PMD Plugin preferences rule set</description>
+   <rule ref="rulesets/java/design.xml/AbstractClassWithoutAbstractMethod">
+		<description>抽象类缺少抽象方法</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod" 
+		message="抽象类只要有一个具有实现的方法，如果没有请用接口代替">
+		<description>抽象类只要有一个具有实现的方法，如果没有请用接口代替</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/naming.xml/AbstractNaming" 
+		message="抽象类名称应该以Abstract开头；例如（AbstractXXX）">
+		<description>抽象类名称应该以Abstract开头；例如（AbstractXXX）</description>  
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AccessorClassGeneration" 
+		message="对于只有私有构造器的单例或工程类，返回实例应该用一个接口">
+		<description>对于只有私有构造器的单例或工程类，返回实例应该用一个接口</description>  
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/optimizations.xml/AddEmptyString" 
+		message="当非字符串转换为字符串时使用空字符串加号连接的方式是效率低下，应该使用该类型的toString()方法代替">
+		<description>当非字符串转换为字符串时使用空字符串加号连接的方式是效率低下，应该使用该类型的toString()方法代替</description>  
+        <priority>4</priority>
+   </rule>
+   
+   
+   
+   <rule ref="rulesets/java/strings.xml/AppendCharacterWithChar" 
+		message="字符串连接单个字符的时候用使用单引号，而不是字符串(例：append('a')正确，append(&quot; a &quot;)不推荐">
+		<description>字符串连接单个字符的时候用使用单引号，而不是字符串(例：append('a')正确，append("a")不推荐</description>  
+        <priority>3</priority>
+   </rule>
+  
+   
+   <rule ref="rulesets/java/sunsecure.xml/ArrayIsStoredDirectly" 
+		message="构造函数或方法接受一个数组需要备份存储，避免因源数据改变引起问题">
+		<description>构造函数或方法接受一个数组需要备份存储，避免因源数据改变引起问题</description>
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/AssignmentToNonFinalStatic" message="分配了一个非Final类型的静态变量" >
+		<description>分配了一个非Final类型的静态变量 </description>
+        <priority>3</priority>
+   </rule>
+    
+   
+   <rule ref="rulesets/java/optimizations.xml/AvoidArrayLoops" 
+		message="数组赋值使用System.arraycopy，而不是手动循环赋值">
+		<description>数组赋值使用System.arraycopy，而不是手动循环赋值</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/migrating.xml/AvoidAssertAsIdentifier" 
+		message="避免使用assert作为变量，assert（断言）是JAVA关键字">
+		<description>避免使用assert作为变量，assert（断言）是JAVA关键字</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/basic.xml/AvoidBranchingStatementAsLastInLoop">
+		<description>Using a branching statement as the last part of a loop may be a bug, and/or is confusing. Ensure that the usage is not a bug, or consider using another approach</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/finalizers.xml/AvoidCallingFinalize" 
+		message="避免调用对象的finalize方法，该方法是垃圾回收机制调用的">
+		<description>避免调用对象的finalize方法，该方法是垃圾回收机制调用的</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidCatchingGenericException" 
+		message="禁止在try-catch模块内抓取一般的异常，如NullPointerException, RuntimeException">
+		<description>禁止在try-catch模块内抓取一般的异常，如NullPointerException, RuntimeException</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidCatchingNPE" 
+		message="避免直接抛出空指针异常，正常的代码是不会手动抛出空指针异常的">
+		<description>避免直接抛出空指针异常，正常的代码是不会手动抛出空指针异常的</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidCatchingThrowable">
+		<description>Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
+   OutOfMemoryError that should be exposed and managed separately</description>
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AvoidConstantsInterface" 
+		message="避免使用常量接口(接口中只有常量，无方法定义)">
+		<description>避免使用常量接口(接口中只有常量，无方法定义)</description>
+        <priority>3</priority>
+   </rule>
+   
+      
+   <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts" message="避免出现多层判断嵌套，多层判断嵌套不利于代码阅读" >
+		<description>避免出现多层判断嵌套，多层判断嵌套不利于代码阅读</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/naming.xml/AvoidDollarSigns" message="在变量、方法、类、接口名称中避免出现$符号" >
+		<description>在变量、方法、类、接口名称中避免出现$符号 </description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals"
+		message="代码中多次出现的字符串应该定义为常量">
+		<description>代码中多次出现的字符串应该定义为常量</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/migrating.xml/AvoidEnumAsIdentifier"
+		message="不能使用enum字样作为变量名，enum是JAVA关键字">
+		<description>不能使用enum字样作为变量名，enum是JAVA关键字</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingMethodName"
+		message="避免定义相同名称的变量名和方法名">
+		<description>避免定义相同名称的变量名和方法名</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingTypeName"
+		message="避免定义与类名相同的变量">
+		<description>避免定义与类名相同的变量</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/AvoidFinalLocalVariable"
+		message="避免定义final类型的局部变量，如果要使用，定义为全局变量">
+		<description>避免定义final类型的局部变量，如果要使用，定义为全局变量</description>
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AvoidInstanceofChecksInCatchClause"
+		message="不能再catch语句中使用instanceOf来判断异常类型，每个catch只允许捕获自己的异常">
+		<description>不能再catch语句中使用instanceOf来判断异常类型，每个catch只允许捕获自己的异常</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/optimizations.xml/AvoidInstantiatingObjectsInLoops"
+		message="可能的避免在循环中实例化对象">
+		<description>可能的避免在循环中实例化对象</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition"
+		message="避免在if判断中使用硬编码字面值，建议替换为有含义的常量值">
+		<description>避免在if判断中使用硬编码字面值，建议替换为有含义的常量值</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidLosingExceptionInformation">
+		<description>Statements in a catch block that invoke accessors on the exception without using the information only add to code size. Either remove the invocation, or use the return result.</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/basic.xml/AvoidMultipleUnaryOperators"
+		message="尽可能的避免使用多元运算符">
+		<description>尽可能的避免使用多元运算符</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"
+		message="避免在方法参数前面加前缀">
+		<description>避免在方法参数前面加前缀</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/logging-java.xml/AvoidPrintStackTrace"
+		message="避免直接通过异常打印信息站（printStrackTrace)">
+		<description>避免直接通过异常打印信息站（printStrackTrace)</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AvoidProtectedFieldInFinalClass"
+		message="避免在被标记为Final的类中定义Proected的变量，因为这个类不能派生出子类">
+		<description>避免在被标记为Final的类中定义Proected的变量，因为这个类不能派生出子类</description>
+        <priority>3</priority>
+   </rule>  
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidThrowingNullPointerException"
+		message="禁止代码手动抛出NullPointerException">
+		<description>禁止代码手动抛出NullPointerException</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidThrowingRawExceptionTypes"
+		message="避免抛出某个明确类型的异常，尽量用RuntimeException,Throwable,Exception或者Error。用超级异常类或者错误来代替">
+		<description>避免抛出某个明确类型的异常，尽量用RuntimeException,Throwable,Exception或者Error。用超级异常类或者错误来代替</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/AvoidUsingNativeCode">
+		<description>Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portability and increases the maintenance burden.</description>
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/basic.xml/AvoidUsingOctalValues"/>
+   
+   <rule ref="rulesets/java/controversial.xml/AvoidUsingShortType"
+		message="在JAVA中避免使用short类型，JAVA虚拟机不会根据Short类型优化内存使用，而是强制转换成Int来使用">
+		<description>在JAVA中避免使用short类型，JAVA虚拟机不会根据Short类型优化内存使用，而是强制转换成Int来使用</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/AvoidUsingVolatile"
+		message="不建议使用volatile关键字标记">
+		<description>不建议使用volatile关键字标记</description>
+        <priority>3</priority>
+   </rule>
+    
+   
+   <rule ref="rulesets/java/basic.xml/BooleanInstantiation"
+		message="避免通过new实例化一个Boolan类型的对象，你可以直接用Boolean.TRUE，Boolean.FALSE，或者调用Boolean.valueOf()替代">
+		<description>避免通过new实例化一个Boolan类型的对象，你可以直接用Boolean.TRUE，Boolean.FALSE，或者调用Boolean.valueOf()替代</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/basic.xml/BrokenNullCheck"
+		message="空值(null)判断可能自身抛出NullPointerException">
+		<description>空值(null)判断可能自身抛出NullPointerException</description>
+        <priority>1</priority>
+   </rule>
+  
+   
+   <rule ref="rulesets/java/naming.xml/ClassNamingConventions"
+		message="类名必须以大写字母开头">
+		<description>类名必须以大写字母开头</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"
+		message="一个只有私有构造方法的类应该标记为Final类型的类（内部类的私有构造方法除外）">
+		<description>一个只有私有构造方法的类应该标记为Final类型的类（内部类的私有构造方法除外）</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/ConstructorCallsOverridableMethod"
+		message="在构造方法中尽量不要调用重写的方法，容易导致构造没完成而导致空指针异常">
+		<description>在构造方法中尽量不要调用重写的方法，容易导致构造没完成而导致空指针异常</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/DoNotCallGarbageCollectionExplicitly"
+		message="不建议明确地调用垃圾回收方法（System.gc(), Runtime.getRuntime().gc()）">
+		<description>不建议明确地调用垃圾回收方法（System.gc(), Runtime.getRuntime().gc()）</description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/basic.xml/DoubleCheckedLocking"
+		message="部分创建对象可能会返回多个对象（尤其单例），所以设计创建这些对象的时候需要加锁，检测被创建的对象是否已经被创建" >
+		<description>部分创建对象可能会返回多个对象（尤其单例），所以设计创建这些对象的时候需要加锁，检测被创建的对象是否已经被创建 </description>
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/EmptyMethodInAbstractClassShouldBeAbstract"
+			message="抽象类中的空方法应该标记为抽象方法" >
+		<description>抽象类中的空方法应该标记为抽象方法 </description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/EqualsNull"
+		message="判断一个对象是否为空，用== null，而不是Equals(null).">
+		<description>判断一个对象是否为空，用== null，而不是Equals(null);</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/naming.xml/MethodNamingConventions" 
+		message="方法应该以小写字母开头，且不包含下划线，推荐驼峰式命名(首写字母小写，单词之间第一个字母大写)">
+		<description>方法应该以小写字母开头，且不包含下划线，推荐驼峰式命名(首写字母小写，单词之间第一个字母大写)</description>
+        <priority>1</priority>
+   </rule>
+     
+   
+   <rule ref="rulesets/java/clone.xml/ProperCloneImplementation" 
+		message="对象Clone()应该实现自父类的clone()方法">
+		<description>对象Clone()应该实现自父类的clone()方法</description>
+        <priority>3</priority>
+   </rule>
+  
+   
+   <rule ref="rulesets/java/design.xml/ReturnEmptyArrayRatherThanNull" 
+		message="返回数据的方法应该返回空数组，而不是null,这样可以避免产生NullPointerException">
+		<description>返回数据的方法应该返回空数组，而不是null,这样可以避免产生NullPointerException</description>
+		<priority>3</priority>	
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/SingleMethodSingleton">
+		<description>Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
+   is that the instance created using the overloaded method is not cached and so,
+   for each call and new objects will be created for every invocation.</description>  
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance" 
+		message="单例类不能每次返回一个新的实例">
+		<description>单例类不能每次返回一个新的实例</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   
+   <rule ref="rulesets/java/strings.xml/StringInstantiation"
+		message="避免去new一个String对象（new String(&quot; aa &quot;)，这是没有必要的">
+		<description>避免去new一个String对象（new String("aa")，这是没有必要的</description>  
+        <priority>1</priority>
+   </rule>
+
+   
+   <rule ref="rulesets/java/naming.xml/SuspiciousEqualsMethodName" 
+		message="方法名称和参数个数同对象自身的equals(Object)方法接近，可能被误认为是重写系统的equals(Object)方法">
+		<description>方法名称和参数个数同对象自身的equals(Object)方法接近，可能被误认为是重写系统的equals(Object)方法</description>  
+        <priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/UseLocaleWithCaseConversions" 
+		message="做大小写转换的时候，用Locales可以避免语言的差别引起的问题">
+		<description>做大小写转换的时候，用Locales可以避免语言的差别引起的问题</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/UseNotifyAllInsteadOfNotify" 
+		message="Thread.notify()唤醒一个线程监听对象，如果超过一个线程监听对象，只有一个任意的线程被选中，那么用notifyAll()较为安全">
+		<description>Thread.notify()唤醒一个线程监听对象，如果超过一个线程监听对象，只有一个任意的线程被选中，那么用notifyAll()较为安全</description>  
+        <priority>4</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/controversial.xml/UseObjectForClearerAPI" 
+		message="如果写的一个公共方法，意味着他会被其他地方调用，你需要考虑设计成一个对外的API，需要考虑该方法易理解，且易扩展。如果该方法参数个数较多，可以考虑设计为传一个对象的方式替代冗长的参数">
+		<description>如果写的一个公共方法，意味着他会被其他地方调用，你需要考虑设计成一个对外的API，需要考虑该方法易理解，且易扩展。如果该方法参数个数较多，可以考虑设计为传一个对象的方式替代冗长的参数</description>  
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/j2ee.xml/UseProperClassLoader"
+		message="在J2EE中，getClassLoader()方法得到預期的效果，请用Thread.currentThread().getContextClassLoader()代替">
+		<description>在J2EE中，getClassLoader()方法得到預期的效果，请用Thread.currentThread().getContextClassLoader()代替</description>  
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/optimizations.xml/UseStringBufferForStringAppends" 
+		message="用'+='操作符来串联字符串，会引起JVM内部创建StringBuffer。如果若干过这样的操作，明确规定使用StringBuilder或者使用线程安全的StringBuffer">
+		<description>用'+='操作符来串联字符串，会引起JVM内部创建StringBuffer。如果若干过这样的操作，明确规定使用StringBuilder或者使用线程安全的StringBuffer</description>  
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strings.xml/UseStringBufferLength" 
+		message="用StringBuffer.length()来判断StringBuffer的长度要比用StringBuffer.toString().length()好">
+		<description>用StringBuffer.length()来判断StringBuffer的长度要比用StringBuffer.toString().length()好</description>  
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/UseUtilityClass" 
+		message="如果类中只有静态方法，考虑设计为工具类">
+		<description>如果类中只有静态方法，考虑设计为工具类</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/UseVarargs" 
+		message="数组参数可以用可变参数替换">
+		<description>数组参数可以用可变参数替换</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable">
+		<description>An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself since the result of the operation is a new object</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unnecessary.xml/UselessOverridingMethod" 
+		message="该方法仅仅调用的父类的实现，是没有必要的重写实现">
+		<description>该方法仅仅调用的父类的实现，是没有必要的重写实现</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unnecessary.xml/UselessParentheses" 
+		message="无用的括号，应该删除">
+		<description>无用的括号，应该删除</description>  
+        <priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unnecessary.xml/UselessQualifiedThis" 
+		message="当This是唯一的是否，直接用this，没必要用XXX.this">
+		<description>当This是唯一的是否，直接用this，没必要用XXX.this</description>  
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/UselessStringValueOf" 
+		message="字符串与变量拼接，直接用+号连接，没必要用String.valueOf">
+		<description>字符串与变量拼接，直接用+号连接，没必要用String.valueOf</description>  
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/naming.xml/VariableNamingConventions" 
+			message="请遵守变量命名规范【常量全部大写，单词之间用下划线相接；普通变量以下小字母开头，遵循驼峰式，避免使用下划线】">
+		<description>请遵守变量命名规范【常量全部大写，单词之间用下划线相接；普通变量以下小字母开头，遵循驼峰式，避免使用下划线】</description>  
+        <priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/braces.xml/WhileLoopsMustUseBraces" 
+		message="While循环必须使用大括号包含循环体">
+		<description>While循环必须使用大括号包含循环体</description>  
+        <priority>1</priority>  
+   </rule>
+   
+    <rule ref="rulesets/java/controversial.xml/AvoidAccessibilityAlteration">
+        <priority>4</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/controversial.xml/AssignmentInOperand">
+        <priority>4</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/naming.xml/SuspiciousHashcodeMethodName" 
+		message="方法名和返回类型是可疑的接近hashCode(),这可能表示一个打算重写hashCode()方法。">
+		<description>方法名和返回类型是可疑的接近hashCode(),这可能表示一个打算重写hashCode()方法。</description>
+        <priority>1</priority>
+   </rule>
+   
+   
+	<rule ref="rulesets/java/naming.xml/BooleanGetMethodName" 
+			message="方法返回布尔结果应该命名为谓词语句来表示。我。e:isReady()、hasValues()、canCommit()、willFail(),等等。避免使用'get'对这些方法的前缀。">
+		<description>方法返回布尔结果应该命名为谓词语句来表示。我。e:“isReady()”、“hasValues()”、“canCommit()”、“willFail()”,等等。避免使用“get"对这些方法的前缀。</description>
+        <priority>1</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/naming.xml/GenericsNaming" 
+		message="泛型只能用单个大写字母标示">
+		<description>泛型只能用单个大写字母标示</description>
+        <priority>1</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/naming.xml/ShortClassName" 
+		message="类名长度不能少于5个字符">
+		<description>类名长度不能少于5个字符</description>
+        <priority>3</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/naming.xml/ShortMethodName" 
+		message="方法名称太短不利于代码阅读和理解">
+		<description>方法名称太短不利于代码阅读和理解</description>
+        <priority>3</priority>
+	</rule>
+	
+	<rule ref="rulesets/java/naming.xml/ShortVariable" 
+		message="成员变量、局部变量或参数名称太短不利于代码阅读和理解">
+		<description>成员变量、局部变量或参数名称太短不利于代码阅读和理解</description>
+		<priority>3</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/naming.xml/PackageCase" 
+			message="包名不能包含大写字母">
+		<description>包名不能包含大写字母</description>
+		<priority>1</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/naming.xml/LongVariable" 
+		message="成员变量、参数或局部变量名称太长是代码难以阅读维护">
+		<description>成员变量、参数或局部变量名称太长是代码难以阅读维护</description>
+		<priority>3</priority>
+	</rule>
+	
+	
+    <rule ref="rulesets/java/naming.xml/MethodWithSameNameAsEnclosingClass" 
+		message="非构造方法名称不能同当前类名相同">
+		<description>非构造方法名称不能同当前类名相同</description>
+		<priority>1</priority>
+	</rule>
+	
+    <rule ref="rulesets/java/naming.xml/MisleadingVariableName" 
+		message="参数名称以m开头不合理，m开头一般是成员变量">
+		<description>参数名称以m开头不合理，m开头一般是成员变量</description>
+		<priority>3</priority>
+	</rule>
+	
+    <rule ref="rulesets/java/naming.xml/NoPackage" 
+		message="缺少包的定义">
+		<description>缺少包的定义</description>
+		<priority>3</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/design.xml/SwitchDensity" 
+		message="Switch分支语句中的处理代码过多，考虑移动到新的方法中">
+		<description>Switch分支语句中的处理代码过多，考虑移动到新的方法中</description>
+		<priority>3</priority>
+	</rule>
+	
+    <rule ref="rulesets/java/design.xml/SwitchStmtsShouldHaveDefault" 
+		message="Switch语句分支缺少Default，每一个Switch语句都应该包含一个Default选项">
+		<description>Switch语句分支缺少Default，每一个Switch语句都应该包含一个Default选项</description>
+		<priority>1</priority>
+	</rule>
+	
+	
+	<rule ref="rulesets/java/design.xml/TooFewBranchesForASwitchStatement" 
+		message="较少的switch选项判断用if..else 代替，swith用来处理较多的分支判断">
+		<description>较少的switch选项判断用if..else 代替，swith用来处理较多的分支判断</description>
+		<priority>3</priority>
+	</rule>
+	
+	
+   <rule ref="rulesets/java/design.xml/UncommentedEmptyConstructor">
+		<description>Ignore explicit constructor invocation when deciding whether constructor is empty or not</description>
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/UncommentedEmptyMethodBody">
+		<description>Ignore explicit constructor invocation when deciding whether constructor is empty or not</description>
+		<priority>3</priority>
+   </rule>
+   
+   
+    <rule ref="rulesets/java/design.xml/UnsynchronizedStaticDateFormatter">
+		<description>SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances for each thread. If multiple threads must access a static formatter, the formatter must be synchronized either on method or block level</description>
+		<priority>3</priority>
+	</rule>
+	
+	
+   <rule ref="rulesets/java/design.xml/UnnecessaryLocalBeforeReturn" 
+		message="创建了不必要的局部变量">
+		<description>创建了不必要的局部变量</description>
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/UseCollectionIsEmpty" 
+		message="判断集合是否为空集合用isEmpty()方法，比用xx.size()== 0更好">
+		<description>判断集合是否为空集合用isEmpty()方法，比用xx.size()== 0更好</description>
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/GodClass">
+		<description></description>
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/IdempotentOperations" 
+		message="避免幂等操作,是没有作用的">
+		<description>避免幂等操作,是没有作用的</description>
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/ImmutableField">
+		<description>Identifies private fields whose values never change once they are initialized either in the declaration of the field or by a constructor. This helps in converting existing classes to becoming immutable ones</description>
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/InstantiationToGetClass"
+		message="获得类的Class对象没必要实例化该对象后来获取，可以直接通过类的公共成员变量.class获取"
+   >
+		<description>获得类的Class对象没必要实例化该对象后来获取，可以直接通过类的公共成员变量.class获取</description>
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/FieldDeclarationsShouldBeAtStartOfClass"
+		message="变量申明应该在Class的最开始"
+		>
+		<description>变量申明应该在Class的最开始</description>
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/FinalFieldCouldBeStatic"
+			message="一个成员变量时final类型的，那么应该定义成static类型，这样可以节省空间">
+		<description>一个成员变量时final类型的，那么应该定义成static类型，这样可以节省空间</description>
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/MissingBreakInSwitch" 
+		message="Switch语句缺少break .">
+		<priority>1</priority>
+	</rule>
+		
+		
+		
+   <rule ref="rulesets/java/design.xml/LogicInversion" 
+		message="使用想法的判断符可以直接判断" >
+		<priority>3</priority>
+		<example>
+		<![CDATA[ 
+		public boolean bar(int a, int b) {
+
+			if (!(a == b)) // use !=
+				return false;
+
+			if (!(a < b)) // use >=
+				return false;
+
+			return true;
+		}
+		]]>
+		</example>
+	</rule>
+		
+		
+		
+   <rule ref="rulesets/java/design.xml/MissingStaticMethodInNonInstantiatableClass"
+		message="一个只有私有构造函数的类，没有任何静态方法，这是一个僵尸类">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/NonCaseLabelInSwitchStatement"
+		message="Switch语句中缺少case标记">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/NonStaticInitializer" 
+		message="定义了一个非静态的代码块，可能会在构造函数被调用的任何时候调用（不要用非静态代码块）">
+		<priority>3</priority>
+	</rule>
+	
+	
+   <rule ref="rulesets/java/design.xml/NonThreadSafeSingleton" 
+		message="非线程安全的单例可能导致多个单例对象，请在获取单例对象的地方加锁防止">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/SimplifyBooleanExpressions" 
+		message="避免在boolean表达式中使用非必要的比较">
+		<priority>3</priority>
+	</rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/SimplifyBooleanReturns"
+		message="可以简化boolean返回结果">  
+		<priority>3</priority>
+	</rule>
+   
+   <rule ref="rulesets/java/design.xml/SimplifyConditional"
+		message="在instancOf判断前没必要做null判断,null instanceOf 任何对象都返回false">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/SingularField" 
+		message="该成员变量只被单一地方使用，可用局部变量代替">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/SimpleDateFormatNeedsLocale"
+		message="SimpleDateFormat 使用Locale">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AvoidProtectedMethodInFinalClassNotExtending"
+		message="在被标记为Final的类里面避免使用protected方法">
+		<priority>4</priority>
+	</rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AvoidReassigningParameters"
+		message="避免对传入的参数再赋值，如果有需要，可以另外什么局部变量">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/AvoidSynchronizedAtMethodLevel" 
+		message="对方法加同步锁(synchronization)可能在以后新增代码后出现问题，对代码块加同步锁能确保只对需要加锁的代码进行同步锁定">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/CloseResource"
+		message="没有关闭连接资源">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/CompareObjectsWithEquals"
+		message="对象做比较请用equals()方法">
+		<priority>1</priority>
+	</rule>
+   
+   <rule ref="rulesets/java/design.xml/ConfusingTernary">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/BadComparison" 
+		message="避免使用Double.NaN和Float.NaN做==比较">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/ConstantsInInterface">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/OptimizableToArrayCall" 
+		message="使用数组的toArray方法是，实例化的数组可以指定大小，已起到优化的所用">
+		<priority>3</priority>
+		<example> <![CDATA[ Foo[] fooArray = foos.toArray(new Foo[foos.size()]); ]]></example>
+   </rule>
+   
+   <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" >
+		<priority>3</priority>
+	</rule>
+		
+   <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons" 
+		message="字面值与对象做比较的时候，字面值放equals前面，避免NullPointerExcption">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/PreserveStackTrace"
+		message="抛出新的异常的catch块没有传递原始异常到新的异常将导致原堆栈跟踪丢失很难有效地调试。">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/design.xml/DefaultLabelNotLastInSwitchStmt"
+		message="按编程惯例，switch中default放在最后一个">
+		<priority>3</priority>
+   </rule>
+   
+   
+   
+   <rule ref="rulesets/java/comments.xml/CommentContent"
+		message="无效的单词或短语">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/comments.xml/CommentDefaultAccessModifier"
+		message="缺少注释默认的访问修饰符">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/comments.xml/CommentRequired" 
+		message="缺少注释">
+		<priority>3</priority>
+		<properties>
+			<property name="fieldCommentRequirement">
+				<value>Ignored</value>
+				<description>变量缺少注释</description>
+			</property>
+			<property name="publicMethodCommentRequirement" 
+				message="对外公共方法缺少注释">
+				<value>Required</value>
+				<description>对外公共方法缺少注释</description>
+			</property>
+			<property name="protectedMethodCommentRequirement">
+				<value>Required</value>
+				<description>protected方法缺少注释</description>
+			</property>
+		</properties>
+   </rule>
+   
+   <!--
+   <rule ref="rulesets/java/comments.xml/CommentSize"
+		message="注释所占行数太多">
+		<priority>5</priority>
+   </rule>
+   -->
+  
+   
+   <rule ref="rulesets/java/codesize.xml/NPathComplexity" 
+		message="对于非单一逻辑的复杂循环嵌套，应该拆分成多个方法处理">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/codesize.xml/NcssConstructorCount">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/codesize.xml/NcssMethodCount">
+		<priority>5</priority>
+   </rule>
+   
+ 
+   
+   <rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength"
+		message="方法长度太长，请拆分成多个子方法">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/codesize.xml/ExcessiveParameterList"
+		message="方法参数个数太多，难以维护，考虑传入一个对象的方式代替">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/codesize.xml/ExcessivePublicCount"
+		message="这个类有太多的公共方法和属性">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/codesize.xml/ExcessiveClassLength" 
+		message="这个类太长，一般类长度要求保持在2千行以内">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/codesize.xml/CyclomaticComplexity">
+		<priority>3</priority>
+   </rule>
+   <rule ref="rulesets/java/codesize.xml/StdCyclomaticComplexity"/>
+   
+   
+   <rule ref="rulesets/java/basic.xml/UnconditionalIfStatement"
+		message="不要用if来直接判断true或false，因为判断是没有意义的">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/ExtendsObject"
+		message="不需要显式地继承Object。">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/ForLoopShouldBeWhileLoop"
+		message="该for循环可以简化为while循环">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/JumbledIncrementer"
+		message="注意在for表达式内部其他地方修改循环自增器，可能导致异常">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/CheckResultSet">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/CheckSkipResult">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/ClassCastExceptionWithToArray"
+		message="这里使用Collection.toArray()将抛出一个ClassCastException的异常">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor"
+		message="避免使用float/double接收一个超大(数位超长)的数值，超出范围的，用String来表示">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/AvoidUsingHardCodedIP"
+		message="避免使用硬编码IP地址，不利于维护，推荐外部做配置">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/CollapsibleIfStatements"
+		message="这里的嵌套If判断可以合并">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/BigIntegerInstantiation"
+		message="不要创建已经存在的BigInteger和BigDecimal实例(0,1,10)">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/ReturnFromFinallyBlock"
+		message="不允许在finally块中通过return返回数据">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/SimplifiedTernary"
+		message="这里的三元运算可以用||或者&amp;&amp;来简化">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/AvoidThreadGroup"
+		message="避免使用java.lang.ThreadGroup，是非线程安全的">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/DontCallThreadRun"
+		message="不能直接调用Thread的run方法,启动线程，请调用start()">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/DontUseFloatTypeForLoopIndices"
+		message="不要用float类型做循环指数点">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/MisplacedNullCheck"
+		message="这里的null判断，位置放错">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/basic.xml/OverrideBothEqualsAndHashcode"
+		message="重写Equals方法，需要重写hashCode方法">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter"
+		message="避免传递一个不用的参数到方法中">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/unusedcode.xml/UnusedLocalVariable"
+		message="该局部变量从未被使用，如果不用，则不要定义">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/unusedcode.xml/UnusedPrivateField"
+		message="该私有成员变量，从未被使用">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unusedcode.xml/UnusedPrivateMethod"
+		message="该私有方法从未被使用">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/UnnecessaryCaseChange"
+		message="用 equalsIgnoreCase()比toUpperCase/toLowerCase()更好">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strings.xml/UseEqualsToCompareStrings"
+		message="用equals()代替字符串比较的''=='' 或 ''!=''">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/UseIndexOfChar"
+		message="用String.indexOf(char)效率高于用String.indexOf(String)">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/InefficientEmptyStringCheck"
+		message="通过String.trim().length()==0来判断字符串为空是低效率的 ">
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/InefficientStringBuffering"
+		message="避免在StringBuffer/StringBuilder的构造函数和append()方法中做字符拼接，请用append(xx)代替">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strings.xml/InsufficientStringBufferDeclaration">
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/strings.xml/AvoidStringBufferField"
+		message="StringBuffers增长非常快，容易导致类存泄漏，不要定义为成员变量">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strings.xml/ConsecutiveAppendsShouldReuse"
+		message="StringBuffer (or StringBuilder)可以在不需要目标对象的情况下连续调用.append(xx).append(xx)...">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends"
+		message="StringBuffer (or StringBuilder)连续的append字面值，可以直接一次全部append">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strings.xml/StringBufferInstantiationWithChar"
+		message="StringBuffer或StringBuilder实例化的时候不要直接传入一个char字符，会被误当成int称为长度">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/empty.xml/EmptyStatementBlock"
+		message="避免空模块">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/empty.xml/EmptyStatementNotInLoop"
+		message="多余的;是没有用的">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/empty.xml/EmptyStaticInitializer"
+		message="创建了一个空的静态代码块">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/empty.xml/EmptySwitchStatements"
+		message="空的Switch处理">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/empty.xml/EmptySynchronizedBlock"
+		message="空的同步代码块">
+		<priority>1</priority>
+   </rule>
+    
+   <rule ref="rulesets/java/empty.xml/EmptyTryBlock"
+		message="空的try{}catch..毫无意义">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/empty.xml/EmptyWhileStmt"
+		message="避免无循环体的while循环">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/empty.xml/EmptyCatchBlock"
+		message="避免在catch中对异常不做任何处理">
+		<priority>3</priority>
+	</rule>
+   
+   
+   <rule ref="rulesets/java/empty.xml/EmptyFinallyBlock"
+		message="空的finally没有意义">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/empty.xml/EmptyIfStmt"
+		message="没做任何处理的空if判断，没有意义">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/empty.xml/EmptyInitializer">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"
+		message="不要初始化Integer对象，调用Integer.valueOf()代替">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/migrating.xml/ReplaceEnumerationWithIterator">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/migrating.xml/ReplaceHashtableWithMap"
+		message="考虑用java.util.Map代替Hashtable">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/migrating.xml/ReplaceVectorWithList"
+		message="考虑用java.util.List代替Vector">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/migrating.xml/ShortInstantiation">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>
+   <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>
+   
+   
+   
+   <rule ref="rulesets/java/controversial.xml/UnnecessaryParentheses"
+		message="包含一些不必要的括号">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/UnnecessaryConstructor"
+		message="这是一个没有必要的构造函数，编译器会生成这个相同的构造函数">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/SuspiciousOctalEscape"
+		message="十进制字符在八进制转义后生成可疑的字符串文字">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/UseConcurrentHashMap"
+		message="在JAVA5以上多线程使用HashMap建议采用ConcurrentHashMap，它是线程安全的">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/NullAssignment"
+		message="在非申明对象的地方给对象赋null值是没有必要的">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine"
+		message="一个变量申明占一行，不推荐联合申明（一行申明多个变量）">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/OnlyOneReturn">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/controversial.xml/DataflowAnomalyAnalysis">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/DefaultPackage"
+		message="定义一个明确的包路径，不要用default package">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/controversial.xml/DontImportSun"
+		message="不要导入任何sun.*开头的包">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/controversial.xml/CallSuperInConstructor"
+		message="在构造行数中调用super()方法是一个好的习惯">
+		<priority>3</priority>
+   </rule>
+   
+   
+   
+   <rule ref="rulesets/java/strictexception.xml/ExceptionAsFlowControl">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/strictexception.xml/AvoidRethrowingException"
+		message="不要在catch里面将捕获的异常再次抛出去">
+		<priority>3</priority>
+   </rule>
+   
+   
+   
+   
+   <rule ref="rulesets/java/coupling.xml/CouplingBetweenObjects">
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary"
+		message="将原有对象转换为字符串时没必要定义一个零食变量">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/unnecessary.xml/UnnecessaryFinalModifier"
+		message="在已经被标记为final的类中没必要再用final来修饰其他">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/unnecessary.xml/UnnecessaryReturn"
+		message="这个return是没有必要的">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals"
+		message="当知道一个对象一定不为null的时候，做比较可以将该对象放在equals的前面：例如xx我们知道不为null，可用xx.equals(ff)">
+		<priority>1</priority>
+   </rule>
+   
+  
+   <rule ref="rulesets/java/imports.xml/TooManyStaticImports"
+		message="太多的静态引用，容易导致代码混乱">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName">
+		<priority>5</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/imports.xml/UnusedImports"
+		message="避免引用没有用到的包">
+		<priority>5</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/imports.xml/DontImportJavaLang"
+		message="避免引入任何java.lang下面的包">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/imports.xml/DuplicateImports"
+		message="重复引入包">
+		<priority>1</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/imports.xml/ImportFromSamePackage">
+		<priority>3</priority>
+   </rule>
+   
+   
+   
+   <rule ref="rulesets/java/optimizations.xml/LocalVariableCouldBeFinal">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/optimizations.xml/SimplifyStartsWith">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/optimizations.xml/PrematureDeclaration">
+		<priority>3</priority>
+   </rule>
+
+   <rule ref="rulesets/java/optimizations.xml/UseArrayListInsteadOfVector" 
+		message="用ArrayList代替Vector更好">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/optimizations.xml/UseArraysAsList"
+		message="Array转换为List直接用asList方法，不用for循环添加">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/finalizers.xml/EmptyFinalizer"
+		message="避免空的finalize方法">
+		<priority>3</priority>
+   </rule>
+
+
+   
+   <rule ref="rulesets/java/j2ee.xml/LocalHomeNamingConvention">
+		<priority>3</priority>
+   </rule>
+   
+   
+   
+   <rule ref="rulesets/java/braces.xml/ForLoopsMustUseBraces"
+		message="for循环必须使用大括号">
+		<priority>1</priority>
+   </rule>
+   <rule ref="rulesets/java/braces.xml/IfElseStmtsMustUseBraces"
+		message="If..else..判断必须使用大括号">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/braces.xml/IfStmtsMustUseBraces"
+		message="If判断必须使用大括号">
+		<priority>1</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/android.xml/DoNotHardCodeSDCard"
+		message="用Environment.getExternalStorageDirectory()代替 of /sdcard">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/android.xml/CallSuperFirst"
+		message="super应该在方法的最开始">
+		<priority>3</priority>
+   </rule>
+   
+   <rule ref="rulesets/java/android.xml/CallSuperLast"
+		message="super应该在方法的最后一行调用">
+		<priority>3</priority>
+   </rule>
+   
+   
+   <rule ref="rulesets/java/javabeans.xml/MissingSerialVersionUID"
+		message="缺少SerialVersionUID">
+		<priority>3</priority>
+   </rule>
+
+   
+   
+</ruleset>

@@ -12,7 +12,6 @@ import com.iflytek.iaas.dto.k8s.*;
 import io.kubernetes.client.ApiException;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -81,7 +80,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    Boolean createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException;
+    ServiceDeployInfoDTO createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException;
 
     /**
      * 删除服务部署
@@ -197,7 +196,7 @@ public interface K8SService {
      * @throws IOException
      * @throws ApiException
      */
-    List<PodDTO>  getPodsByCluster(LabelDTO label,List<String> hostnames) throws IOException, ApiException;
+    List<PodDTO> getPodsByCluster(LabelDTO label,List<String> hostnames) throws IOException, ApiException;
 
     /**
      * 根据服务器hostname获取服务器硬盘信息

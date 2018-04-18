@@ -65,7 +65,7 @@ public class k8sServiceImpl  implements K8SService {
         body.setKind("Namespace");
         body.setMetadata(meta);
         try{
-            V1Namespace ns = coreV1Api.createNamespace(body,"");
+            V1Namespace ns = coreV1Api.createNamespace(body,null);
             return true;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -79,7 +79,7 @@ public class k8sServiceImpl  implements K8SService {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
-        V1NamespaceList nsObj = coreV1Api.listNamespace("","","",false,"",0,"",5000,false);
+        V1NamespaceList nsObj = coreV1Api.listNamespace(null,null,null,null,null,0,null,5000,null);
         List<String> nsList = new ArrayList<>();
         for(V1Namespace nsItem: nsObj.getItems()){
             nsList.add(nsItem.getMetadata().getName());
@@ -220,26 +220,30 @@ public class k8sServiceImpl  implements K8SService {
 
                 containers.add(container);
             }
-            //亲和性实现唯一性部署
-            V1NodeSelectorRequirement nodeRequire = new V1NodeSelectorRequirement();
-            nodeRequire.setKey(deployConfigDTO.getServerLabel().getKey());
-            nodeRequire.setOperator("Lt");
-            nodeRequire.setValues(Arrays.asList(deployConfigDTO.getServerLabel().getValue()));
-            V1NodeSelectorTerm nodeTerm = new V1NodeSelectorTerm();
-            nodeTerm.addMatchExpressionsItem(nodeRequire);
-            V1PreferredSchedulingTerm schedulingTerm = new V1PreferredSchedulingTerm();
-            schedulingTerm.setPreference(nodeTerm);
-            schedulingTerm.setWeight(100);
-            V1NodeAffinity nodeAffinity = new V1NodeAffinity();
-            nodeAffinity.setPreferredDuringSchedulingIgnoredDuringExecution(Arrays.asList(schedulingTerm));
-            V1Affinity affinity = new V1Affinity();
-            affinity.setNodeAffinity(nodeAffinity);
 
             V1PodSpec podSpec = new V1PodSpec();
             podSpec.setNodeSelector(serverLabels);
             podSpec.setVolumes(serverVolumes);
             podSpec.setContainers(containers);
-//            podSpec.setAffinity(affinity);
+            if(Boolean.TRUE.equals(deployConfigDTO.getUniqueDeploy())){
+                //pod反亲和性实现唯一性部署
+
+                V1LabelSelectorRequirement labelSelectRequirement = new V1LabelSelectorRequirement();
+                labelSelectRequirement.setKey(deployConfigDTO.getDeployLabel().getKey());
+                labelSelectRequirement.setOperator("In");
+                labelSelectRequirement.setValues(Arrays.asList(deployConfigDTO.getDeployLabel().getValue()));
+                V1LabelSelector labelSelector = new V1LabelSelector();
+                labelSelector.setMatchExpressions(Arrays.asList(labelSelectRequirement));
+                V1PodAffinityTerm podAffinityTerm = new V1PodAffinityTerm();
+                podAffinityTerm.setLabelSelector(labelSelector);
+                podAffinityTerm.setTopologyKey("kubernetes.io/hostname");
+                V1PodAntiAffinity podAntiAffinity = new V1PodAntiAffinity();
+                podAntiAffinity.setRequiredDuringSchedulingIgnoredDuringExecution(Arrays.asList(podAffinityTerm));
+
+                V1Affinity affinity = new V1Affinity();
+                affinity.setPodAntiAffinity(podAntiAffinity);
+                podSpec.setAffinity(affinity);
+            }
 
             V1PodTemplateSpec  podTemplateSpec = new V1PodTemplateSpec();
             podTemplateSpec.setMetadata(podMeta);
@@ -269,15 +273,13 @@ public class k8sServiceImpl  implements K8SService {
         Configuration.setDefaultApiClient(client);
         AppsV1beta1Api apiInstance = new AppsV1beta1Api();
         try{
-            AppsV1beta1Deployment deployment =apiInstance.readNamespacedDeployment(name,namespace,"",false,false);
+            AppsV1beta1Deployment deployment =apiInstance.readNamespacedDeployment(name,namespace,null,null,null);
             AppsV1beta1DeploymentStatus status = deployment.getStatus();
+            deployInfoDTO.setAvailable(Boolean.FALSE);
             for(AppsV1beta1DeploymentCondition condition: status.getConditions()){
-                if(condition.getType().equalsIgnoreCase("Available")){
-                    if(condition.getStatus().equalsIgnoreCase("True")){
-                        deployInfoDTO.setAvailable(true);
-                    }else{
-                        deployInfoDTO.setAvailable(false);
-                    }
+                if(condition.getType().equalsIgnoreCase("Available") &&
+                        condition.getStatus().equalsIgnoreCase("True")){
+                    deployInfoDTO.setAvailable(Boolean.TRUE);
                 }
             }
             deployInfoDTO.setPods(status.getReplicas()==null?0:status.getReplicas());
@@ -308,7 +310,8 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public Boolean createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException{
+    public ServiceDeployInfoDTO createServiceDeployment(ServiceConfigDTO serviceConfigDTO)throws IOException, ApiException{
+        ServiceDeployInfoDTO serviceInfoDTO = new ServiceDeployInfoDTO();
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
@@ -351,12 +354,25 @@ public class k8sServiceImpl  implements K8SService {
             service.setMetadata(meta);
             service.setSpec(serviceSpec);
 
-            V1Service serviceInfo = coreV1Api.createNamespacedService(serviceConfigDTO.getNamespace(),service,"");
-            return true;
+            V1Service serviceInfo = coreV1Api.createNamespacedService(serviceConfigDTO.getNamespace(),service,null);
+            String type = serviceInfo.getSpec().getType();
+            switch (type){
+                case "NodePort":
+                    serviceInfoDTO.setType(K8sAPPType.EXTERNAL_SERVICE);
+                    break;
+                case "ClusterIP":
+                    serviceInfoDTO.setType(K8sAPPType.INTERNAL_SERVICE);
+                    break;
+            }
+            V1ServicePort servicePort = serviceInfo.getSpec().getPorts().get(0);
+            serviceInfoDTO.setPodPort(servicePort.getPort());
+            serviceInfoDTO.setPodPort(servicePort.getNodePort());
+            serviceInfoDTO.setIp(serviceInfo.getSpec().getClusterIP());
         }catch (Exception e){
             logger.error(e.getMessage());
+            serviceInfoDTO = null;
         }
-        return false;
+        return serviceInfoDTO;
     }
 
     @Override
@@ -413,7 +429,7 @@ public class k8sServiceImpl  implements K8SService {
             Object patchObj = deserialize(patchStr);
             ArrayList<JsonObject> patchList = new ArrayList<>();
             patchList.add(((JsonElement) patchObj).getAsJsonObject());
-            ExtensionsV1beta1Scale deploymentInfo = apiInstance.patchNamespacedDeploymentScale(deployName,namespace,patchList,"");
+            ExtensionsV1beta1Scale deploymentInfo = apiInstance.patchNamespacedDeploymentScale(deployName,namespace,patchList,null);
             return true;
         }catch(Exception e){
             logger.error(e.getMessage());
@@ -426,7 +442,7 @@ public class k8sServiceImpl  implements K8SService {
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
-        V1NodeList result = coreV1Api.listNode("","","",false,"",0,"",0,false);
+        V1NodeList result = coreV1Api.listNode(null,null,null,null,null,0,null,0,null);
         List<ServerInfoDTO> serversList = new ArrayList<>();
         for(V1Node node : result.getItems()){
             ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
@@ -440,10 +456,11 @@ public class k8sServiceImpl  implements K8SService {
                 }
             }
             List<V1NodeCondition> conditions = node.getStatus().getConditions();
+            serverInfoDTO.setStatus(Boolean.FALSE);
             for(V1NodeCondition condition: conditions){
                 if(condition.getType().equalsIgnoreCase("Ready") &&
                         condition.getStatus().equalsIgnoreCase("True")){
-                    serverInfoDTO.setStatus(true);
+                    serverInfoDTO.setStatus(Boolean.TRUE);
                 }
             }
             Map<String,Quantity> capacitys = node.getStatus().getCapacity();
@@ -465,7 +482,7 @@ public class k8sServiceImpl  implements K8SService {
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
         try{
-            V1Node node = coreV1Api.readNode(hostName, "", false, false);
+            V1Node node = coreV1Api.readNode(hostName, null, null, null);
             Map<String,String> labelList = node.getMetadata().getLabels();
             for(LabelDTO labelDTO:labels){
                 labelList.put(labelDTO.getKey(),labelDTO.getValue());
@@ -488,7 +505,7 @@ public class k8sServiceImpl  implements K8SService {
         Configuration.setDefaultApiClient(client);
         CoreV1Api coreV1Api = new CoreV1Api();
         try{
-            V1Node node = coreV1Api.readNode(hostName, "", false, false);
+            V1Node node = coreV1Api.readNode(hostName, null, null, null);
             Map<String,String> labelList = node.getMetadata().getLabels();
             for(LabelDTO labelDTO:labels){
                 if(labelList.containsKey(labelDTO.getKey())){
@@ -514,7 +531,7 @@ public class k8sServiceImpl  implements K8SService {
         CoreV1Api coreV1Api = new CoreV1Api();
 
         try {
-            V1Node node = coreV1Api.readNode(hostname, "", false, false);
+            V1Node node = coreV1Api.readNode(hostname, null, null, null);
             ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
             List<V1NodeAddress> addressList = node.getStatus().getAddresses();
             for (V1NodeAddress address : addressList) {
@@ -572,10 +589,11 @@ public class k8sServiceImpl  implements K8SService {
                 serverInfoDTO.setCpu(capacitys.get("cpu").getNumber().toString());
                 serverInfoDTO.setMemory(capacitys.get("memory").getNumber().toString());
                 List<V1NodeCondition> conditions = node.getStatus().getConditions();
+                serverInfoDTO.setStatus(Boolean.FALSE);
                 for (V1NodeCondition condition : conditions) {
                     if (condition.getType().equalsIgnoreCase("Ready") &&
                             condition.getStatus().equalsIgnoreCase("True")) {
-                        serverInfoDTO.setStatus(true);
+                        serverInfoDTO.setStatus(Boolean.TRUE);
                     }
                 }
                 serverInfoDTO.setUid(node.getMetadata().getUid());
