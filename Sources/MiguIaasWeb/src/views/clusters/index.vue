@@ -15,8 +15,8 @@
           <el-card shadow="hover" class="cluster-card">
             <div class="cluster-name" slot="header">{{cluster.name}}</div>
             <el-row>
-              <el-col :span="8">机器数量: 88</el-col>
-              <el-col :span="10">POD: 83</el-col>
+              <el-col :span="8">机器数量: {{cluster.servers.length}}</el-col>
+              <el-col :span="10">POD: {{cluster.podsNum}}</el-col>
             </el-row>
             <el-row>
               <el-col :span="3">CPU</el-col>

@@ -29,6 +29,7 @@ public class ClusterDTO{
     private JSONArray cpuUsage;
     private NetworkFlowDTO networkUsage;
     private JSONArray memoryUsage;
+    private int podsNum;
 
     public Cluster toCluster() {
         Cluster cluster = new Cluster();
@@ -36,6 +37,13 @@ public class ClusterDTO{
         return cluster;
     }
 
+    public int getPodsNum() {
+        return podsNum;
+    }
+
+    public void setPodsNum(int podsNum) {
+        this.podsNum = podsNum;
+    }
 
     public Integer getId() {
         return id;

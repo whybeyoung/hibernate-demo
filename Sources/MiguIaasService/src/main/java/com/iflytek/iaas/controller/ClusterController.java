@@ -17,12 +17,16 @@ import com.iflytek.iaas.domain.ClusterLabel;
 import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
+import com.iflytek.iaas.dto.k8s.LabelDTO;
 import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
+import com.iflytek.iaas.dto.k8s.PodDTO;
 import com.iflytek.iaas.service.K8SService;
+import io.kubernetes.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,7 +59,19 @@ public class ClusterController {
         List<ClusterDTO> clusterDTOs = clusters.stream().map(c -> {
             ClusterDTO clusterDTO = c.toClusterDTO();
             List<Server> servers = serverDao.findByClusterId(c.getId());
+            clusterDTO.setServers(servers);
             setUsageWithStep(clusterDTO, servers, System.currentTimeMillis(), System.currentTimeMillis(), 60);
+
+            ClusterLabel cl = clusterLabelDao.findOneByClusterId(c.getId());
+            LabelDTO labelDTO = new LabelDTO(cl.getKey(), cl.getValue());
+            try {
+               List<PodDTO> pods = k8SService.getPodsByCluster(labelDTO, hostnames(servers));
+               clusterDTO.setPodsNum(pods.size());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ApiException e) {
+                e.printStackTrace();
+            }
             return  clusterDTO;
         }).collect(Collectors.toList());
 
@@ -133,10 +149,14 @@ public class ClusterController {
     }
 
     private void setUsageWithStep(ClusterDTO clusterDTO, List<Server> servers, long start, long end, int step) {
-        List<String> hostnames = servers.stream().map(s -> s.getHostname()).collect(Collectors.toList());
+        List<String> hostnames = hostnames(servers);
         clusterDTO.setCpuUsage(k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, step));
         clusterDTO.setMemoryUsage(k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, step));
         clusterDTO.setNetworkUsage(k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, step));
+    }
+
+    private List<String> hostnames(List<Server> servers) {
+        return servers.stream().map(s -> s.getHostname()).collect(Collectors.toList());
     }
 
 }
