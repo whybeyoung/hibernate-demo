@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DeployConfigDTO {
 
-    private String imgName;
+    private String imgDeployName;
     private String namespace;
     private String imgPath;
     /**
@@ -34,12 +34,12 @@ public class DeployConfigDTO {
     private Integer timeOut;
     private String healthCheckExec;
 
-    public String getImgName() {
-        return imgName;
+    public String getImgDeployName() {
+        return imgDeployName;
     }
 
-    public void setImgName(String imgName) {
-        this.imgName = imgName;
+    public void setImgDeployName(String imgDeployName) {
+        this.imgDeployName = imgDeployName;
     }
 
     public String getImgPath() {
