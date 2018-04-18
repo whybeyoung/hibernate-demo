@@ -83,7 +83,7 @@ public class k8sServiceTest {
 
     @Test
     public void createServerLabel()throws IOException, ApiException{
-        String hostName="itesttech-172-31-205-28";
+        String hostName="itesttech-172-31-1-157";
         List<LabelDTO> labels = new ArrayList<>();
         LabelDTO labelDTO = new LabelDTO();
         labelDTO.setKey("label/server");
@@ -120,23 +120,24 @@ public class k8sServiceTest {
         mountVolumes.add(mountVolumeDTO);
         LabelDTO deployLabel = new LabelDTO();
         deployLabel.setKey("test-deploy");
-        deployLabel.setValue("node-exporter-latest");
+        deployLabel.setValue("mysql-5-7");
         LabelDTO serverLabel = new LabelDTO();
         serverLabel.setKey("label/server");
         serverLabel.setValue("test");
         DeployConfigDTO deployConfigDTO = new DeployConfigDTO();
-//        deployConfigDTO.setImgName("mysql-5-7");
-        deployConfigDTO.setImgName("node-exporter-latest");
+        deployConfigDTO.setImgName("mysql-5-7");
+//        deployConfigDTO.setImgName("node-exporter-latest");
         deployConfigDTO.setNamespace("test1");
-//        deployConfigDTO.setImgPath("harbour.iflytek.com/library/mysql:5.7");
-        deployConfigDTO.setImgPath("harbour.iflytek.com/migu/node-exporter:latest");
-//        deployConfigDTO.setEnvs(envs);
-//        deployConfigDTO.setMountDirs(mountVolumes);
-        deployConfigDTO.setInitCmd("");
-        deployConfigDTO.setPods(3);
+        deployConfigDTO.setImgPath("harbour.iflytek.com/library/mysql:5.7");
+//        deployConfigDTO.setImgPath("harbour.iflytek.com/migu/node-exporter:latest");
+        deployConfigDTO.setEnvs(envs);
+        deployConfigDTO.setMountDirs(mountVolumes);
+//        deployConfigDTO.setInitCmd("");
+        deployConfigDTO.setPods(1);
 //        deployConfigDTO.setMemoryLimits(1024*1024);
         deployConfigDTO.setDeployLabel(deployLabel);
         deployConfigDTO.setServerLabel(serverLabel);
+//        deployConfigDTO.setUniqueDeploy(true);
         deployConfigDTO.setTimeOut(2000);
 
         boolean flag = k8SService.createImageDeployment(deployConfigDTO);
@@ -165,24 +166,24 @@ public class k8sServiceTest {
         imgList.add("node-exporter-latest");
         ServiceConfigDTO serviceConfigDTO = new ServiceConfigDTO();
         serviceConfigDTO.setImgNames(imgList);
-        serviceConfigDTO.setNamespace("test");
+        serviceConfigDTO.setNamespace("test1");
         serviceConfigDTO.setServerName("test-service");
         serviceConfigDTO.setType(K8sAPPType.INTERNAL_SERVICE);
         serviceConfigDTO.setPodPort(36);
-        boolean flag = k8SService.createServiceDeployment(serviceConfigDTO);
-        System.out.print(flag);
+        ServiceDeployInfoDTO service = k8SService.createServiceDeployment(serviceConfigDTO);
+        System.out.print(service);
     }
 
     @Test
     public void deleteServiceDeployment()throws IOException, ApiException{
-        String namespace="test";
+        String namespace="test1";
         String name="test-service";
         k8SService.deleteServiceDeployment(namespace,name);
     }
 
     @Test
     public void getServiceDeploymentInfo()throws IOException, ApiException{
-        String namespace="test";
+        String namespace="test1";
         String name="test-service";
         k8SService.getServiceDeploymentInfo(namespace,name);
     }
@@ -210,7 +211,7 @@ public class k8sServiceTest {
         label.setKey("label/server");
         label.setValue("test");
 
-        List<PodDTO> pods = k8SService.getPodsByCluster(label, Arrays.asList("itesttech-172-31-205-28"));
+        List<PodDTO> pods = k8SService.getPodsByCluster(label, Arrays.asList("itesttech-172-31-205-28","itesttech-172-31-1-157"));
         System.out.print(JSON.toJSONString(pods));
     }
 
