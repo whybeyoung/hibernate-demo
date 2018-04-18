@@ -55,7 +55,7 @@ public class ClusterController {
         List<ClusterDTO> clusterDTOs = clusters.stream().map(c -> {
             ClusterDTO clusterDTO = c.toClusterDTO();
             List<Server> servers = serverDao.findByClusterId(c.getId());
-            setUsage(clusterDTO, servers);
+            setUsageWithStep(clusterDTO, servers, System.currentTimeMillis(), System.currentTimeMillis(), 60);
             return  clusterDTO;
         }).collect(Collectors.toList());
 
@@ -127,12 +127,16 @@ public class ClusterController {
     }
 
     private void setUsage(ClusterDTO clusterDTO, List<Server> servers) {
+        long end = System.currentTimeMillis();
+        long start = end - 1000*60*60*6;
+        setUsageWithStep(clusterDTO, servers, start, end, 60*30);
+    }
+
+    private void setUsageWithStep(ClusterDTO clusterDTO, List<Server> servers, long start, long end, int step) {
         List<String> hostnames = servers.stream().map(s -> s.getHostname()).collect(Collectors.toList());
-        Long end = System.currentTimeMillis();
-        Long start = end - 1000*60*60*6;
-        clusterDTO.setCpuUsage(k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, 60*30));
-        clusterDTO.setMemoryUsage(k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, 60*30));
-        clusterDTO.setNetworkUsage(k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, 60*30));
+        clusterDTO.setCpuUsage(k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, step));
+        clusterDTO.setMemoryUsage(k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, step));
+        clusterDTO.setNetworkUsage(k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, step));
     }
 
 }
