@@ -118,10 +118,10 @@ public class k8sServiceImpl  implements K8SService {
         try{
             //部署标签
             Map<String,String> deployLabel = new HashMap<>();
-            deployLabel.put("image_deploy",deployConfigDTO.getImgName());
+            deployLabel.put("image_deploy",deployConfigDTO.getImgDeployName());
 
             V1ObjectMeta meta = new V1ObjectMeta();
-            meta.setName(deployConfigDTO.getImgName());
+            meta.setName(deployConfigDTO.getImgDeployName());
             meta.setNamespace(deployConfigDTO.getNamespace());
             meta.setLabels(deployLabel);
 
@@ -202,7 +202,7 @@ public class k8sServiceImpl  implements K8SService {
                 V1Container container = new V1Container();
                 container.setCommand(cmds);
                 container.setImage(deployConfigDTO.getImgPath());
-                container.setName(deployConfigDTO.getImgName()+"-"+Integer.toString(i));
+                container.setName(deployConfigDTO.getImgDeployName()+"-"+Integer.toString(i));
                 container.setEnv(envs);
                 if(deployConfigDTO.getContainerPort() != null){
                     V1ContainerPort port = new V1ContainerPort();
@@ -319,11 +319,11 @@ public class k8sServiceImpl  implements K8SService {
         try{
             //服务标签
             Map<String,String> serviceLabel = new HashMap<>();
-            serviceLabel.put(serviceConfigDTO.getNamespace(),serviceConfigDTO.getServerName());
+            serviceLabel.put(serviceConfigDTO.getNamespace(),serviceConfigDTO.getServiceName());
 
             V1ObjectMeta meta = new V1ObjectMeta();
             meta.setNamespace(serviceConfigDTO.getNamespace());
-            meta.setName(serviceConfigDTO.getServerName());
+            meta.setName(serviceConfigDTO.getServiceName());
             meta.setLabels(serviceLabel);
 
             //pod标签

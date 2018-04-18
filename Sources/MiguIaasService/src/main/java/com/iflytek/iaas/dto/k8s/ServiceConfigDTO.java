@@ -18,8 +18,8 @@ import java.util.List;
 public class ServiceConfigDTO {
 
     private K8sAPPType type;
-    private String serverName;
-    private List<String> imgNames;
+    private String serviceName;
+    private List<String> imgDeployNames;
     private String namespace;
     /**
      * 部署标签，根据部署标签创建服务
@@ -29,7 +29,7 @@ public class ServiceConfigDTO {
     /**
      * 只有type是EXTERNAL时，才需要有servicePort，只能指定30000-32767之间的值
      */
-    private Integer NodePort;
+    private Integer nodePort;
 
     public K8sAPPType getType() {
         return type;
@@ -47,32 +47,36 @@ public class ServiceConfigDTO {
         this.podPort = podPort;
     }
 
+    public void setPodPort(Integer podPort) {
+        this.podPort = podPort;
+    }
+
     public Integer getNodePort() {
-        return NodePort;
+        return nodePort;
     }
 
     public void setNodePort(Integer nodePort) {
-        NodePort = nodePort;
+        this.nodePort = nodePort;
     }
 
     public void setDeployLabels(List<LabelDTO> deployLabels) {
         this.deployLabels = deployLabels;
     }
 
-    public String getServerName() {
-        return serverName;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
-    public List<String> getImgNames() {
-        return imgNames;
+    public List<String> getImgDeployNames() {
+        return imgDeployNames;
     }
 
-    public void setImgNames(List<String> imgNames) {
-        this.imgNames = imgNames;
+    public void setImgDeployNames(List<String> imgDeployNames) {
+        this.imgDeployNames = imgDeployNames;
     }
 
     public String getNamespace() {
@@ -85,7 +89,7 @@ public class ServiceConfigDTO {
 
     public List<LabelDTO> getDeployLabels() {
         List<LabelDTO> labels = new ArrayList<>();
-        for(String imgName:imgNames){
+        for(String imgName:imgDeployNames){
             LabelDTO labelDTO = new LabelDTO();
             labelDTO.setKey(this.namespace);
             labelDTO.setValue(imgName);
