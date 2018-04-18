@@ -2,6 +2,7 @@ package com.iflytek.iaas.dto;
 
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.Server;
+import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
@@ -23,6 +24,9 @@ public class ClusterDTO{
     private Date createtime;
     private String labelName;
     private List<Server> servers;
+    private String cpuUsage;
+    private NetworkFlowDTO networkUsage;
+    private String memoryUsage;
 
     public Cluster toCluster() {
         Cluster cluster = new Cluster();
@@ -93,5 +97,29 @@ public class ClusterDTO{
 
     public void setServers(List<Server> servers) {
         this.servers = servers;
+    }
+
+    public String getCpuUsage() {
+        return cpuUsage;
+    }
+
+    public void setCpuUsage(String cpuUsage) {
+        this.cpuUsage = cpuUsage;
+    }
+
+    public NetworkFlowDTO getNetworkUsage() {
+        return networkUsage;
+    }
+
+    public void setNetworkUsage(NetworkFlowDTO networkUsage) {
+        this.networkUsage = networkUsage;
+    }
+
+    public String getMemoryUsage() {
+        return memoryUsage;
+    }
+
+    public void setMemoryUsage(String memoryUsage) {
+        this.memoryUsage = memoryUsage;
     }
 }

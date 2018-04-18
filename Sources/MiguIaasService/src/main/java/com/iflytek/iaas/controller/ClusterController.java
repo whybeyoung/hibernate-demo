@@ -15,12 +15,15 @@ import com.iflytek.iaas.domain.ClusterLabel;
 import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
+import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
+import com.iflytek.iaas.service.K8SService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 〈集群相关controller〉
@@ -41,9 +44,20 @@ public class ClusterController {
     @Autowired
     private ClusterLabelDao clusterLabelDao;
 
+    @Autowired
+    private K8SService k8SService;
+
     @GetMapping("/clusters")
-    public List<Cluster> index() {
-        return clusterDao.findAll();
+    public List<ClusterDTO> index() {
+        List<Cluster> clusters = clusterDao.findAll();
+        List<ClusterDTO> clusterDTOs = clusters.stream().map(c -> {
+            ClusterDTO clusterDTO = c.toClusterDTO();
+            List<Server> servers = serverDao.findByClusterId(c.getId());
+            setUsage(clusterDTO, servers);
+            return  clusterDTO;
+        }).collect(Collectors.toList());
+
+        return clusterDTOs;
     }
 
     @PostMapping("/clusters")
@@ -88,8 +102,11 @@ public class ClusterController {
     public ClusterDTO show(@PathVariable Integer id) {
         Optional<Cluster> cluster = clusterDao.findById(id);
         ClusterDTO clusterDTO = cluster.get().toClusterDTO();
-        clusterDTO.setServers(serverDao.findByClusterId(cluster.get().getId()));
+        List<Server> servers = serverDao.findByClusterId(cluster.get().getId());
+        clusterDTO.setServers(servers);
         clusterDTO.setLabelName(clusterLabelDao.findOneByClusterId(id).getValue());
+
+        setUsage(clusterDTO, servers);
         return clusterDTO;
     }
 
@@ -105,6 +122,19 @@ public class ClusterController {
 
         clusterDao.deleteById(id);
 
+    }
+
+    private void setUsage(ClusterDTO clusterDTO, List<Server> servers) {
+        List<String> hostnames = servers.stream().map(s -> s.getHostname()).collect(Collectors.toList());
+//        clusterDTO = cluster.toClusterDTO();
+        Long end = System.currentTimeMillis();
+        Long start = end - 1000*60*60*6;
+        String cpuUsage = k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, 60);
+        String memoryUsage =k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, 60);
+        NetworkFlowDTO networkUsage =k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, 60);
+        clusterDTO.setCpuUsage(cpuUsage);
+        clusterDTO.setMemoryUsage(memoryUsage);
+        clusterDTO.setNetworkUsage(networkUsage);
     }
 
 }
