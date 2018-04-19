@@ -100,7 +100,7 @@ export default {
             }
             .svg-icon {
               margin-right: 10px;
-              width: 1.2em; 
+              width: 1.2em;
               height: 1.2em;
               vertical-align: -0.2em;
               fill: currentColor;
