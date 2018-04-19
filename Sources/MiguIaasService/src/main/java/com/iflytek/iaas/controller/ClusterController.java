@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.iflytek.iaas.dao.ClusterDao;
 import com.iflytek.iaas.dao.ClusterLabelDao;
 import com.iflytek.iaas.dao.ServerDao;
+import com.iflytek.iaas.dao.UserDao;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.ClusterLabel;
 import com.iflytek.iaas.domain.Server;
@@ -49,6 +50,9 @@ public class ClusterController {
 
     @Autowired
     private ClusterLabelDao clusterLabelDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private K8SService k8SService;
@@ -123,6 +127,9 @@ public class ClusterController {
         List<Server> servers = serverDao.findByClusterId(cluster.get().getId());
         clusterDTO.setServers(servers);
         clusterDTO.setLabelName(clusterLabelDao.findOneByClusterId(id).getValue());
+
+        Optional<User> createUser = userDao.findById(clusterDTO.getCreator());
+        clusterDTO.setCreatorName(createUser.get().getNickname());
 
         setUsage(clusterDTO, servers);
         return clusterDTO;

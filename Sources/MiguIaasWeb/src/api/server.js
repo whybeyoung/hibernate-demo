@@ -7,8 +7,8 @@ ServerApi.index = params => fetch({
   params,
 });
 
-ServerApi.show = clusterId => fetch({
-  url: `servers/${clusterId}`,
+ServerApi.show = serverId => fetch({
+  url: `servers/${serverId}`,
   method: 'get',
 });
 
@@ -20,6 +20,11 @@ ServerApi.create = server => fetch({
 
 ServerApi.count = () => fetch({
   url: 'servers/count',
+});
+
+ServerApi.serverStatus = serverId => fetch({
+  url: `servers/${serverId}/status`,
+  method: 'get',
 });
 
 export default ServerApi;

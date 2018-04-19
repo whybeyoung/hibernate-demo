@@ -93,7 +93,5 @@ export default {
 </script>
 
 <style>
-  .content-container {
-    padding: 28px;
-  }
+
 </style>

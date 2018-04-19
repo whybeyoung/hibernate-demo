@@ -52,3 +52,13 @@ export function formatTime(time, option) {
   }
   return `${d.getMonth() + 1}月${d.getDate()}日${d.getHours()}时${d.getMinutes()}分`;
 }
+
+function formatUnixTime(time) {
+  const t = new Date(time * 1000);
+  return t.toLocaleString();
+}
+
+export function formatUsage(usage) {
+  return usage[0].values.map(i => ({ time: formatUnixTime(i[0]), value: parseFloat(i[1]) }));
+}
+

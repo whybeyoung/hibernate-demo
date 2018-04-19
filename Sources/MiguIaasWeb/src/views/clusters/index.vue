@@ -1,11 +1,10 @@
 <template>
   <div class="clusters-list-container">
-    <el-button @click="addCluster">新增集群</el-button>
     <el-row :gutter="30">
       <el-col :xs="24" :sm="12" :md="8" :lg="6" class="">
         <el-card shadow="always" class="cluster-card servers-overview">
-          <el-card>服务器总数量：{{serversCount.total}}</el-card>
-          <el-card>已使用数量：{{serversCount.used}}</el-card>
+          <el-card>服务器总数量：{{serversCount.total || 0}}</el-card>
+          <el-card>已使用数量：{{serversCount.used || 0}}</el-card>
           <el-card>空闲总数量：{{serversCount.total - serversCount.used}}</el-card>
         </el-card>
       </el-col>
