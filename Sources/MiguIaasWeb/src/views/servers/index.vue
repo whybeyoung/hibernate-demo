@@ -1,6 +1,5 @@
 <template>
   <div class="content-container">
-    <h3>主机管理</h3>
     <el-form :inline="true" :model="serverParams" ref="queryServersForm">
       <el-form-item label="服务器IP" prop="">
         <el-input v-model="serverParams.ipv4"></el-input>
@@ -95,6 +94,6 @@ export default {
 
 <style>
   .content-container {
-    padding: 20px;
+    padding: 28px;
   }
 </style>

@@ -30,31 +30,40 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/clusters/index',
     icon: 'cluster',
-    name: '集群管理',
-    displayName: '集群管理',
+    name: 'clusters',
     noDropdown: false,
+    meta: {
+      displayName: '集群管理',
+    },
     children: [{
       path: 'index',
-      name: '集群总览',
+      name: 'clusters.index',
       icon: 'summary',
-      displayName: '集群总览',
       component: dynamicImport('clusters/index'),
+      meta: {
+        displayName: '集群总览',
+      },
     }, {
       path: 'create',
-      name: '新增集群',
+      name: 'clusters.create',
       icon: 'new',
-      displayName: '新增集群',
       component: dynamicImport('clusters/create'),
+      meta: {
+        displayName: '新增集群',
+      },
     }, {
       path: ':id/detail',
-      name: '集群详情',
+      name: 'clusters.detail',
       hidden: true,
       component: dynamicImport('clusters/detail'),
     }, {
       path: ':id/edit',
-      name: '集群编辑',
+      name: 'clusters.edit',
       hidden: true,
       component: dynamicImport('clusters/create'),
+      meta: {
+        displayName: '集群编辑',
+      },
     }],
   },
   {
@@ -62,25 +71,33 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/servers/index',
     icon: 'server',
-    name: '主机管理',
-    displayName: '主机管理',
+    name: 'servers',
+    meta: {
+      displayName: '主机管理',
+    },
     children: [{
       path: 'index',
-      name: '主机列表',
+      name: 'servers.index',
       icon: 'list',
-      displayName: '主机列表',
       component: dynamicImport('servers/index'),
+      meta: {
+        displayName: '主机列表',
+      },
     }, {
       path: 'create',
-      name: '添加主机',
+      name: 'servers.create',
       icon: 'new',
-      displayName: '添加主机',
       component: dynamicImport('servers/create'),
+      meta: {
+        displayName: '添加主机',
+      },
     }, {
       path: ':id/detail',
       name: 'servers.detail',
-      displayName: '主机详情',
       component: dynamicImport('servers/detail'),
+      meta: {
+        displayName: '主机详情',
+      },
     }],
   },
 
@@ -90,21 +107,27 @@ export const constantRouterMap = [
     redirect: '/image/index',
     icon: 'docker',
     name: '镜像管理',
-    displayName: '镜像管理',
+    meta: {
+      displayName: '镜像管理',
+    },
     children: [
       {
         path: 'index',
         name: '镜像列表',
-        displayName: '镜像列表',
         icon: 'list',
         component: dynamicImport('image/index'),
+        meta: {
+          displayName: '镜像列表',
+        },
       },
       {
         path: 'upload',
         name: '镜像上传',
-        displayName: '镜像上传',
         icon: 'upload',
         component: dynamicImport('image/upload'),
+        meta: {
+          displayName: '镜像上传',
+        },
       },
     ],
   },
@@ -114,14 +137,18 @@ export const constantRouterMap = [
     redirect: '/log/operation',
     icon: 'log-manage',
     name: '日志管理',
-    displayName: '日志管理',
+    meta: {
+      displayName: '日志管理',
+    },
     children: [
       {
         path: 'operation',
         name: '操作日志',
-        displayName: '操作日志',
         icon: 'operation-log',
         component: dynamicImport('log/operation'),
+        meta: {
+          displayName: '操作日志',
+        },
       },
     ],
   },
