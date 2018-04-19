@@ -125,7 +125,7 @@ public class k8sServiceTest {
         serverLabel.setKey("label/server");
         serverLabel.setValue("test");
         DeployConfigDTO deployConfigDTO = new DeployConfigDTO();
-        deployConfigDTO.setImgName("mysql-5-7");
+        deployConfigDTO.setImgDeployName("mysql-5-7");
 //        deployConfigDTO.setImgName("node-exporter-latest");
         deployConfigDTO.setNamespace("test1");
         deployConfigDTO.setImgPath("harbour.iflytek.com/library/mysql:5.7");
@@ -165,9 +165,9 @@ public class k8sServiceTest {
         imgList.add("mysql-5-7");
         imgList.add("node-exporter-latest");
         ServiceConfigDTO serviceConfigDTO = new ServiceConfigDTO();
-        serviceConfigDTO.setImgNames(imgList);
+        serviceConfigDTO.setImgDeployNames(imgList);
         serviceConfigDTO.setNamespace("test1");
-        serviceConfigDTO.setServerName("test-service");
+        serviceConfigDTO.setServiceName("test-service");
         serviceConfigDTO.setType(K8sAPPType.INTERNAL_SERVICE);
         serviceConfigDTO.setPodPort(36);
         ServiceDeployInfoDTO service = k8SService.createServiceDeployment(serviceConfigDTO);

@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * 〈日志服务〉
  *
@@ -37,6 +39,7 @@ public class LogServiceImpl implements LogService{
         OperationLog operationLog = new OperationLog();
         BeanUtils.copyProperties(operationLogDTO,operationLog);
         try{
+            operationLog.setCreatetime(new Date());
             OperationLog log = operationLogDao.save(operationLog);
             return true;
         }catch (Exception e){
@@ -48,8 +51,9 @@ public class LogServiceImpl implements LogService{
     @Override
     public Page<OperationLogDTO> findOperationLog(Integer pageIndex, Integer pageSize) {
         try{
+            pageSize = pageSize > 100?100:pageSize;
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
-            Page<OperationLog> operationLogs =operationLogDao.findALL(PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
+            Page<OperationLog> operationLogs = operationLogDao.findAll(PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
                 OperationLogDTO operationLogDTO = new OperationLogDTO();
                 BeanUtils.copyProperties(item,operationLogDTO);
@@ -65,6 +69,7 @@ public class LogServiceImpl implements LogService{
     @Override
     public Page<OperationLogDTO> findOperationLogByCreator(String creator, Integer pageIndex, Integer pageSize) {
         try{
+            pageSize = pageSize > 100?100:pageSize;
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
             Page<OperationLog> operationLogs =operationLogDao.findByCreator(creator,PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
@@ -82,8 +87,27 @@ public class LogServiceImpl implements LogService{
     @Override
     public Page<OperationLogDTO> findOperationLogByType(LogType type, Integer pageIndex, Integer pageSize) {
         try{
+            pageSize = pageSize > 100?100:pageSize;
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
             Page<OperationLog> operationLogs =operationLogDao.findByType(type.ordinal(),PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
+            Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
+                OperationLogDTO operationLogDTO = new OperationLogDTO();
+                BeanUtils.copyProperties(item,operationLogDTO);
+                return operationLogDTO;
+            });
+            return operationLogList;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public Page<OperationLogDTO> findOperationLogByTypeAndCreator(LogType type,String creator, Integer pageIndex, Integer pageSize) {
+        try{
+            pageSize = pageSize > 100?100:pageSize;
+            Sort sort = new Sort(Sort.Direction.DESC, "createtime");
+            Page<OperationLog> operationLogs =operationLogDao.findOperationLogByTypeAndCreator(type.ordinal(),creator,PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
                 OperationLogDTO operationLogDTO = new OperationLogDTO();
                 BeanUtils.copyProperties(item,operationLogDTO);

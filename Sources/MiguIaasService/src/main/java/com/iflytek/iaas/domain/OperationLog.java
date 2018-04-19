@@ -4,6 +4,9 @@
  */
 package com.iflytek.iaas.domain;
 
+import com.iflytek.iaas.consts.LogType;
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -25,7 +28,7 @@ public class OperationLog implements Serializable {
     private Integer id;
 
     @Column
-    private String type;
+    private LogType type;
 
     @Column
     private String detail;
@@ -39,7 +42,7 @@ public class OperationLog implements Serializable {
     @Column
     private String creator;
 
-    @Column
+    @Column()
     private Date createtime;
 
     public Integer getId() {
@@ -50,11 +53,11 @@ public class OperationLog implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
+    public LogType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(LogType type) {
         this.type = type;
     }
 
