@@ -12,8 +12,8 @@ import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.dto.k8s.ServerInfoDTO;
 import com.iflytek.iaas.service.K8SService;
 import io.kubernetes.client.ApiException;
-import org.apache.catalina.util.ServerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class ServerController {
     private ServerDao serverDao;
 
     @GetMapping("/servers")
-    public List<ServerInfoDTO>  index(String hostname, String from) throws IOException, ApiException {
+    public List<ServerInfoDTO>  index(String from, String hostname, String os, String clusterName, String ipv4) throws IOException, ApiException {
         if("k8s-local".equals(from)) {
             List<ServerInfoDTO> k8sServerInfoDTOs = new ArrayList<ServerInfoDTO>();
             if(hostname != null) {
@@ -57,7 +57,8 @@ public class ServerController {
             }
             return k8sServerInfoDTOs;
         } else if("local".equals(from)) {
-            return serverDao.findAll().stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
+            List<Server> servers = serverDao.findAllByIpv4LikeAndHostnameLikeAndOsLike(convertLikeValue(ipv4 ), convertLikeValue(hostname), convertLikeValue(os));
+            return servers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
         } else if("localunadded".equals(from)) {
             List<Server> localunaddedServers = serverDao.findByClusterIdIsNull();
             return localunaddedServers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
@@ -75,6 +76,14 @@ public class ServerController {
         Server server = serverInfoDTO.toServer();
         server = serverDao.save(server);
         return server.toServerInfoDTO();
+    }
+
+    private String convertLikeValue(String value) {
+        if(StringUtils.isEmpty(value)) {
+            return "%";
+        } else {
+            return "%" + value + "%";
+        }
     }
 
 }

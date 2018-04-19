@@ -18,7 +18,7 @@
       <div slot="header">cpu平均使用率：</div>
       <v-chart :forceFit="true" :height="height" :data="cpuUsage" :scale="scale">
         <v-tooltip />
-        <v-axis />
+        <v-axis :label="percentageUsage"/>
         <v-line position="time*value" />
         <v-point position="time*value" shape="circle" />
       </v-chart>
@@ -73,6 +73,11 @@ export default {
         formatter: '%',
       }, {
         dataKey: 'time',
+      }],
+      percentageUsage: [{
+        value: {
+          formatter: val => `${val}%`,
+        },
       }],
       networkScale: [{
         dataKey: 'transmitValue',

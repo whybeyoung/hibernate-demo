@@ -31,6 +31,9 @@ public class Server implements Serializable {
     private Integer clusterId;
     private Date createtime;
     private Date updatetime;
+//    @ManyToOne
+//    @JoinColumn(name = "cluster_id")
+//    private Cluster cluster;
 
     @Id
     @GeneratedValue(generator="increment")
@@ -239,4 +242,12 @@ public class Server implements Serializable {
         BeanUtils.copyProperties(this, serverInfoDTO);
         return serverInfoDTO;
     }
+
+//    public Cluster getCluster() {
+//        return cluster;
+//    }
+//
+//    public void setCluster(Cluster cluster) {
+//        this.cluster = cluster;
+//    }
 }
