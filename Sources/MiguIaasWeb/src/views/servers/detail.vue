@@ -35,6 +35,16 @@
       </v-chart>
     </el-card>
 
+
+    <el-card class="grap-card">
+      <div slot="header">下行速率：</div>
+      <v-chart :forceFit="true" :height="height" :data="serverStatus.network.receive" :scale="networkScale">
+        <v-tooltip />
+        <v-axis/>
+        <v-line position="time*value" />
+        <v-point position="time*value" shape="circle" />
+      </v-chart>
+    </el-card>
   </div>
 
 </template>
@@ -50,7 +60,11 @@ export default {
       serverStatus: {
         cpu: {},
         memory: {},
-        network: {},
+        network: {
+          receive: {},
+          transmit: {},
+          total: {},
+        },
       },
       scale: [{
         dataKey: 'value',
@@ -59,6 +73,10 @@ export default {
         max: 1,
       }, {
         dataKey: 'time',
+      }],
+      networkScale: [{
+        dataKey: 'transmitValue',
+        formatter: val => `${val}MB`,
       }],
       height: 400,
     };
@@ -72,7 +90,9 @@ export default {
       this.serverStatus.cpu = formatUsage(resp.cpu);
       console.log(this.serverStatus.cpu);
       this.serverStatus.memory = formatUsage(resp.memory);
-      // this.serverStatus.network = formatUsage(resp.);
+      this.serverStatus.network.receive = formatUsage(resp.network.receiveResult);
+      this.serverStatus.network.transmit = formatUsage(resp.network.transmitResult);
+      this.serverStatus.network.total = formatUsage(resp.network.totalResult);
     });
   },
 };
