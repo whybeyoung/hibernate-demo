@@ -4,16 +4,21 @@
     <levelbar></levelbar>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80">
+        <svg class="svg-icon" aria-hidden="true">
+          <use xlink:href="#icon-user"></use>
+        </svg>
+        <span>{{!user.nickname?user.account:user.nickname}}</span>
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class='inlineBlock' to="/">
           <el-dropdown-item>
-            Home
+            首页
           </el-dropdown-item>
         </router-link>
-        <el-dropdown-item divided><span @click="logout" style="display:block;">LogOut</span></el-dropdown-item>
+        <el-dropdown-item divided>
+          <span @click="logout" style="display:block;">退出登录</span>
+          </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </el-menu>
@@ -33,6 +38,7 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
+      'user',
     ]),
   },
   methods: {
@@ -54,10 +60,11 @@ export default {
         line-height: 50px;
         border-radius: 0px !important;
         .hamburger-container {
-            line-height: 58px;
+            line-height: 50px;
             height: 50px;
             float: left;
             padding: 0 10px;
+            outline: none;
         }
         .errLog-container {
             display: inline-block;
@@ -87,9 +94,17 @@ export default {
                 .el-icon-caret-bottom {
                     position: absolute;
                     right: -20px;
-                    top: 25px;
+                    top: 18px;
                     font-size: 12px;
                 }
+            }
+            .svg-icon {
+              margin-right: 10px;
+              width: 1.2em; 
+              height: 1.2em;
+              vertical-align: -0.2em;
+              fill: currentColor;
+              overflow: hidden;
             }
         }
     }

@@ -31,7 +31,6 @@ public class ServerInfoDTO {
     private String cpu;
     private String memory;
     private boolean status;
-    private boolean valid;
     private String annotation;
     private String positionCode;
     private String dockerVersion;
@@ -130,14 +129,6 @@ public class ServerInfoDTO {
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public boolean getValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
     }
 
     public String getAnnotation() {

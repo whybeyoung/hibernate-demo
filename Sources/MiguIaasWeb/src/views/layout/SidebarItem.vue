@@ -14,7 +14,7 @@
           <sidebar-item class='menu-indent' v-if='child.children&&child.children.length>0' :routes='[child]' :key="child.path"> </sidebar-item>
           <router-link v-else class="menu-indent" :to="item.path+'/'+child.path" :key="child.path">
             <el-menu-item :index="item.path+'/'+child.path">
-              {{child.displayName}}
+              <icon-svg v-if='child.icon' :icon-class="child.icon" />{{child.displayName}}
             </el-menu-item>
           </router-link>
         </template>
@@ -34,9 +34,18 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss" >
+.el-submenu__icon-arrow{
+  color: #fff !important;
+  font-size: 14px !important;
+}
 .svg-icon {
   margin-right: 10px;
+  width: 1.2em; 
+  height: 1.2em;
+  vertical-align: -0.2em;
+  fill: currentColor;
+  overflow: hidden;
 }
 .hideSidebar .menu-indent{
   display: block;
