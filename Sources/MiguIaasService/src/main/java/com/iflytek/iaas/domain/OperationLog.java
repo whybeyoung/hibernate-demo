@@ -28,7 +28,7 @@ public class OperationLog implements Serializable {
     private Integer id;
 
     @Column
-    private LogType type;
+    private Integer type;
 
     @Column
     private String detail;
@@ -42,7 +42,7 @@ public class OperationLog implements Serializable {
     @Column
     private String creator;
 
-    @Column()
+    @Column
     private Date createtime;
 
     public Integer getId() {
@@ -53,11 +53,11 @@ public class OperationLog implements Serializable {
         this.id = id;
     }
 
-    public LogType getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(LogType type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

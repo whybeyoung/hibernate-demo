@@ -51,5 +51,8 @@ export default {
   display: block;
   text-indent: 10px;
 }
+.el-menu-item{
+  min-width: 0px !important;
+}
 </style>
 
