@@ -126,7 +126,7 @@ export default {
 
 <style>
 .content-container {
-  margin: 20px;
+  margin: 28px;
 }
 
   .grap-card {
