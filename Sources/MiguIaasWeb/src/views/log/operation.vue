@@ -61,80 +61,82 @@
 </template>
 
 <script>
-import GetOperationLog from "@/api/log"
+import GetOperationLog from '@/api/log';
 
 export default {
-  data(){
+  data() {
     return {
-      options:[
+      options: [
         {
-          label:'新建部署',
-          value:0
+          label: '新建部署',
+          value: 0,
         },
         {
-          label:'下线',
-          value:1
+          label: '下线',
+          value: 1,
         },
         {
-          label:'扩容缩容',
-          value:2
+          label: '扩容缩容',
+          value: 2,
         },
         {
-          label:'删除',
-          value:3
-        }
+          label: '删除',
+          value: 3,
+        },
       ],
-      logType:'',
-      creator:'',
-      pageIndex:1,
-      pageSize:10,
-      allEles:0,
-      logList:[]
-    }
+      logType: '',
+      creator: '',
+      pageIndex: 1,
+      pageSize: 10,
+      allEles: 0,
+      logList: [],
+    };
   },
-  created(){
+  created() {
     this.getOperationLog(1);
   },
-  methods:{
-    getOperationLog(from){
-      if(from == 1){
+  methods: {
+    getOperationLog(from) {
+      if (from === 1) {
         this.pageIndex = 1;
       }
-      GetOperationLog(this.logType,this.creator,this.pageIndex,this.pageSize).then((result)=>{
+      GetOperationLog(this.logType, this.creator, this.pageIndex, this.pageSize).then((result) => {
         this.logList = result.content;
         this.pageSize = result.size;
-        this.pageIndex = result.number+1;
+        this.pageIndex = result.number + 1;
         this.allEles = result.totalElements;
-        if(this.allEles == 0){
+        if (this.allEles === 0) {
           this.$message('暂无数据');
-        }else{
-          this.logList = this.logList.map((item)=>{
-            switch(item.type){
+        } else {
+          this.logList = this.logList.map((item) => {
+            switch (item.type) {
               case 'NEW_DEPLOY':
-                item.type="新建部署";
+                item.type = '新建部署';
                 break;
               case 'OFFLINE':
-                item.type = "下线";
+                item.type = '下线';
                 break;
               case 'SCALE':
-                item.type = "扩容/缩容"
+                item.type = '扩容/缩容';
                 break;
               case 'DELETE':
-                item.type = "删除";
+                item.type = '删除';
                 break;
+              default:
+                item.type = '';
             }
-            let date = new Date(item.createtime);
-            item.createtime = date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+            const date = new Date(item.createtime);
+            item.createtime = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
             return item;
-          })
+          });
         }
       });
-    }
-  }
+    },
+  },
 
-  
-}
+
+};
 </script>
 
 <style lang="scss" scoped>
@@ -154,5 +156,4 @@ export default {
 }
 
 </style>
-
 
