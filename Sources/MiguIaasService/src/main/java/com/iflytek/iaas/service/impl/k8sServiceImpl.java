@@ -118,7 +118,7 @@ public class K8sServiceImpl  implements K8SService {
         try{
             //部署标签
             Map<String,String> deployLabel = new HashMap<>();
-            deployLabel.put("image_deploy",deployConfigDTO.getImgDeployName());
+            deployLabel.put(deployConfigDTO.getDeployLabel().getKey(),deployConfigDTO.getDeployLabel().getValue());
 
             V1ObjectMeta meta = new V1ObjectMeta();
             meta.setName(deployConfigDTO.getImgDeployName());
@@ -566,7 +566,7 @@ public class K8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public List<ServerInfoDTO> getServerNodesByLabel(LabelDTO serverLabel)throws IOException, ApiException{
+    public List<ServerInfoDTO> getServerNodesByServerLabel(LabelDTO serverLabel)throws IOException, ApiException{
         List<ServerInfoDTO> serverList = new ArrayList<>();
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
@@ -611,14 +611,26 @@ public class K8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public List<ServerInfoDTO> getServerNodesByDeployLabel(String namespace,LabelDTO deploylabel)throws IOException, ApiException{
+    public List<ServerInfoDTO> getServerNodesByDeployLabel(String namespace,LabelDTO deployLabel)throws IOException, ApiException{
         List<ServerInfoDTO> serverList = new ArrayList<>();
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api apiInstance = new CoreV1Api();
 
+        try{
 
+            String labelSelector=deployLabel.getKey()+"="+deployLabel.getValue();
+            V1PodList result = apiInstance.listNamespacedPod(namespace, null, null, null, null, labelSelector, null, null, 0, null);
+            for(V1Pod pod: result.getItems()){
+                ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
+                serverInfoDTO.setIpv4(pod.getStatus().getHostIP());
+                serverInfoDTO.setHostname(pod.getSpec().getNodeName());
 
+                serverList.add(serverInfoDTO);
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
         return serverList;
     }
 

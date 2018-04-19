@@ -18,13 +18,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OperationLogDao extends JpaRepository<OperationLog,Integer> {
 
     /**
-     * 分页获取日志列表
-     * @param pageable 分页参数
-     * @return
-     */
-    Page<OperationLog> findALL(Pageable pageable);
-
-    /**
      * 分页按类型查询日志列表
      * @param type 日志类型
      * @param pageable 分页参数
