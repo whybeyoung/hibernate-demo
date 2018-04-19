@@ -52,19 +52,23 @@ public class LogController {
         switch (type){
             case "0":
                 logType = LogType.NEW_DEPLOY;
+                break;
             case "1":
                 logType = LogType.OFFLINE;
+                break;
             case "2":
                 logType = LogType.SCALE;
+                break;
             case "3":
                 logType = LogType.DELETE;
+                break;
         }
         Page<OperationLogDTO> operationLogs;
         if(StringUtils.isEmpty(creator) && StringUtils.isEmpty(type)){
             operationLogs = logService.findOperationLog(Integer.valueOf(index),Integer.valueOf(size));
-        }else if(StringUtils.isNotEmpty(creator)){
+        }else if(StringUtils.isNotEmpty(creator) && StringUtils.isEmpty(type)){
             operationLogs = logService.findOperationLogByCreator(creator,Integer.valueOf(index),Integer.valueOf(size));
-        }else if(StringUtils.isNotEmpty(type)){
+        }else if(StringUtils.isNotEmpty(type) && StringUtils.isEmpty(creator)){
             operationLogs = logService.findOperationLogByType(logType,Integer.valueOf(index),Integer.valueOf(size));
         }else{
             operationLogs = logService.findOperationLogByTypeAndCreator(logType,creator,Integer.valueOf(index),Integer.valueOf(size));

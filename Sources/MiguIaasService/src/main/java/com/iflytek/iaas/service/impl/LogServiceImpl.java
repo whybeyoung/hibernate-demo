@@ -55,8 +55,7 @@ public class LogServiceImpl implements LogService{
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
             Page<OperationLog> operationLogs = operationLogDao.findAll(PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
-                OperationLogDTO operationLogDTO = new OperationLogDTO();
-                BeanUtils.copyProperties(item,operationLogDTO);
+                OperationLogDTO operationLogDTO = convertOperationDTO(item);
                 return operationLogDTO;
             });
             return operationLogList;
@@ -73,8 +72,7 @@ public class LogServiceImpl implements LogService{
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
             Page<OperationLog> operationLogs =operationLogDao.findByCreator(creator,PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
-                OperationLogDTO operationLogDTO = new OperationLogDTO();
-                BeanUtils.copyProperties(item,operationLogDTO);
+                OperationLogDTO operationLogDTO = convertOperationDTO(item);
                 return operationLogDTO;
             });
             return operationLogList;
@@ -91,8 +89,7 @@ public class LogServiceImpl implements LogService{
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
             Page<OperationLog> operationLogs =operationLogDao.findByType(type.ordinal(),PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
-                OperationLogDTO operationLogDTO = new OperationLogDTO();
-                BeanUtils.copyProperties(item,operationLogDTO);
+                OperationLogDTO operationLogDTO = convertOperationDTO(item);
                 return operationLogDTO;
             });
             return operationLogList;
@@ -109,8 +106,7 @@ public class LogServiceImpl implements LogService{
             Sort sort = new Sort(Sort.Direction.DESC, "createtime");
             Page<OperationLog> operationLogs =operationLogDao.findOperationLogByTypeAndCreator(type.ordinal(),creator,PageRequest.of(pageIndex.intValue()-1,pageSize.intValue(),sort));
             Page<OperationLogDTO> operationLogList = operationLogs.map((item)->{
-                OperationLogDTO operationLogDTO = new OperationLogDTO();
-                BeanUtils.copyProperties(item,operationLogDTO);
+                OperationLogDTO operationLogDTO = convertOperationDTO(item);
                 return operationLogDTO;
             });
             return operationLogList;
@@ -118,5 +114,32 @@ public class LogServiceImpl implements LogService{
             logger.error(e.getMessage());
         }
         return null;
+    }
+
+    /**
+     * 转换dto对象
+     * @param operationLog
+     * @return
+     */
+    private OperationLogDTO convertOperationDTO(OperationLog operationLog){
+        OperationLogDTO operationLogDTO = new OperationLogDTO();
+        BeanUtils.copyProperties(operationLog,operationLogDTO);
+        switch (operationLog.getType()){
+            case 0:
+                operationLogDTO.setType(LogType.NEW_DEPLOY);
+                break;
+            case 1:
+                operationLogDTO.setType(LogType.OFFLINE);
+                break;
+            case 2:
+                operationLogDTO.setType(LogType.SCALE);
+                break;
+            case 3:
+                operationLogDTO.setType(LogType.DELETE);
+                break;
+            default:
+                break;
+        }
+        return operationLogDTO;
     }
 }
