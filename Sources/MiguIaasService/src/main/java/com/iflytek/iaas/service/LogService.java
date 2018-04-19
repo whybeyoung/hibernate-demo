@@ -50,4 +50,14 @@ public interface LogService {
      */
     Page<OperationLogDTO> findOperationLogByType(LogType type, Integer pageIndex, Integer pageSize);
 
+    /**
+     * 根据操作日志类型和创建者分页获取操作日志
+     * @param type 操作日志类型
+     * @param creator 创建者
+     * @param pageIndex  页码,从1开始
+     * @param pageSize 页大小，最大100
+     * @return
+     */
+    Page<OperationLogDTO> findOperationLogByTypeAndCreator(LogType type,String creator, Integer pageIndex, Integer pageSize);
+
 }

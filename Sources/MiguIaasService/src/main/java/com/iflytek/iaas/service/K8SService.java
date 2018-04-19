@@ -131,12 +131,22 @@ public interface K8SService {
 
     /**
      * 根据主机标签获取主机列表
-     * @param label 主机标签
+     * @param serverLabel 主机标签
      * @return
      * @throws IOException
      * @throws ApiException
      */
-    List<ServerInfoDTO> getServerNodesByLabel(LabelDTO label)throws IOException, ApiException;
+    List<ServerInfoDTO> getServerNodesByLabel(LabelDTO serverLabel)throws IOException, ApiException;
+
+    /**
+     * 根据命名空间和部署标签获取主机列表
+     * @param namespace
+     * @param deploylabel
+     * @return
+     * @throws IOException
+     * @throws ApiException
+     */
+    List<ServerInfoDTO> getServerNodesByDeployLabel(String namespace,LabelDTO deploylabel)throws IOException, ApiException;
 
 
     /**

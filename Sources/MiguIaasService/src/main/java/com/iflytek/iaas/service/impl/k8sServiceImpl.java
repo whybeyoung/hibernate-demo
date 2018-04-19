@@ -41,7 +41,7 @@ import java.util.*;
  * @create 2018/4/11
  */
 @Service("K8SService")
-public class k8sServiceImpl  implements K8SService {
+public class K8sServiceImpl  implements K8SService {
     private Logger logger = LoggerFactory.getLogger(K8SService.class);
 
     @Value("${prometheus.url}")
@@ -566,13 +566,13 @@ public class k8sServiceImpl  implements K8SService {
     }
 
     @Override
-    public List<ServerInfoDTO> getServerNodesByLabel(LabelDTO label)throws IOException, ApiException{
+    public List<ServerInfoDTO> getServerNodesByLabel(LabelDTO serverLabel)throws IOException, ApiException{
         List<ServerInfoDTO> serverList = new ArrayList<>();
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
         CoreV1Api apiInstance = new CoreV1Api();
         try{
-            String labelSelector=label.getKey()+"="+label.getValue();
+            String labelSelector=serverLabel.getKey()+"="+serverLabel.getValue();
             V1NodeList result = apiInstance.listNode(null,null, null, null, labelSelector, null, null, null, null);
             for(V1Node node:result.getItems()){
                 ServerInfoDTO serverInfoDTO = new ServerInfoDTO();
@@ -607,6 +607,18 @@ public class k8sServiceImpl  implements K8SService {
         }catch (Exception e){
             logger.error(e.getMessage());
         }
+        return serverList;
+    }
+
+    @Override
+    public List<ServerInfoDTO> getServerNodesByDeployLabel(String namespace,LabelDTO deploylabel)throws IOException, ApiException{
+        List<ServerInfoDTO> serverList = new ArrayList<>();
+        ApiClient client = Config.defaultClient();
+        Configuration.setDefaultApiClient(client);
+        CoreV1Api apiInstance = new CoreV1Api();
+
+
+
         return serverList;
     }
 

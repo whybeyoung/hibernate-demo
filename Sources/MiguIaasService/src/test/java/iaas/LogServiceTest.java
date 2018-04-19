@@ -33,12 +33,12 @@ public class LogServiceTest {
     private LogService logService;
 
     @Test
-    public void saveOperationLog(){
+    public void saveOperationLogTest(){
         ServiceConfigDTO serviceConfigDTO = new ServiceConfigDTO();
-        serviceConfigDTO.setImgNames(Arrays.asList("mysql-5-7"));
-        serviceConfigDTO.setNamespace("test1");
-        serviceConfigDTO.setServerName("test-service");
-        serviceConfigDTO.setType(K8sAPPType.INTERNAL_SERVICE);
+        serviceConfigDTO.setImgDeployNames(Arrays.asList("mysql-5-7"));
+        serviceConfigDTO.setNamespace("test2");
+        serviceConfigDTO.setServiceName("test-service");
+        serviceConfigDTO.setType(K8sAPPType.EXTERNAL_SERVICE);
         serviceConfigDTO.setPodPort(36);
 
         OperationLogDTO operationLogDTO = new OperationLogDTO();
@@ -47,7 +47,17 @@ public class LogServiceTest {
         operationLogDTO.setObj("mysql-5-7");
         operationLogDTO.setDetail("新建部署");
         operationLogDTO.setParam(JSON.toJSONString(serviceConfigDTO));
-        logService.saveOperationLog(operationLogDTO);
+        for(int i=0; i<10; i++){
+            logService.saveOperationLog(operationLogDTO);
+        }
+
     }
+    @Test
+    public void findOperationLogByTypeAndCreatorTest(){
+        Integer pageIndex=1;
+        Integer pageSize=6;
+        logService.findOperationLogByTypeAndCreator(null,null,pageIndex,pageSize);
+    }
+
 
 }
