@@ -31,6 +31,10 @@ public interface ServerDao extends JpaRepository<Server,Integer> {
 
     List<Server> findByClusterIdIsNull();
 
+    List<Server> findByClusterIdIsNullAndIpv4LikeAndHostnameLike(String ipv4, String hostname);
+
     List<Server> findByClusterId(Integer clusterId);
+
+    List<Server> findAllByIpv4LikeAndHostnameLikeAndOsLike(String ipv4, String hostname, String os);
 
 }

@@ -31,6 +31,8 @@ public class Cluster implements Serializable{
     private Date createtime;
     @Column
     private String creator;
+//    @OneToMany(mappedBy = "cluster")
+//    private List<Server> servers;
 
     public ClusterDTO toClusterDTO() {
         ClusterDTO clusterDTO = new ClusterDTO();
@@ -98,4 +100,12 @@ public class Cluster implements Serializable{
     public void setCreator(String creator) {
         this.creator = creator;
     }
+
+//    public List<Server> getServers() {
+//        return servers;
+//    }
+//
+//    public void setServers(List<Server> servers) {
+//        this.servers = servers;
+//    }
 }
