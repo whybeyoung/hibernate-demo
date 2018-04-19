@@ -201,7 +201,7 @@ public class k8sServiceTest {
         LabelDTO label = new LabelDTO();
         label.setKey("beta.kubernetes.io/arch");
         label.setValue("amd64");
-        List<ServerInfoDTO> servers = k8SService.getServerNodesByLabel(label);
+        List<ServerInfoDTO> servers = k8SService.getServerNodesByServerLabel(label);
         System.out.print(JSON.toJSONString(servers));
     }
 
@@ -220,6 +220,15 @@ public class k8sServiceTest {
         String hostname ="itesttech-172-31-1-157";
         String disk= k8SService.getServerDiskByHostname(hostname);
         System.out.print(disk);
+    }
+
+    @Test
+    public void getServerNodesByDeployLabel()throws IOException, ApiException{
+        String namespace="test1";
+        LabelDTO deploylabel = new LabelDTO();
+        deploylabel.setKey("test1-node-exporter-latest");
+        deploylabel.setValue("node-exporter-latest");
+        k8SService.getServerNodesByDeployLabel(namespace,deploylabel);
     }
 
 }
