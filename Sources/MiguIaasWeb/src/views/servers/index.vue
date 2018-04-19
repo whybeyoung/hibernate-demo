@@ -81,8 +81,8 @@ export default {
         this.servers = resp;
       });
     },
-    serverStatus() {
-
+    serverStatus(server) {
+      this.$router.push({ name: 'servers.detail', params: { id: server.id } });
     },
   },
   created() {

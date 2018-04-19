@@ -24,73 +24,75 @@
         </el-col>
       </el-row>
 
-      <el-row style="height: 500px;" type="flex">
-        <el-col :span="12" style="height: inherit; padding: 20px;">
-          <el-form-item label="IP:">
-            <el-input v-model="host.ip" placeholder="请输入IP"></el-input>
-          </el-form-item>
-          <el-form-item label="主机名:">
-            <el-input v-model="host.name" placeholder="请输入主机名"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="queryHost">查询</el-button>
-          </el-form-item>
-          <!--
-          <el-form-item>-->
-            <!--<el-button type="primary" @click="addHostDialogVisible = true">添加</el-button>-->
-          <!--</el-form-item>
-          -->
+      <el-row>
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" style="padding: 20px;">
 
-          <el-table
-              :data="usableServers"
-              stripe
-              border
-              height="398"
-              style="width: 100%">
-            <el-table-column prop="ipv4" label="IP" fixed width="180"></el-table-column>
-            <el-table-column prop="hostname" label="主机名" width="180"></el-table-column>
-            <el-table-column prop="os" label="操作系统"></el-table-column>
-            <el-table-column prop="kernel" label="kernel"></el-table-column>
-            <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
-            <el-table-column
-                fixed="right"
-                width="80"
-                align="center"
-                label="操作">
-              <template slot-scope="scope">
-                <el-button @click="addServer(scope.row)" type="text" size="small">添加</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <el-card>
+
+            <div slot="header">
+              可添加的主机：
+            </div>
+
+            <el-form-item label="IP:">
+              <el-input v-model="serverParam.ip" placeholder="请输入IP"></el-input>
+            </el-form-item>
+            <el-form-item label="主机名:">
+              <el-input v-model="serverParam.name" placeholder="请输入主机名"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="queryServers">查询</el-button>
+            </el-form-item>
+
+            <el-table
+                :data="usableServers"
+                stripe
+                border
+                style="width: 100%">
+              <el-table-column prop="ipv4" label="IP" fixed></el-table-column>
+              <el-table-column prop="hostname" label="主机名"></el-table-column>
+              <el-table-column prop="os" label="操作系统"></el-table-column>
+              <el-table-column prop="kernel" label="kernel"></el-table-column>
+              <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
+              <el-table-column
+                  fixed="right"
+                  align="center"
+                  label="操作">
+                <template slot-scope="scope">
+                  <el-button @click="addServer(scope.row)" type="text" size="small">添加</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
 
         </el-col>
-        <el-col :span="12" style="height: inherit; padding: 20px;">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" style="padding: 20px;">
 
-          <div style="height: 62px;">
-            选中n台机器
-          </div>
+          <el-card>
+            <div slot="header">
+              选中{{cluster.servers.length}}台机器
+            </div>
 
-          <el-table
-              :data="cluster.servers"
-              stripe
-              border
-              height="398"
-              style="width: 100%">
-            <el-table-column prop="ipv4" label="IP" fixed width="180"></el-table-column>
-            <el-table-column prop="hostname" label="主机名" width="180"></el-table-column>
-            <el-table-column prop="os" label="操作系统"></el-table-column>
-            <el-table-column prop="kernel" label="kernel"></el-table-column>
-            <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
-            <el-table-column
-                fixed="right"
-                width="100"
-                align="center"
-                label="操作">
-              <template slot-scope="scope">
-                <el-button @click="unadd(scope.row)" type="text" size="small">移除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+            <el-table
+                :data="cluster.servers"
+                stripe
+                border
+                height="398"
+                style="width: 100%">
+              <el-table-column prop="ipv4" label="IP" fixed></el-table-column>
+              <el-table-column prop="hostname" label="主机名"></el-table-column>
+              <el-table-column prop="os" label="操作系统"></el-table-column>
+              <el-table-column prop="kernel" label="kernel"></el-table-column>
+              <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
+              <el-table-column
+                  fixed="right"
+                  align="center"
+                  label="操作">
+                <template slot-scope="scope">
+                  <el-button @click="unadd(scope.row)" type="text" size="small">移除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-card>
 
         </el-col>
       </el-row>
@@ -105,7 +107,7 @@
     <el-dialog
         title="添加主机"
         :visible.sync="addHostDialogVisible"
-        :before-close="addHostDialogClose">
+        :before-close="addServerDialogClose">
       <el-form :inline="true" :model="hostParams">
         <el-form-item label="服务器IP：">
           <el-input v-model="hostParams.ip" placeholder=""></el-input>
@@ -163,9 +165,9 @@ export default {
           { required: true, message: '请输入标签名', trigger: 'blur' },
         ],
       },
-      host: {
+      serverParam: {
         name: '',
-        ip: '',
+        ipv4: '',
       },
       usableServers: [],
       hostParams: {},
@@ -173,11 +175,13 @@ export default {
     };
   },
   methods: {
-    queryHost() {
-      console.log('submit!');
-    },
-    addHostDialogClose() {
+    addServerDialogClose() {
 
+    },
+    queryServers() {
+      ServerApi.index(Object.assign({}, { from: 'localunadded' }, this.serverParam)).then((resp) => {
+        this.usableServers = resp;
+      });
     },
     selectServer() {
 

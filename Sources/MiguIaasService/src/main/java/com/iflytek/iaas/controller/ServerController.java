@@ -39,6 +39,9 @@ public class ServerController {
 
     @GetMapping("/servers")
     public List<ServerInfoDTO>  index(String from, String hostname, String os, String clusterName, String ipv4) throws IOException, ApiException {
+        ipv4 = convertLikeValue(ipv4 );
+        hostname = convertLikeValue(hostname);
+        os = convertLikeValue(os);
         if("k8s-local".equals(from)) {
             List<ServerInfoDTO> k8sServerInfoDTOs = new ArrayList<ServerInfoDTO>();
             if(hostname != null) {
@@ -57,10 +60,10 @@ public class ServerController {
             }
             return k8sServerInfoDTOs;
         } else if("local".equals(from)) {
-            List<Server> servers = serverDao.findAllByIpv4LikeAndHostnameLikeAndOsLike(convertLikeValue(ipv4 ), convertLikeValue(hostname), convertLikeValue(os));
+            List<Server> servers = serverDao.findAllByIpv4LikeAndHostnameLikeAndOsLike(ipv4, hostname, os);
             return servers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
         } else if("localunadded".equals(from)) {
-            List<Server> localunaddedServers = serverDao.findByClusterIdIsNull();
+            List<Server> localunaddedServers = serverDao.findByClusterIdIsNullAndIpv4LikeAndHostnameLike(ipv4, hostname);
             return localunaddedServers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
         }
         return new ArrayList<>();

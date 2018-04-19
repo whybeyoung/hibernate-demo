@@ -76,6 +76,11 @@ export const constantRouterMap = [
       icon: 'new',
       displayName: '添加主机',
       component: dynamicImport('servers/create'),
+    }, {
+      path: ':id/detail',
+      name: 'servers.detail',
+      displayName: '主机详情',
+      component: dynamicImport('servers/detail'),
     }],
   },
 
