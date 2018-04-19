@@ -10,7 +10,6 @@ import com.iflytek.iaas.consts.ReturnCode;
 import com.iflytek.iaas.dto.OperationLogDTO;
 import com.iflytek.iaas.exception.ControllerException;
 import com.iflytek.iaas.service.LogService;
-import jdk.internal.org.objectweb.asm.signature.SignatureWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
