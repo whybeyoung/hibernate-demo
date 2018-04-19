@@ -18,4 +18,8 @@ ServerApi.create = server => fetch({
   data: server,
 });
 
+ServerApi.count = () => fetch({
+  url: 'servers/count',
+});
+
 export default ServerApi;

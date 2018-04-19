@@ -81,6 +81,11 @@ public class ServerController {
         return server.toServerInfoDTO();
     }
 
+    @GetMapping("/servers/count")
+    public long count() {
+        return serverDao.count();
+    }
+
     private String convertLikeValue(String value) {
         if(StringUtils.isEmpty(value)) {
             return "%";

@@ -1,18 +1,17 @@
 <template>
   <div class="content-container">
-    <el-row>
+    <el-row class="cluster-row">
       <el-col :span="4">集群名称：</el-col>
       <el-col :span="4">{{cluster.name}}</el-col>
-      <el-col :span="4">集群名称：</el-col>
-      <el-col :span="4">{{cluster.name}}</el-col>
-      <el-col :span="4">集群名称：</el-col>
-      <el-col :span="4">{{cluster.name}}</el-col>
+      <el-col :span="4">标签名：</el-col>
+      <el-col :span="4">{{cluster.labelName}}</el-col>
+      <el-col :span="4">备注： </el-col>
+      <el-col :span="4">{{cluster.annotation}}</el-col>
+      <el-col :span="4">创建人： </el-col>
+      <el-col :span="4">{{cluster.creator}}</el-col>
+      <el-col :span="4">创建时间： </el-col>
+      <el-col :span="4">{{cluster.createtime}}</el-col>
     </el-row>
-    集群名称：{{cluster.name}}
-    标签名：{{cluster.labelName}}
-    备注： {{cluster.annotation}}
-    创建人： {{cluster.creator}}
-    创建时间：{{cluster.createtime}}
 
     <el-card class="grap-card">
       <div slot="header">cpu平均使用率：</div>
@@ -131,5 +130,9 @@ export default {
 
   .grap-card {
     margin-bottom: 20px;
+  }
+
+  .cluster-row .el-col {
+    margin: 5px;
   }
 </style>
