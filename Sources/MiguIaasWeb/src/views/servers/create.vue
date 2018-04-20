@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="content-container">
     <el-form :inline="true" :model="serverParams">
       <el-form-item label="主机名：">
         <el-input v-model="serverParams.hostname" placeholder=""></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="query">查询</el-button>
+        <el-button @click="query" type="primary">查询</el-button>
       </el-form-item>
     </el-form>
     <div>可添加的主机：</div>
@@ -61,3 +61,9 @@ export default {
   },
 };
 </script>
+
+<style>
+  .content-container {
+    margin: 28px;
+  }
+</style>

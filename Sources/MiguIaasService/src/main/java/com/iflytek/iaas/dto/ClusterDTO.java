@@ -22,6 +22,7 @@ public class ClusterDTO{
     private String name;
     private String annotation;
     private String creator;
+    private String creatorName;
     private boolean valid;
     private Date createtime;
     private String labelName;
@@ -131,5 +132,13 @@ public class ClusterDTO{
 
     public void setMemoryUsage(JSONArray memoryUsage) {
         this.memoryUsage = memoryUsage;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 }

@@ -1,24 +1,25 @@
 <template>
   <div class="content-container">
-    <el-row>
-      <el-col :span="4">集群名称：</el-col>
-      <el-col :span="4">{{cluster.name}}</el-col>
-      <el-col :span="4">集群名称：</el-col>
-      <el-col :span="4">{{cluster.name}}</el-col>
-      <el-col :span="4">集群名称：</el-col>
-      <el-col :span="4">{{cluster.name}}</el-col>
-    </el-row>
-    集群名称：{{cluster.name}}
-    标签名：{{cluster.labelName}}
-    备注： {{cluster.annotation}}
-    创建人： {{cluster.creator}}
-    创建时间：{{cluster.createtime}}
+    <el-card class="cluster-info-card">
+      <el-row class="cluster-row">
+        <el-col :xs="12" :sm="12" :md="6" :lg="3" class="cluster-title">集群名称：</el-col>
+        <el-col :xs="12" :sm="12" :md="18" :lg="21">{{cluster.name}}</el-col>
+        <el-col :xs="12" :sm="12" :md="6" :lg="3" class="cluster-title">标签名：</el-col>
+        <el-col :xs="12" :sm="12" :md="18" :lg="21">{{cluster.labelName}}</el-col>
+        <el-col :xs="12" :sm="12" :md="6" :lg="3" class="cluster-title">备注： </el-col>
+        <el-col :xs="12" :sm="12" :md="18" :lg="21">{{cluster.annotation}}</el-col>
+        <el-col :xs="12" :sm="12" :md="6" :lg="3" class="cluster-title">创建人： </el-col>
+        <el-col :xs="12" :sm="12" :md="18" :lg="21">{{cluster.creatorName}}</el-col>
+        <el-col :xs="12" :sm="12" :md="6" :lg="3" class="cluster-title">创建时间： </el-col>
+        <el-col :xs="12" :sm="12" :md="18" :lg="21">{{new Date(cluster.createtime).toLocaleString()}}</el-col>
+      </el-row>
+    </el-card>
 
     <el-card class="grap-card">
       <div slot="header">cpu平均使用率：</div>
       <v-chart :forceFit="true" :height="height" :data="cpuUsage" :scale="scale">
         <v-tooltip />
-        <v-axis :label="percentageUsage"/>
+        <v-axis/>
         <v-line position="time*value" />
         <v-point position="time*value" shape="circle" />
       </v-chart>
@@ -71,6 +72,8 @@ export default {
       scale: [{
         dataKey: 'value',
         formatter: '%',
+        min: 0,
+        max: 1,
       }, {
         dataKey: 'time',
       }],
@@ -132,4 +135,10 @@ export default {
   .grap-card {
     margin-bottom: 20px;
   }
+
+  .cluster-info-card .el-col {
+    border-bottom: lightgray 1px solid;
+    padding: 10px;
+  }
+
 </style>

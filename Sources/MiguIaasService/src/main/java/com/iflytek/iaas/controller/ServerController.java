@@ -11,6 +11,7 @@ import com.iflytek.iaas.dao.ServerDao;
 import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.dto.k8s.ServerInfoDTO;
 import com.iflytek.iaas.service.K8SService;
+import com.iflytek.iaas.service.ServerService;
 import io.kubernetes.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -37,21 +40,24 @@ public class ServerController {
     @Autowired
     private ServerDao serverDao;
 
+    @Autowired
+    private ServerService serverService;
+
     @GetMapping("/servers")
     public List<ServerInfoDTO>  index(String from, String hostname, String os, String clusterName, String ipv4) throws IOException, ApiException {
-        ipv4 = convertLikeValue(ipv4 );
-        hostname = convertLikeValue(hostname);
-        os = convertLikeValue(os);
+
         if("k8s-local".equals(from)) {
             List<ServerInfoDTO> k8sServerInfoDTOs = new ArrayList<ServerInfoDTO>();
-            if(hostname != null) {
+            if(!StringUtils.isEmpty(hostname)) {
                 //查询未添加到本地数据库中的主机
                 Server localServer = serverDao.findByHostname(hostname);
                 if(localServer != null) {
                     return new ArrayList<>();
                 } else {
                     ServerInfoDTO serverInfoDTO = k8SService.getServerInfoByHostname(hostname);
-                    k8sServerInfoDTOs.add(serverInfoDTO);
+                    if(serverInfoDTO != null) {
+                        k8sServerInfoDTOs.add(serverInfoDTO);
+                    }
                 }
             } else {
                 k8sServerInfoDTOs = k8SService.getAllServerNodes();
@@ -60,18 +66,35 @@ public class ServerController {
             }
             return k8sServerInfoDTOs;
         } else if("local".equals(from)) {
+            ipv4 = convertLikeValue(ipv4 );
+            hostname = convertLikeValue(hostname);
+            os = convertLikeValue(os);
             List<Server> servers = serverDao.findAllByIpv4LikeAndHostnameLikeAndOsLike(ipv4, hostname, os);
             return servers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
         } else if("localunadded".equals(from)) {
+            ipv4 = convertLikeValue(ipv4 );
+            hostname = convertLikeValue(hostname);
+            os = convertLikeValue(os);
             List<Server> localunaddedServers = serverDao.findByClusterIdIsNullAndIpv4LikeAndHostnameLike(ipv4, hostname);
             return localunaddedServers.stream().map(i -> i.toServerInfoDTO()).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
 
-    @GetMapping("/servers/{hostname}")
-    public ServerInfoDTO show(@PathVariable String hostname) throws IOException, ApiException {
-        return k8SService.getServerInfoByHostname(hostname);
+    @GetMapping("/servers/{id}")
+    public Optional<Server> show(@PathVariable Integer id) throws IOException, ApiException {
+        Optional<Server> server = serverDao.findById(id);
+        return server;
+    }
+
+    @GetMapping("/servers/{id}/status")
+    public Map serverStatus(@PathVariable Integer id) {
+        Optional<Server> server = serverDao.findById(id);
+        long now = System.currentTimeMillis();
+        long start = now - 1000*60*60*6;
+        List<String> hostnames = new ArrayList<>();
+        hostnames.add(server.get().getHostname());
+        return serverService.serverStatus(hostnames, start, now, 60*30);
     }
 
     @PostMapping("/servers")
@@ -79,6 +102,11 @@ public class ServerController {
         Server server = serverInfoDTO.toServer();
         server = serverDao.save(server);
         return server.toServerInfoDTO();
+    }
+
+    @GetMapping("/servers/count")
+    public long count() {
+        return serverDao.count();
     }
 
     private String convertLikeValue(String value) {
