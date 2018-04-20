@@ -152,7 +152,8 @@ public class ClusterController {
             s.setClusterId(null);
             serverDao.save(s);
         }
-        clusterLabelDao.deleteAllByClusterId(id);
+        ClusterLabel cl = clusterLabelDao.findOneByClusterId(id);
+        clusterLabelDao.delete(cl);
 
         clusterDao.deleteById(id);
 

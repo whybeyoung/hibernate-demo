@@ -94,7 +94,8 @@ export const constantRouterMap = [
     }, {
       path: ':id/detail',
       name: 'servers.detail',
-      component: dynamicImport('servers/detail'),
+      component: dynamicImport('servers/server-detail'),
+      hidden: true,
       meta: {
         displayName: '主机详情',
       },

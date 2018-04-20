@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClusterLabelDao extends JpaRepository<ClusterLabel, Integer> {
 
-    public void deleteAllByClusterId(Integer id);
+    public void deleteByClusterId(Integer clusterId);
 
     public ClusterLabel findOneByClusterId(Integer clusterId);
 }

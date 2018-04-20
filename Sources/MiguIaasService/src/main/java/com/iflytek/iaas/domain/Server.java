@@ -24,7 +24,7 @@ public class Server implements Serializable {
     private String disk;
     private String memory;
     private boolean status;
-    private boolean valid;
+    private boolean valid = true;
     private String annotation;
     private String positionCode;
     private String dockerVersion;

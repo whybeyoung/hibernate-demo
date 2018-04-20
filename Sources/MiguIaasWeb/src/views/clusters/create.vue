@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h3 style="margin-left: 20px;" v-if="mode === 'create'">新建集群</h3>
-    <h3 style="margin-left: 20px;" v-else>修改集群</h3>
-
 
     <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 

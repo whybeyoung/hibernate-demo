@@ -39,10 +39,11 @@
       <div slot="header">网络使用情况</div>
       <v-chart :force-fit="true" :height="height" :data="network">
         <v-tooltip />
-        <v-axis />
+        <v-axis data-key="time" :tick-line="null" :label="null"/>
+        <v-axis data-key="count" :label="countOpts.label"/>
         <v-legend />
         <v-line position="time*count" color="network" />
-        <v-point position="time*count" color="network" :size="4" :scale="networkScale" :shape="'circle'" />
+        <v-point position="time*count" color="network" :size="4"  :shape="'circle'" />
       </v-chart>
     </el-card>
 
@@ -62,29 +63,32 @@ function formatUsage(usage) {
   return usage[0].values.map(i => ({ time: formatTime(i[0]), value: parseFloat(i[1]) }));
 }
 
+function byteToMb(b) {
+  return parseFloat((b / 1024 / 1024).toFixed(2));
+}
 export default {
   data() {
     return {
+      countOpts: {
+        label: {
+          formatter: (val) => {
+            console.log('valu=', val);
+            return `${(val)}MB/s`;
+          },
+        },
+      },
       cluster: {},
       cpuUsage: [],
       memoryUsage: [],
       network: [],
       scale: [{
         dataKey: 'value',
-        formatter: '%',
+        formatter: '.2%',
+        alias: '使用率',
         min: 0,
         max: 1,
       }, {
         dataKey: 'time',
-      }],
-      percentageUsage: [{
-        value: {
-          formatter: val => `${val}%`,
-        },
-      }],
-      networkScale: [{
-        dataKey: 'transmitValue',
-        formatter: val => `${val}MB`,
       }],
       height: 400,
     };
@@ -93,9 +97,7 @@ export default {
     ClusterApi.show(this.$router.currentRoute.params.id).then((resp) => {
       this.cluster = resp;
       this.cpuUsage = formatUsage(this.cluster.cpuUsage);
-      console.log('cpu:', this.cpuUsage);
       this.memoryUsage = formatUsage(this.cluster.memoryUsage);
-      console.log('mem', this.memoryUsage);
 
       const transmits = this.cluster.networkUsage.transmitResult[0].values;
       const receives = this.cluster.networkUsage.receiveResult[0].values;
@@ -104,18 +106,19 @@ export default {
         const transmitValue = parseFloat(i[1]);
         const receiveValue = parseFloat(receive[1]);
         const totalValue = transmitValue + receiveValue;
-        return {
+        const a = {
           time: formatTime(i[0]),
-          transmitValue,
-          receiveValue,
-          totalValue,
+          上行速率: byteToMb(transmitValue),
+          下行速率: byteToMb(receiveValue),
+          总速率: byteToMb(totalValue),
         };
+        return a;
       });
 
       const dv = new DataSet.View().source(this.network);
       dv.transform({
         type: 'fold',
-        fields: ['transmitValue', 'receiveValue', 'totalValue'],
+        fields: ['上行速率', '下行速率', '总速率'],
         key: 'network',
         value: 'count',
       });
