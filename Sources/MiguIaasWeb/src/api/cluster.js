@@ -24,6 +24,11 @@ ClusterApi.list = () => fetch({
   method: 'get',
 });
 
+ClusterApi.srvcount = clusterId => fetch({
+  url: `/clusters/${clusterId}/srvcount`,
+  method: 'get',
+});
+
 ClusterApi.show = clusterId => fetch({
   url: `clusters/${clusterId}`,
   method: 'get',

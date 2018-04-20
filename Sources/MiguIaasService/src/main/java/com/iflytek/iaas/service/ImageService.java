@@ -12,6 +12,8 @@ import com.iflytek.iaas.dto.ImageDTO;
 import com.iflytek.iaas.vo.ImageVO;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * 〈镜像服务接口〉
  *
@@ -47,4 +49,12 @@ public interface ImageService {
      * @return
      */
     public Boolean deleteImage(Integer imageId);
+
+
+    /**
+     * 查询image选择
+     * @param name
+     * @return
+     */
+    public List<ImageDTO> searchImages(String name);
 }

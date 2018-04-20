@@ -5,6 +5,7 @@
 package com.iflytek.iaas.service.impl;
 
 import com.iflytek.iaas.dao.ClusterDao;
+import com.iflytek.iaas.dao.ServerDao;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.dto.ClusterDTO;
 import com.iflytek.iaas.dto.UserDTO;
@@ -33,6 +34,8 @@ public class ClusterServiceImpl implements ClusterService {
     @Autowired
     private ClusterDao clusterDao;
 
+    @Autowired
+    private ServerDao serverDao;
 
     @Override
     public Page<ClusterDTO> findByNameLike(String name, Integer page, Integer pagesize) {
@@ -52,5 +55,10 @@ public class ClusterServiceImpl implements ClusterService {
         Cluster cluster = new Cluster();
         BeanUtils.copyProperties(clusterDTO, cluster);
         return clusterDao.save(cluster) != null;
+    }
+
+    @Override
+    public Integer getClusterSrvCount(Integer clusterId) {
+        return serverDao.countByClusterIdAndStatus(clusterId, true);
     }
 }

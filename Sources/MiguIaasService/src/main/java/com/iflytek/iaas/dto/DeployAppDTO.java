@@ -1,18 +1,16 @@
-package com.iflytek.iaas.domain;
+package com.iflytek.iaas.dto;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 
-@Entity
-@Table(name = "deploy_app")
-@DynamicInsert
-@DynamicUpdate
-public class DeployApp {
+/**
+ * 〈部署应用DTO〉
+ *
+ * @author ruizhao3
+ * @create 2018/4/16
+ */
+public class DeployAppDTO {
+
     private Integer id;
     private String name;
     private String creator;
@@ -27,14 +25,8 @@ public class DeployApp {
     private Integer podPort;
     private Date createtime;
     private Date updatetime;
+    private List<ImageDeployDTO> deployImages;
 
-    public DeployApp() {
-    }
-
-    @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -43,8 +35,6 @@ public class DeployApp {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -53,8 +43,6 @@ public class DeployApp {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "creator")
     public String getCreator() {
         return creator;
     }
@@ -63,8 +51,6 @@ public class DeployApp {
         this.creator = creator;
     }
 
-    @Basic
-    @Column(name = "annotation")
     public String getAnnotation() {
         return annotation;
     }
@@ -73,9 +59,7 @@ public class DeployApp {
         this.annotation = annotation;
     }
 
-    @Basic
-    @Column(name = "status")
-    public boolean getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
@@ -83,9 +67,7 @@ public class DeployApp {
         this.status = status;
     }
 
-    @Basic
-    @Column(name = "valid")
-    public boolean getValid() {
+    public boolean isValid() {
         return valid;
     }
 
@@ -93,8 +75,6 @@ public class DeployApp {
         this.valid = valid;
     }
 
-    @Basic
-    @Column(name = "namespace")
     public String getNamespace() {
         return namespace;
     }
@@ -103,8 +83,6 @@ public class DeployApp {
         this.namespace = namespace;
     }
 
-    @Basic
-    @Column(name = "ip")
     public String getIp() {
         return ip;
     }
@@ -113,9 +91,6 @@ public class DeployApp {
         this.ip = ip;
     }
 
-
-    @Basic
-    @Column(name = "hostname")
     public String getHostname() {
         return hostname;
     }
@@ -124,8 +99,6 @@ public class DeployApp {
         this.hostname = hostname;
     }
 
-    @Basic
-    @Column(name = "apptype")
     public Integer getApptype() {
         return apptype;
     }
@@ -134,8 +107,6 @@ public class DeployApp {
         this.apptype = apptype;
     }
 
-    @Basic
-    @Column(name = "node_port")
     public Integer getNodePort() {
         return nodePort;
     }
@@ -144,8 +115,6 @@ public class DeployApp {
         this.nodePort = nodePort;
     }
 
-    @Basic
-    @Column(name = "pod_port")
     public Integer getPodPort() {
         return podPort;
     }
@@ -154,8 +123,6 @@ public class DeployApp {
         this.podPort = podPort;
     }
 
-    @Basic
-    @Column(name = "createtime")
     public Date getCreatetime() {
         return createtime;
     }
@@ -164,8 +131,6 @@ public class DeployApp {
         this.createtime = createtime;
     }
 
-    @Basic
-    @Column(name = "updatetime")
     public Date getUpdatetime() {
         return updatetime;
     }
@@ -174,30 +139,11 @@ public class DeployApp {
         this.updatetime = updatetime;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DeployApp deployApp = (DeployApp) o;
-        return id == deployApp.id &&
-                status == deployApp.status &&
-                valid == deployApp.valid &&
-                Objects.equals(name, deployApp.name) &&
-                Objects.equals(creator, deployApp.creator) &&
-                Objects.equals(annotation, deployApp.annotation) &&
-                Objects.equals(namespace, deployApp.namespace) &&
-                Objects.equals(ip, deployApp.ip) &&
-                Objects.equals(nodePort, deployApp.nodePort) &&
-                Objects.equals(podPort, deployApp.podPort) &&
-                Objects.equals(hostname, deployApp.hostname) &&
-                Objects.equals(apptype, deployApp.apptype) &&
-                Objects.equals(createtime, deployApp.createtime) &&
-                Objects.equals(updatetime, deployApp.updatetime);
+    public List<ImageDeployDTO> getDeployImages() {
+        return deployImages;
     }
 
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, name, creator, annotation, status, valid, namespace, ip, nodePort, nodePort, hostname, apptype, createtime, updatetime);
+    public void setDeployImages(List<ImageDeployDTO> deployImages) {
+        this.deployImages = deployImages;
     }
 }

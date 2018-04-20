@@ -39,4 +39,16 @@ public class RegularUtils {
         return m.matches();
     }
 
+    /**
+     * 判断是否满足k8s命名
+     * @param str
+     * @return
+     */
+    public static boolean isK8sAllowedName(String str){
+        String pat = "[a-z0-9]([-a-z0-9]*[a-z0-9])?";
+        Pattern p = Pattern.compile(pat);
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
 }

@@ -26,4 +26,5 @@ public interface ClusterService {
     public Boolean saveClusterInfo(ClusterDTO clusterDTO);
 
 
+    Integer getClusterSrvCount(Integer clusterId);
 }

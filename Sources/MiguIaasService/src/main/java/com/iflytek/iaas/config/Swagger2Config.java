@@ -28,15 +28,11 @@ public class Swagger2Config {
 
     @Bean
     public Docket createRestApi() {
-        ApiSelectorBuilder apiBuiler = new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
-                .select();
-        //生产环境不生成接口文档
-        if (EnvConsts.PROD.equals(environment)) {
-            return apiBuiler.build();
-        }
-
-        return apiBuiler.apis(RequestHandlerSelectors.basePackage("com.iflytek.iaas.controller"))
+                .enable(!EnvConsts.PROD.equals(environment)) //生产环境不生成接口文档
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.iflytek.iaas.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

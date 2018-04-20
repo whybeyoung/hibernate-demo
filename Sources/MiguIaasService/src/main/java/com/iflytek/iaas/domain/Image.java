@@ -1,10 +1,11 @@
 package com.iflytek.iaas.domain;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,6 +17,8 @@ import java.util.Objects;
  */
 @Entity
 @Table(name="image")
+@DynamicInsert
+@DynamicUpdate
 public class Image implements Serializable{
     private static final long serialVersionUID = -645029156901008040L;
     @Id

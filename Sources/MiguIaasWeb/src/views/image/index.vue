@@ -3,10 +3,10 @@
         <div class="app-header" style="height: 60px">
             <el-form ref="qf" :model="qf" label-width="70px" :inline="true" label-suffix=":">
                 <el-form-item label="镜像名">
-                    <el-input size="small" v-model="qf.name"></el-input>
+                    <el-input size="small" v-model="qf.name" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="版本">
-                    <el-input size="small" v-model="qf.version"></el-input>
+                    <el-input size="small" v-model="qf.version" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" size="small" icon="el-icon-search" @click="query(1)" style="">查询
@@ -36,7 +36,7 @@
                 </el-table-column>
                 <el-table-column label="操作" min-width="40" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="danger" @click.native="delImage(scope.row.id)">删除</el-button>
+                        <el-button size="mini" type="danger" icon="el-icon-delete" title="删除" @click.native="delImage(scope.row.id)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>

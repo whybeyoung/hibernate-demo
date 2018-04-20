@@ -1,4 +1,4 @@
-import { getImages, createImage, deleteImage } from '@/api/image_api';
+import { getImages, searchImages, createImage, deleteImage } from '@/api/image_api';
 
 const image = {
   state: {},
@@ -20,14 +20,25 @@ const image = {
         });
       });
     },
+    // 搜索镜像
+    searchImages(...args) {
+      const [, name] = args;
+      return new Promise((resolve, reject) => {
+        searchImages(name).then((response) => {
+          resolve(response);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    },
     // 上传镜像
     createImage(...args) {
       const [, params] = args;
       const {
-        name, version, ftpPath, annotation, creator,
-      } = params.creator;
+        name, version, ftpPath, annotation,
+      } = params;
       return new Promise((resolve, reject) => {
-        createImage(name, version, ftpPath, annotation, creator).then((response) => {
+        createImage(name, version, ftpPath, annotation).then((response) => {
           resolve(response);
         }).catch((error) => {
           reject(error);

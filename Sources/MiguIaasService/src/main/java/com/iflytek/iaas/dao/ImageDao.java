@@ -7,10 +7,15 @@
  */
 package com.iflytek.iaas.dao;
 
+import com.iflytek.iaas.domain.DeployApp;
 import com.iflytek.iaas.domain.Image;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 /**
  * 〈镜像操作dao〉
@@ -26,5 +31,21 @@ public interface ImageDao extends JpaRepository<Image,Integer> {
      * @return
      */
     Page<Image> findByNameLikeAndVersion(String name, String version, Pageable pageable);
+
+    /**
+     * 名字Like查询
+     * @param name
+     * @return
+     */
+    List<Image> findByNameLikeAndValid(String name, boolean valid);
+
+    /**
+     * 通过名字EQ查询
+     * @param name
+     * @return
+     */
+    List<Image> findByName(String name);
+
+
 
 }

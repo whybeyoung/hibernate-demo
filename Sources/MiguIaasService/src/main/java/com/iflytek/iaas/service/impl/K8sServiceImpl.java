@@ -41,7 +41,7 @@ import java.util.*;
  * @create 2018/4/11
  */
 @Service("K8SService")
-public class K8sServiceImpl  implements K8SService {
+public class K8sServiceImpl implements K8SService {
     private Logger logger = LoggerFactory.getLogger(K8SService.class);
 
     @Value("${prometheus.url}")

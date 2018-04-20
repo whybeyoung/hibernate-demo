@@ -20,6 +20,7 @@ import com.iflytek.iaas.dto.ClusterDTO;
 import com.iflytek.iaas.dto.k8s.LabelDTO;
 import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
 import com.iflytek.iaas.dto.k8s.PodDTO;
+import com.iflytek.iaas.service.ClusterService;
 import com.iflytek.iaas.service.K8SService;
 import io.kubernetes.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class ClusterController {
 
     @Autowired
     private K8SService k8SService;
+
+    @Autowired
+    private ClusterService clusterService;
 
     @GetMapping("/clusters")
     public List<ClusterDTO> index() {
@@ -126,6 +130,11 @@ public class ClusterController {
 
         setUsage(clusterDTO, servers);
         return clusterDTO;
+    }
+
+    @GetMapping("/clusters/{id}/srvcount")
+    public Integer clusterServerCount(@PathVariable Integer id) {
+        return clusterService.getClusterSrvCount(id);
     }
 
     @DeleteMapping("clusters/{id}")

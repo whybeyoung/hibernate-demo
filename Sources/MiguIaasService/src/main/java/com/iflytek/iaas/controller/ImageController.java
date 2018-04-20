@@ -53,6 +53,7 @@ public class ImageController extends BaseController{
     @PostMapping("/images")
     public String createImage(HttpServletRequest request, @RequestBody ImageVO image) throws ControllerException {
 
+
         if(StringUtils.isEmpty(image.getName())){
             throw new ControllerException(ReturnCode.IMAGE_NULL_NAME);
         }
@@ -62,6 +63,7 @@ public class ImageController extends BaseController{
         if(StringUtils.isEmpty(image.getFtpPath())){
             throw new ControllerException(ReturnCode.IMAGE_NULL_FTPPATH);
         }
+        image.setCreator(getCurrentUser(request).getNickname());
         try {
             imageService.saveImage(image);
             return SUCCESS;
@@ -97,8 +99,8 @@ public class ImageController extends BaseController{
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "name", value = "镜像名", paramType = "query", required = false, dataType = "String"),
             @ApiImplicitParam(name = "version", value = "版本", paramType = "query", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "page", value = "页码", paramType = "query", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "pagesize", value = "页长", paramType = "query", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "page", value = "页码", paramType = "query", required = false, dataType = "Integer"),
+            @ApiImplicitParam(name = "pagesize", value = "页长", paramType = "query", required = false, dataType = "Integer"),
     })
     @GetMapping("/images")
     public String queryImages(HttpServletRequest request,
@@ -111,4 +113,13 @@ public class ImageController extends BaseController{
         return JSON.toJSONString(imageService.findByNameLike(name, version, page, pagesize));
 
     }
+
+    @ApiOperation(value = "searchImages",notes = "镜像搜索")
+    @ApiImplicitParam(name = "name", value = "镜像名", paramType = "query", required = false, dataType = "String")
+    @GetMapping("/images/search")
+    public String searchImages(HttpServletRequest request, @RequestParam(required = false) String name){
+        return JSON.toJSONString(imageService.searchImages(name));
+
+    }
+
 }

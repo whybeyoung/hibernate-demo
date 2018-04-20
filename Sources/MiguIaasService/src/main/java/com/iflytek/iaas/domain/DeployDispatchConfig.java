@@ -1,55 +1,55 @@
 package com.iflytek.iaas.domain;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "deploy_dispatch_config", schema = "migu_iaas", catalog = "")
+@Table(name = "deploy_dispatch_config")
 public class DeployDispatchConfig {
-    private int id;
-    private int appId;
-    private int imageId;
+    private Integer id;
+    private Integer appId;
+    private Integer imageId;
     private String positionCode;
     private String clusterId;
     private Integer baseRps;
     private String customRules;
     private String creator;
-    private byte status;
-    private byte valid;
+    private boolean status;
+    private boolean valid;
     private String annotation;
-    private Timestamp begintime;
-    private Timestamp endtime;
-    private Timestamp createtime;
-    private Timestamp updatetime;
+    private Date begintime;
+    private Date endtime;
+    private Date createtime;
+    private Date updatetime;
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     @Basic
     @Column(name = "app_id")
-    public int getAppId() {
+    public Integer getAppId() {
         return appId;
     }
 
-    public void setAppId(int appId) {
+    public void setAppId(Integer appId) {
         this.appId = appId;
     }
 
     @Basic
     @Column(name = "image_id")
-    public int getImageId() {
+    public Integer getImageId() {
         return imageId;
     }
 
-    public void setImageId(int imageId) {
+    public void setImageId(Integer imageId) {
         this.imageId = imageId;
     }
 
@@ -105,21 +105,21 @@ public class DeployDispatchConfig {
 
     @Basic
     @Column(name = "status")
-    public byte getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
     @Basic
     @Column(name = "valid")
-    public byte getValid() {
+    public boolean getValid() {
         return valid;
     }
 
-    public void setValid(byte valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 
@@ -135,41 +135,41 @@ public class DeployDispatchConfig {
 
     @Basic
     @Column(name = "begintime")
-    public Timestamp getBegintime() {
+    public Date getBegintime() {
         return begintime;
     }
 
-    public void setBegintime(Timestamp begintime) {
+    public void setBegintime(Date begintime) {
         this.begintime = begintime;
     }
 
     @Basic
     @Column(name = "endtime")
-    public Timestamp getEndtime() {
+    public Date getEndtime() {
         return endtime;
     }
 
-    public void setEndtime(Timestamp endtime) {
+    public void setEndtime(Date endtime) {
         this.endtime = endtime;
     }
 
     @Basic
     @Column(name = "createtime")
-    public Timestamp getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
     @Basic
     @Column(name = "updatetime")
-    public Timestamp getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(Timestamp updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
