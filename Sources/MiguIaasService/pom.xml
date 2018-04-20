@@ -21,7 +21,7 @@
         <shiro.version>1.4.0</shiro.version>
         <swagger.version>2.6.1</swagger.version>
         <kubernetes-java.version>1.0.0-beta3</kubernetes-java.version>
-        <httpclient.version>4.5.2</httpclient.version>
+        <httpclient.version>4.5.3</httpclient.version>
         <prometheus.version>0.3.0</prometheus.version>
     </properties>
 
@@ -115,11 +115,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>

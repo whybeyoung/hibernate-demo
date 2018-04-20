@@ -14,8 +14,8 @@
                 <el-input type="textarea" v-model="form.annotation" style="width: 48%"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" :loading="loading" @click="onSubmit">Upload</el-button>
-                <el-button @click="onCancel">Cancel</el-button>
+                <el-button type="primary" :loading="loading" icon="el-icon-upload" @click="onSubmit">Upload</el-button>
+                <el-button @click="onCancel" icon="el-icon-delete">Cancel</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -41,9 +41,9 @@ export default {
         creator: '',
       },
       rules: {
-        name: [{ required: true, trigger: 'blur' }],
-        version: [{ required: true, trigger: 'blur' }],
-        ftpPath: [{ required: true, trigger: 'blur' }],
+        name: [{ required: true, trigger: 'blur', message: '请输入镜像名称' }],
+        version: [{ required: true, trigger: 'blur', message: '请输入版本号' }],
+        ftpPath: [{ required: true, trigger: 'blur', message: '请输入镜像文件路径' }],
       },
       loading: false,
     };

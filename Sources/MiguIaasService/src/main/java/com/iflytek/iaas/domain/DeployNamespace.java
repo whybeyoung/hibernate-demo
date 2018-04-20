@@ -1,14 +1,14 @@
 package com.iflytek.iaas.domain;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "deploy_namespace", schema = "migu_iaas", catalog = "")
 public class DeployNamespace {
     private String ns;
-    private Timestamp createtime;
+    private Date createtime;
 
     @Id
     @Column(name = "ns")
@@ -22,11 +22,11 @@ public class DeployNamespace {
 
     @Basic
     @Column(name = "createtime")
-    public Timestamp getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 

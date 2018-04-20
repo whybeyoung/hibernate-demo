@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import app from './modules/app';
 import user from './modules/user';
 import image from './modules/image';
+import deploy from './modules/deploy';
 import permission from './modules/permission';
 import getters from './getters';
 
@@ -13,6 +14,7 @@ const store = new Vuex.Store({
     app,
     user,
     image,
+    deploy,
     permission,
   },
   getters,

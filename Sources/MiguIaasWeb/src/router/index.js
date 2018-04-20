@@ -132,6 +132,27 @@ export const constantRouterMap = [
     ],
   },
   {
+    path: '/deploy',
+    component: Layout,
+    redirect: '/deploy/index',
+    icon: 'xitongbushu',
+    name: 'deploy',
+    meta: {
+      displayName: '部署管理',
+    },
+    children: [
+      {
+        path: 'index', name: 'apps', icon: 'list', component: dynamicImport('deploy/index'), meta: { role: ['admin'], displayName: '应用列表' },
+      },
+      {
+        path: 'app', name: 'appnew', icon: 'app', component: dynamicImport('deploy/createApp'), meta: { role: ['admin'], displayName: '新建应用' },
+      },
+      {
+        path: 'depAdd', name: 'depAdd', hidden: true, icon: 'zonghe', component: dynamicImport('deploy/addDeploy'), meta: { role: ['admin'], displayName: '添加镜像部署' },
+      },
+    ],
+  },
+  {
     path: '/log',
     component: Layout,
     redirect: '/log/operation',
@@ -152,6 +173,7 @@ export const constantRouterMap = [
       },
     ],
   },
+
   { path: '*', component: dynamicImport('404'), hidden: true },
 ];
 
