@@ -31,6 +31,7 @@ public class ServerInfoDTO {
     private String cpu;
     private String memory;
     private boolean status;
+    private boolean valid = true;
     private String annotation;
     private String positionCode;
     private String dockerVersion;
@@ -177,6 +178,14 @@ public class ServerInfoDTO {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public boolean getValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     @Override

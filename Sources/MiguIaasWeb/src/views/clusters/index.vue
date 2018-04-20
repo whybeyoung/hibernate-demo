@@ -94,10 +94,7 @@ export default {
         this.clusters.map((cluster) => {
           cluster.cpuPercentage = currentPercentage(cluster.cpuUsage);
           cluster.memoryPercentage = currentPercentage(cluster.memoryUsage);
-          // disable-eslint-next-line
-          console.log('===', cluster.networkUsage.transmitResult[0].values[0][1] / 1000);
           cluster.transmit = currentNetwork(cluster.networkUsage.transmitResult);
-          console.log('transmit=', cluster.transmit);
           cluster.receive = currentNetwork(cluster.networkUsage.receiveResult);
           return cluster;
         });

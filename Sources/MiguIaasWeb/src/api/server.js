@@ -27,4 +27,10 @@ ServerApi.serverStatus = serverId => fetch({
   method: 'get',
 });
 
+ServerApi.update = server => fetch({
+  url: `servers/${server.id}`,
+  method: 'patch',
+  data: server,
+});
+
 export default ServerApi;
