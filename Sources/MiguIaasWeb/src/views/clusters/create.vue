@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content-container">
 
     <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 
