@@ -38,7 +38,7 @@
             <div style="justify-content: center; display: flex;">
               <el-button @click="edit(cluster.id)">编辑</el-button>
               <el-button @click="detail(cluster.id)">详情</el-button>
-              <el-button @click="remove(cluster)">删除</el-button>
+              <el-button v-if="cluster.podsNum === 0" @click="remove(cluster)">删除</el-button>
             </div>
           </el-card>
         </el-col>

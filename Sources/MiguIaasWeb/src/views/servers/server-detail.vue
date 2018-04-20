@@ -17,7 +17,7 @@
 
     <el-card class="grap-card">
       <div slot="header">cpu使用率：</div>
-      <v-chart :forceFit="true" :height="height" :data="serverStatus.cpu" :scale="scale">
+      <v-chart :forceFit="true" :height="height" :data="cpuChartData" :scale="scale">
         <v-tooltip />
         <v-axis/>
         <v-line position="time*value" />
@@ -27,24 +27,30 @@
 
     <el-card class="grap-card">
       <div slot="header">内存使用率：</div>
-      <v-chart :forceFit="true" :height="height" :data="serverStatus.memory" :scale="scale">
+      <v-chart :forceFit="true" :height="height" :data="memoryChartData" :scale="scale">
         <v-tooltip />
         <v-axis/>
         <v-line position="time*value" />
         <v-point position="time*value" shape="circle" />
       </v-chart>
     </el-card>
-
 
     <el-card class="grap-card">
-      <div slot="header">下行速率：</div>
-      <v-chart :forceFit="true" :height="height" :data="serverStatus.network.receive" :scale="networkScale">
+      <div slot="header">网络使用情况：</div>
+
+      <v-chart :force-fit="true" :data="networkChartData">
         <v-tooltip />
-        <v-axis/>
-        <v-line position="time*value" />
-        <v-point position="time*value" shape="circle" />
+        <v-axis data-key="time" :tick-line="null" :label="null"/>
+        <v-axis data-key="count" :label="countOpts.label"/>
+        <v-legend />
+        <v-line position="time*count" color="network" />
+        <v-point position="time*count" color="network" :size="4"  :shape="'circle'" />
       </v-chart>
     </el-card>
+
+    <!--<network-chart :data="serverStatus"></network-chart>-->
+
+
   </div>
 
 </template>
@@ -52,31 +58,36 @@
 <script>
 import ServerApi from '@/api/server';
 import { formatUsage } from '@/utils';
+import DataSet from '@antv/data-set';
+
+function byteToMb(b) {
+  return parseFloat((b / 1024 / 1024).toFixed(2));
+}
 
 export default {
   data() {
     return {
-      server: {},
-      serverStatus: {
-        cpu: {},
-        memory: {},
-        network: {
-          receive: {},
-          transmit: {},
-          total: {},
+      countOpts: {
+        label: {
+          formatter: (val) => {
+            console.log('valu=', val);
+            return `${(val)}MB/s`;
+          },
         },
       },
+      server: {},
+      cpuChartData: [],
+      memoryChartData: [],
+      networkChartData: [],
+      serverStatus: [],
       scale: [{
         dataKey: 'value',
-        formatter: '%',
+        formatter: '.0%',
+        alias: '使用率',
         min: 0,
         max: 1,
       }, {
         dataKey: 'time',
-      }],
-      networkScale: [{
-        dataKey: 'transmitValue',
-        formatter: val => `${val}MB`,
       }],
       height: 400,
     };
@@ -87,12 +98,32 @@ export default {
       this.server = resp;
     });
     ServerApi.serverStatus(serverId).then((resp) => {
-      this.serverStatus.cpu = formatUsage(resp.cpu);
-      console.log(this.serverStatus.cpu);
-      this.serverStatus.memory = formatUsage(resp.memory);
-      this.serverStatus.network.receive = formatUsage(resp.network.receiveResult);
-      this.serverStatus.network.transmit = formatUsage(resp.network.transmitResult);
-      this.serverStatus.network.total = formatUsage(resp.network.totalResult);
+      this.serverStatus = resp;
+      this.cpuChartData = formatUsage(resp.cpu);
+      this.memoryChartData = formatUsage(resp.memory);
+
+      const receive = formatUsage(resp.network.receiveResult);
+      const transmit = formatUsage(resp.network.transmitResult);
+      // const total = formatUsage(newValue.network.totalResult);
+      this.networkChartData = receive.map((i) => {
+        i.transmitValue = transmit.find(j => j.time === i.time).value;
+        i.totalValue = i.value + i.transmitValue;
+        return {
+          time: i.time,
+          上行速率: byteToMb(i.transmitValue),
+          下行速率: byteToMb(i.value),
+          总速率: byteToMb(i.totalValue),
+        };
+      });
+
+      const dv = new DataSet.View().source(this.networkChartData);
+      dv.transform({
+        type: 'fold',
+        fields: ['上行速率', '下行速率', '总速率'],
+        key: 'network',
+        value: 'count',
+      });
+      this.networkChartData = dv.rows;
     });
   },
 };
@@ -102,8 +133,13 @@ export default {
 .content-container{
   margin: 28px;
 }
+
+.content-container .el-card {
+  margin-bottom: 20px;
+}
   .server-info-card .el-col {
     border-bottom: lightgray 1px solid;
+    margin-bottom: 15px;
     padding: 10px;
   }
 </style>
