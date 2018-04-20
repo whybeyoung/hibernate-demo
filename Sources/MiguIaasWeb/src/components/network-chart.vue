@@ -1,12 +1,10 @@
 <template>
   <div>
-    networkChartData: {{networkChartData}}
-    aaa.label={{aaa.label}}
   <el-card>
     <div slot="header">网络使用情况</div>
-    <v-chart :force-fit="true" :data="networkChartData">
+    <v-chart :force-fit="true" :height="height" :data="networkChartData">
       <v-tooltip />
-      <v-axis/>
+      <v-axis data-key="count" :label="countOpts.label"/>
       <v-legend />
       <v-line position="time*count" color="network" />
       <v-point position="time*count" color="network" :size="4"  :shape="'circle'" />
@@ -36,13 +34,9 @@ export default {
   name: 'network-chart',
   data() {
     return {
-      aaa: {
+      countOpts: {
         label: {
-          formatter: (val) => {
-            console.log('valu=', val);
-            return `${(val)}MB/s`;
-          },
-          xxx: 11,
+          formatter: val => `${(val)}MB/s`,
 
         },
       },
@@ -54,6 +48,7 @@ export default {
         },
       },
       networkChartData: [],
+      height: 400,
     };
   },
   props: {
