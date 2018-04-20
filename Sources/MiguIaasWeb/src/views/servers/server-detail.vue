@@ -41,7 +41,7 @@
       <v-chart :force-fit="true" :data="networkChartData">
         <v-tooltip />
         <v-axis data-key="time" :tick-line="null" :label="null"/>
-        <v-axis data-key="count" :label="countOpts.label"/>
+        <v-axis data-key="count" :label="countOpts2.label"/>
         <v-legend />
         <v-line position="time*count" color="network" />
         <v-point position="time*count" color="network" :size="4"  :shape="'circle'" />
@@ -67,12 +67,9 @@ function byteToMb(b) {
 export default {
   data() {
     return {
-      countOpts: {
+      countOpts2: {
         label: {
-          formatter: (val) => {
-            console.log('valu=', val);
-            return `${(val)}MB/s`;
-          },
+          formatter: val => `${(val)}MB/s`,
         },
       },
       server: {},
