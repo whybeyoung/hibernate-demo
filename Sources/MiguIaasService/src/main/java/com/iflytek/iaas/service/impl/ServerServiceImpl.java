@@ -43,16 +43,7 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     public void addServerLabel(Server server, String labelName, Integer clusterId) throws IOException, ApiException {
-
-        ClusterLabel cl = new ClusterLabel(labelName, labelName, clusterId);
-        clusterLabelDao.save(cl);
-
-        List<LabelDTO> labels = new ArrayList<>();
-        LabelDTO labelDTO = new LabelDTO();
-        labelDTO.setKey(cl.getKey());
-        labelDTO.setValue(cl.getValue());
-        labels.add(labelDTO);
-        k8SService.createServerLabel(server.getHostname(), labels);
+        
     }
 
     @Override

@@ -84,19 +84,11 @@ public class ClusterServiceImpl implements ClusterService {
         Cluster cluster = clusterDTO.toCluster();
 
         cluster.setUser(user);
-
-//        TODO
-//        cluster.setCreator(user.getId());
-        cluster = clusterDao.save(cluster);
-
         List<Server> servers = clusterDTO.getServers();
-        for(Server s : servers) {
-            s.setClusterId(cluster.getId());
-            s = serverDao.save(s);
-        }
-        ClusterLabel clusterLabel = new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName(), cluster.getId());
-        clusterLabelDao.save(clusterLabel);
-        return cluster;
+        cluster.setServers(servers);
+        ClusterLabel clusterLabel = new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName());
+        cluster.setClusterLabel(clusterLabel);
+        return clusterDao.save(cluster);
     }
 
     @Override
@@ -106,21 +98,9 @@ public class ClusterServiceImpl implements ClusterService {
 
     public Cluster update(ClusterDTO clusterDTO) {
         Cluster cluster = clusterDTO.toCluster();
-        cluster = clusterDao.save(cluster);
-
-        //TODO: set clusterId to null for removed servers
-
-        List<Server> servers = clusterDTO.getServers();
-        for(Server s : servers) {
-            s.setClusterId(cluster.getId());
-            s = serverDao.save(s);
-        }
-
-        ClusterLabel clusterLabel = clusterLabelDao.findOneByClusterId(cluster.getId());
-        clusterLabel.setValue(clusterDTO.getLabelName());
-        clusterLabelDao.save(clusterLabel);
-
-        return cluster;
+        cluster.setServers(clusterDTO.getServers());
+        cluster.setClusterLabel(new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName()));
+        return clusterDao.save(cluster);
     }
 
     public ClusterDTO show(Integer id) {
@@ -130,17 +110,15 @@ public class ClusterServiceImpl implements ClusterService {
         clusterDTO.setServers(servers);
         clusterDTO.setLabelName(clusterLabelDao.findOneByClusterId(id).getValue());
 
-        Optional<User> createUser = userDao.findById(clusterDTO.getCreator());
-        clusterDTO.setCreatorName(createUser.get().getNickname());
-
         setUsage(clusterDTO, servers);
         return clusterDTO;
     }
 
     public void remove(Integer id) {
+
         List<Server> servers = serverDao.findByClusterId(id);
         for(Server s : servers) {
-            s.setClusterId(null);
+            s.setCluster(null);
             serverDao.save(s);
         }
         ClusterLabel cl = clusterLabelDao.findOneByClusterId(id);

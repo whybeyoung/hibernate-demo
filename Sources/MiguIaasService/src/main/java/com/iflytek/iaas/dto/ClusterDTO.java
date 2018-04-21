@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.Server;
+import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
 import org.springframework.beans.BeanUtils;
 
@@ -21,8 +22,6 @@ public class ClusterDTO{
     private Integer id;
     private String name;
     private String annotation;
-    private String creator;
-    private String creatorName;
     private boolean valid;
     private Date createtime;
     private String labelName;
@@ -31,6 +30,7 @@ public class ClusterDTO{
     private NetworkFlowDTO networkUsage;
     private JSONArray memoryUsage;
     private int podsNum;
+    private User user;
 
     public Cluster toCluster() {
         Cluster cluster = new Cluster();
@@ -68,14 +68,6 @@ public class ClusterDTO{
 
     public void setAnnotation(String annotation) {
         this.annotation = annotation;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
     }
 
     public boolean isValid() {
@@ -134,11 +126,11 @@ public class ClusterDTO{
         this.memoryUsage = memoryUsage;
     }
 
-    public String getCreatorName() {
-        return creatorName;
+    public User getUser() {
+        return user;
     }
 
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

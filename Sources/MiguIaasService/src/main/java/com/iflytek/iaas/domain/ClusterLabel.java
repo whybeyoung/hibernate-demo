@@ -1,35 +1,39 @@
 package com.iflytek.iaas.domain;
 
 import io.swagger.models.auth.In;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cluster_label", schema = "migu_iaas", catalog = "")
+@Table(name = "cluster_label")
 public class ClusterLabel {
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     private int id;
     private String name;
+    @Column(name = "`key`")
     private String key = "clusterName";
     private String value;
-    private Integer clusterId;
     private boolean valid = true;
     private Timestamp createtime;
     private Timestamp updatetime;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "clusterLabel")
+    private Cluster cluster;
 
     public ClusterLabel() {
 
     }
 
-    public ClusterLabel(String name, String value, Integer clusterId) {
+    public ClusterLabel(String name, String value) {
         this.name = name;
         this.value = value;
-        this.clusterId = clusterId;
     }
 
-    @Id
-    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -38,8 +42,6 @@ public class ClusterLabel {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -48,8 +50,6 @@ public class ClusterLabel {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "`key`")
     public String getKey() {
         return key;
     }
@@ -58,8 +58,6 @@ public class ClusterLabel {
         this.key = key;
     }
 
-    @Basic
-    @Column(name = "`value`")
     public String getValue() {
         return value;
     }
@@ -68,18 +66,6 @@ public class ClusterLabel {
         this.value = value;
     }
 
-    @Basic
-    @Column(name = "cluster_id")
-    public Integer getClusterId() {
-        return clusterId;
-    }
-
-    public void setClusterId(Integer clusterId) {
-        this.clusterId = clusterId;
-    }
-
-    @Basic
-    @Column(name = "valid")
     public boolean getValid() {
         return valid;
     }
@@ -88,8 +74,6 @@ public class ClusterLabel {
         this.valid = valid;
     }
 
-    @Basic
-    @Column(name = "createtime")
     public Timestamp getCreatetime() {
         return createtime;
     }
@@ -98,8 +82,6 @@ public class ClusterLabel {
         this.createtime = createtime;
     }
 
-    @Basic
-    @Column(name = "updatetime")
     public Timestamp getUpdatetime() {
         return updatetime;
     }
@@ -118,7 +100,6 @@ public class ClusterLabel {
                 Objects.equals(name, that.name) &&
                 Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value) &&
-                Objects.equals(clusterId, that.clusterId) &&
                 Objects.equals(createtime, that.createtime) &&
                 Objects.equals(updatetime, that.updatetime);
     }
@@ -126,6 +107,14 @@ public class ClusterLabel {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, key, value, clusterId, valid, createtime, updatetime);
+        return Objects.hash(id, name, key, value, valid, createtime, updatetime);
+    }
+
+    public Cluster getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
     }
 }

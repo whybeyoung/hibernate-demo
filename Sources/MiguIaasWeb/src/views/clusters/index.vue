@@ -32,14 +32,14 @@
             <el-row>
               <el-col :xs="24" :sm="10" :md="10" :lg="10">上行速率：</el-col>
               <el-col :xs="24" :sm="14" :md="14" :lg="14">
-                {{cluster.transmit}}kb/s
+                {{cluster.transmit || 0}}kb/s
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :xs="24" :sm="10" :md="10" :lg="10">下行速率：</el-col>
               <el-col :xs="24" :sm="14" :md="14" :lg="14">
-                {{cluster.receive}}kb/s
+                {{cluster.receive || 0 }}kb/s
               </el-col>
             </el-row>
 

@@ -33,11 +33,15 @@ public class Cluster implements Serializable{
     private Date createtime;
 
     @JoinColumn(name = "creator")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cluster", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Server> servers;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cluster_label_id")
+    private ClusterLabel clusterLabel;
 
     public ClusterDTO toClusterDTO() {
         ClusterDTO clusterDTO = new ClusterDTO();
@@ -97,4 +101,19 @@ public class Cluster implements Serializable{
         this.user = user;
     }
 
+    public List<Server> getServers() {
+        return servers;
+    }
+
+    public void setServers(List<Server> servers) {
+        this.servers = servers;
+    }
+
+    public ClusterLabel getClusterLabel() {
+        return clusterLabel;
+    }
+
+    public void setClusterLabel(ClusterLabel clusterLabel) {
+        this.clusterLabel = clusterLabel;
+    }
 }

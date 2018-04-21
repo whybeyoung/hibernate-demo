@@ -12,8 +12,8 @@
     <el-card>
       <div slot="header">可添加的主机：</div>
       <el-table :data="servers" stripe border height="398" style="width: 100%">
-        <el-table-column prop="ipv4" label="IP" fixed width="180"></el-table-column>
-        <el-table-column prop="hostname" label="主机名" width="180"></el-table-column>
+        <el-table-column prop="ipv4" label="IP" fixed ></el-table-column>
+        <el-table-column prop="hostname" label="主机名" ></el-table-column>
         <el-table-column prop="os" label="操作系统"></el-table-column>
         <el-table-column prop="kernel" label="kernel"></el-table-column>
         <el-table-column prop="dockerVersion" label="docker版本"></el-table-column>
