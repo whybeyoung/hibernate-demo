@@ -44,16 +44,7 @@ import java.util.stream.Collectors;
 public class ClusterController {
 
     @Autowired
-    private ClusterDao clusterDao;
-
-    @Autowired
-    private ServerDao serverDao;
-
-    @Autowired
-    private ClusterLabelDao clusterLabelDao;
-
-    @Autowired
-    private UserDao userDao;
+    private ClusterService clusterService;
 
     @Autowired
     private K8SService k8SService;
@@ -63,80 +54,23 @@ public class ClusterController {
 
     @GetMapping("/clusters")
     public List<ClusterDTO> index() {
-        List<Cluster> clusters = clusterDao.findAll();
-        List<ClusterDTO> clusterDTOs = clusters.stream().map(c -> {
-            ClusterDTO clusterDTO = c.toClusterDTO();
-            List<Server> servers = serverDao.findByClusterId(c.getId());
-            clusterDTO.setServers(servers);
-            setUsageWithStep(clusterDTO, servers, System.currentTimeMillis(), System.currentTimeMillis(), 60);
-
-            ClusterLabel cl = clusterLabelDao.findOneByClusterId(c.getId());
-            LabelDTO labelDTO = new LabelDTO(cl.getKey(), cl.getValue());
-            try {
-               List<PodDTO> pods = k8SService.getPodsByCluster(labelDTO, hostnames(servers));
-               clusterDTO.setPodsNum(pods.size());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ApiException e) {
-                e.printStackTrace();
-            }
-            return  clusterDTO;
-        }).collect(Collectors.toList());
-
-        return clusterDTOs;
+        return clusterService.index();
     }
 
     @PostMapping("/clusters")
     public Cluster create(HttpServletRequest request, @RequestBody ClusterDTO clusterDTO) {
         User user = (User) request.getSession().getAttribute("CURRENT_USER");
-
-        Cluster cluster = clusterDTO.toCluster();
-        cluster.setCreator(user.getId());
-        cluster = clusterDao.save(cluster);
-
-        List<Server> servers = clusterDTO.getServers();
-        for(Server s : servers) {
-            s.setClusterId(cluster.getId());
-            s = serverDao.save(s);
-        }
-
-        ClusterLabel clusterLabel = new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName(), cluster.getId());
-        clusterLabelDao.save(clusterLabel);
-
-        return cluster;
+        return clusterService.create(clusterDTO, user);
     }
 
     @PatchMapping("/clusters")
-    public Cluster update(HttpServletRequest request, @RequestBody ClusterDTO clusterDTO) {
-        Cluster cluster = clusterDTO.toCluster();
-        cluster = clusterDao.save(cluster);
-
-        List<Server> servers = clusterDTO.getServers();
-        for(Server s : servers) {
-            s.setClusterId(cluster.getId());
-            s = serverDao.save(s);
-        }
-
-        ClusterLabel clusterLabel = clusterLabelDao.findOneByClusterId(cluster.getId());
-        clusterLabel.setValue(clusterDTO.getLabelName());
-        clusterLabelDao.save(clusterLabel);
-
-        return cluster;
+    public Cluster update(@RequestBody ClusterDTO clusterDTO) {
+        return clusterService.update(clusterDTO);
     }
 
     @GetMapping("/clusters/{id}")
     public ClusterDTO show(@PathVariable Integer id) {
-        Optional<Cluster> cluster = clusterDao.findById(id);
-        ClusterDTO clusterDTO = cluster.get().toClusterDTO();
-        List<Server> servers = serverDao.findByClusterId(cluster.get().getId());
-        clusterDTO.setServers(servers);
-        clusterDTO.setLabelName(clusterLabelDao.findOneByClusterId(id).getValue());
-
-        Optional<User> createUser = userDao.findById(clusterDTO.getCreator());
-        clusterDTO.setCreatorName(createUser.get().getNickname());
-
-        setUsage(clusterDTO, servers);
-        return clusterDTO;
+        return clusterService.show(id);
     }
 
     @GetMapping("/clusters/{id}/srvcount")
@@ -146,34 +80,7 @@ public class ClusterController {
 
     @DeleteMapping("clusters/{id}")
     public void remove(@PathVariable Integer id) {
-
-        List<Server> servers = serverDao.findByClusterId(id);
-        for(Server s : servers) {
-            s.setClusterId(null);
-            serverDao.save(s);
-        }
-        ClusterLabel cl = clusterLabelDao.findOneByClusterId(id);
-        clusterLabelDao.delete(cl);
-
-        clusterDao.deleteById(id);
-
-    }
-
-    private void setUsage(ClusterDTO clusterDTO, List<Server> servers) {
-        long end = System.currentTimeMillis();
-        long start = end - 1000*60*60*6;
-        setUsageWithStep(clusterDTO, servers, start, end, 60*30);
-    }
-
-    private void setUsageWithStep(ClusterDTO clusterDTO, List<Server> servers, long start, long end, int step) {
-        List<String> hostnames = hostnames(servers);
-        clusterDTO.setCpuUsage(k8SService.getServerCPUUsageRateByHostname(hostnames, start, end, step));
-        clusterDTO.setMemoryUsage(k8SService.getServerMemoryUsageRateByHostname(hostnames, start, end, step));
-        clusterDTO.setNetworkUsage(k8SService.getServerNetworkUsageRateByHostname(hostnames, start, end, step));
-    }
-
-    private List<String> hostnames(List<Server> servers) {
-        return servers.stream().map(s -> s.getHostname()).collect(Collectors.toList());
+        clusterService.remove(id);
     }
 
 }
