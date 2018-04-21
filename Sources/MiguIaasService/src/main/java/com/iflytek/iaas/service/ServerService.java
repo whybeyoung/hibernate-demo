@@ -8,6 +8,7 @@
 package com.iflytek.iaas.service;
 
 
+import com.iflytek.iaas.domain.ClusterLabel;
 import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.dto.k8s.ServerInfoDTO;
 import io.kubernetes.client.ApiException;
@@ -31,7 +32,7 @@ public interface ServerService {
 
     public void deleteServerLabel(Server server) throws IOException, ApiException;
 
-    public void addServerLabel(Server server, String labelName, Integer clusterId) throws IOException, ApiException;
+    public void addServerLabel(Server server, ClusterLabel cl) throws IOException, ApiException;
 
     public List<ServerInfoDTO>  index(String from, String hostname, String os, String clusterName, String ipv4) throws IOException, ApiException;
 

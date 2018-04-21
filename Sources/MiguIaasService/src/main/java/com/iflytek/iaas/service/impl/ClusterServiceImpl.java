@@ -17,6 +17,7 @@ import com.iflytek.iaas.dto.k8s.LabelDTO;
 import com.iflytek.iaas.dto.k8s.PodDTO;
 import com.iflytek.iaas.service.ClusterService;
 import com.iflytek.iaas.service.K8SService;
+import com.iflytek.iaas.service.ServerService;
 import com.iflytek.iaas.service.UserService;
 import io.kubernetes.client.ApiException;
 import org.slf4j.Logger;
@@ -53,6 +54,8 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Autowired
     private K8SService k8SService;
+    @Autowired
+    private ServerService serverService;
 
     public List<ClusterDTO> index() {
         List<Cluster> clusters = clusterDao.findAll();
@@ -80,18 +83,23 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
 
-    public Cluster create(ClusterDTO clusterDTO, User user) {
+    public Cluster create(ClusterDTO clusterDTO, User user) throws IOException, ApiException {
         Cluster cluster = clusterDTO.toCluster();
         cluster.setCreator(user.getId());
         cluster = clusterDao.save(cluster);
+
+        ClusterLabel clusterLabel = new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName(), cluster.getId());
+        clusterLabel = clusterLabelDao.save(clusterLabel);
 
         List<Server> servers = clusterDTO.getServers();
         for(Server s : servers) {
             s.setClusterId(cluster.getId());
             s = serverDao.save(s);
+
+            serverService.addServerLabel(s, clusterLabel);
         }
-        ClusterLabel clusterLabel = new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName(), cluster.getId());
-        clusterLabelDao.save(clusterLabel);
+
+
         return cluster;
     }
 

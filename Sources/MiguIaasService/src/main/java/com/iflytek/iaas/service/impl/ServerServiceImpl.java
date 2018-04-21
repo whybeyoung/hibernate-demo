@@ -42,10 +42,7 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
-    public void addServerLabel(Server server, String labelName, Integer clusterId) throws IOException, ApiException {
-
-        ClusterLabel cl = new ClusterLabel(labelName, labelName, clusterId);
-        clusterLabelDao.save(cl);
+    public void addServerLabel(Server server, ClusterLabel cl) throws IOException, ApiException {
 
         List<LabelDTO> labels = new ArrayList<>();
         LabelDTO labelDTO = new LabelDTO();

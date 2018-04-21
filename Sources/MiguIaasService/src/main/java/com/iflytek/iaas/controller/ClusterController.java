@@ -11,10 +11,12 @@ import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
 import com.iflytek.iaas.service.ClusterService;
+import io.kubernetes.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,7 +38,7 @@ public class ClusterController {
     }
 
     @PostMapping("/clusters")
-    public Cluster create(HttpServletRequest request, @RequestBody ClusterDTO clusterDTO) {
+    public Cluster create(HttpServletRequest request, @RequestBody ClusterDTO clusterDTO) throws IOException, ApiException {
         User user = (User) request.getSession().getAttribute("CURRENT_USER");
         return clusterService.create(clusterDTO, user);
     }

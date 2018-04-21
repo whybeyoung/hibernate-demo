@@ -11,9 +11,11 @@ package com.iflytek.iaas.service;
 import com.iflytek.iaas.domain.Cluster;
 import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
+import io.kubernetes.client.ApiException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,7 +28,7 @@ public interface ClusterService {
 
     public List<ClusterDTO> index();
 
-    public Cluster create(ClusterDTO clusterDTO, User user);
+    public Cluster create(ClusterDTO clusterDTO, User user) throws IOException, ApiException;
 
     public Cluster update(ClusterDTO clusterDTO);
 
