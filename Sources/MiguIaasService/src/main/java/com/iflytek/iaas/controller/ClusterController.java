@@ -7,31 +7,15 @@
  */
 package com.iflytek.iaas.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.iflytek.iaas.dao.ClusterDao;
-import com.iflytek.iaas.dao.ClusterLabelDao;
-import com.iflytek.iaas.dao.ServerDao;
-import com.iflytek.iaas.dao.UserDao;
 import com.iflytek.iaas.domain.Cluster;
-import com.iflytek.iaas.domain.ClusterLabel;
-import com.iflytek.iaas.domain.Server;
 import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
-import com.iflytek.iaas.dto.k8s.LabelDTO;
-import com.iflytek.iaas.dto.k8s.NetworkFlowDTO;
-import com.iflytek.iaas.dto.k8s.PodDTO;
 import com.iflytek.iaas.service.ClusterService;
-import com.iflytek.iaas.service.K8SService;
-import io.kubernetes.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 〈集群相关controller〉
@@ -42,12 +26,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path="api/v1")
 public class ClusterController {
-
-    @Autowired
-    private ClusterService clusterService;
-
-    @Autowired
-    private K8SService k8SService;
 
     @Autowired
     private ClusterService clusterService;
