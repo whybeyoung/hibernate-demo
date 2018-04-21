@@ -14,7 +14,7 @@ public class ClusterLabel {
     private String key = "clusterName";
     private String value;
     private Integer clusterId;
-    private byte valid = 1;
+    private boolean valid = true;
     private Timestamp createtime;
     private Timestamp updatetime;
 
@@ -80,11 +80,11 @@ public class ClusterLabel {
 
     @Basic
     @Column(name = "valid")
-    public byte getValid() {
+    public boolean getValid() {
         return valid;
     }
 
-    public void setValid(byte valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 

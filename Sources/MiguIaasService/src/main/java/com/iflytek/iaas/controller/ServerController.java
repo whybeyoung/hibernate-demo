@@ -100,8 +100,16 @@ public class ServerController {
     @PostMapping("/servers")
     public ServerInfoDTO create(@RequestBody ServerInfoDTO serverInfoDTO) {
         Server server = serverInfoDTO.toServer();
+        server.setValid(true);
         server = serverDao.save(server);
         return server.toServerInfoDTO();
+    }
+
+    @PatchMapping("/servers/{id}")
+    public ServerInfoDTO update(@PathVariable Integer id, @RequestBody ServerInfoDTO si) {
+        Optional<Server> s = serverDao.findById(id);
+        s.get().setValid(si.getValid());
+        return serverDao.save(s.get()).toServerInfoDTO();
     }
 
     @GetMapping("/servers/count")

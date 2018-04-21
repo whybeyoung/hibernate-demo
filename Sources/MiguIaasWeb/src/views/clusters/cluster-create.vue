@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h3 style="margin-left: 20px;" v-if="mode === 'create'">新建集群</h3>
-    <h3 style="margin-left: 20px;" v-else>修改集群</h3>
-
+  <div class="content-container">
 
     <el-form :inline="true" :model="cluster" ref="clusterForm" :rules="clusterRules" class="demo-form-inline">
 
@@ -34,10 +31,10 @@
             </div>
 
             <el-form-item label="IP:">
-              <el-input v-model="serverParam.ip" placeholder="请输入IP"></el-input>
+              <el-input v-model="serverParam.ipv4" placeholder="请输入IP"></el-input>
             </el-form-item>
             <el-form-item label="主机名:">
-              <el-input v-model="serverParam.name" placeholder="请输入主机名"></el-input>
+              <el-input v-model="serverParam.hostname" placeholder="请输入主机名"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="queryServers">查询</el-button>
@@ -110,7 +107,7 @@
         :before-close="addServerDialogClose">
       <el-form :inline="true" :model="hostParams">
         <el-form-item label="服务器IP：">
-          <el-input v-model="hostParams.ip" placeholder=""></el-input>
+          <el-input v-model="hostParams.ipv4" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="主机名：">
           <el-input v-model="hostParams.name" placeholder=""></el-input>
@@ -166,7 +163,7 @@ export default {
         ],
       },
       serverParam: {
-        name: '',
+        hostname: '',
         ipv4: '',
       },
       usableServers: [],

@@ -17,7 +17,7 @@
 
     <el-card class="grap-card">
       <div slot="header">cpu使用率：</div>
-      <v-chart :forceFit="true" :height="height" :data="serverStatus.cpu" :scale="scale">
+      <v-chart :forceFit="true" :height="height" :data="cpuChartData" :scale="scale">
         <v-tooltip />
         <v-axis/>
         <v-line position="time*value" />
@@ -27,7 +27,7 @@
 
     <el-card class="grap-card">
       <div slot="header">内存使用率：</div>
-      <v-chart :forceFit="true" :height="height" :data="serverStatus.memory" :scale="scale">
+      <v-chart :forceFit="true" :height="height" :data="memoryChartData" :scale="scale">
         <v-tooltip />
         <v-axis/>
         <v-line position="time*value" />
@@ -35,16 +35,8 @@
       </v-chart>
     </el-card>
 
+    <network-chart :data="serverStatus"></network-chart>
 
-    <el-card class="grap-card">
-      <div slot="header">下行速率：</div>
-      <v-chart :forceFit="true" :height="height" :data="serverStatus.network.receive" :scale="networkScale">
-        <v-tooltip />
-        <v-axis/>
-        <v-line position="time*value" />
-        <v-point position="time*value" shape="circle" />
-      </v-chart>
-    </el-card>
   </div>
 
 </template>
@@ -57,26 +49,17 @@ export default {
   data() {
     return {
       server: {},
-      serverStatus: {
-        cpu: {},
-        memory: {},
-        network: {
-          receive: {},
-          transmit: {},
-          total: {},
-        },
-      },
+      cpuChartData: [],
+      memoryChartData: [],
+      serverStatus: [],
       scale: [{
         dataKey: 'value',
-        formatter: '%',
+        formatter: '.0%',
+        alias: '使用率',
         min: 0,
         max: 1,
       }, {
         dataKey: 'time',
-      }],
-      networkScale: [{
-        dataKey: 'transmitValue',
-        formatter: val => `${val}MB`,
       }],
       height: 400,
     };
@@ -87,12 +70,9 @@ export default {
       this.server = resp;
     });
     ServerApi.serverStatus(serverId).then((resp) => {
-      this.serverStatus.cpu = formatUsage(resp.cpu);
-      console.log(this.serverStatus.cpu);
-      this.serverStatus.memory = formatUsage(resp.memory);
-      this.serverStatus.network.receive = formatUsage(resp.network.receiveResult);
-      this.serverStatus.network.transmit = formatUsage(resp.network.transmitResult);
-      this.serverStatus.network.total = formatUsage(resp.network.totalResult);
+      this.serverStatus = resp;
+      this.cpuChartData = formatUsage(resp.cpu);
+      this.memoryChartData = formatUsage(resp.memory);
     });
   },
 };
@@ -102,8 +82,13 @@ export default {
 .content-container{
   margin: 28px;
 }
+
+.content-container .el-card {
+  margin-bottom: 20px;
+}
   .server-info-card .el-col {
     border-bottom: lightgray 1px solid;
+    margin-bottom: 15px;
     padding: 10px;
   }
 </style>

@@ -47,7 +47,7 @@ export const constantRouterMap = [
       path: 'create',
       name: 'clusters.create',
       icon: 'new',
-      component: dynamicImport('clusters/create'),
+      component: dynamicImport('clusters/cluster-create'),
       meta: {
         displayName: '新增集群',
       },
@@ -60,7 +60,7 @@ export const constantRouterMap = [
       path: ':id/edit',
       name: 'clusters.edit',
       hidden: true,
-      component: dynamicImport('clusters/create'),
+      component: dynamicImport('clusters/cluster-create'),
       meta: {
         displayName: '集群编辑',
       },
@@ -94,7 +94,8 @@ export const constantRouterMap = [
     }, {
       path: ':id/detail',
       name: 'servers.detail',
-      component: dynamicImport('servers/detail'),
+      component: dynamicImport('servers/server-detail'),
+      hidden: true,
       meta: {
         displayName: '主机详情',
       },

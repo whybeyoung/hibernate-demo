@@ -61,4 +61,3 @@ function formatUnixTime(time) {
 export function formatUsage(usage) {
   return usage[0].values.map(i => ({ time: formatUnixTime(i[0]), value: parseFloat(i[1]) }));
 }
-
