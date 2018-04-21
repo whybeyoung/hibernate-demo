@@ -8,8 +8,13 @@
 package com.iflytek.iaas.service;
 
 
+import com.iflytek.iaas.domain.Cluster;
+import com.iflytek.iaas.domain.User;
 import com.iflytek.iaas.dto.ClusterDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 /**
  * 〈集群服务接口〉
@@ -19,12 +24,15 @@ import org.springframework.data.domain.Page;
  */
 public interface ClusterService {
 
+    public List<ClusterDTO> index();
 
-    Page<ClusterDTO> findByNameLike(String name, Integer page, Integer pagesize);
+    public Cluster create(ClusterDTO clusterDTO, User user);
 
+    public Cluster update(ClusterDTO clusterDTO);
 
-    public Boolean saveClusterInfo(ClusterDTO clusterDTO);
-
+    public ClusterDTO show(Integer id);
 
     Integer getClusterSrvCount(Integer clusterId);
+
+    public void remove(Integer id);
 }

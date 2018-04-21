@@ -139,7 +139,7 @@ public class DeployServiceImpl implements DeployService {
         }
         ClusterLabel clusterLabel = clusterLabelDao.findOneByClusterId(deployVO.getClusterId());
 
-        if (clusterLabel == null || clusterLabel.getValid() == 0) {
+        if (clusterLabel == null || clusterLabel.getValid() == false) {
             throw new BusiException(ReturnCode.DEPOY_UNKNOWN_CLUSTER);
         }
 
