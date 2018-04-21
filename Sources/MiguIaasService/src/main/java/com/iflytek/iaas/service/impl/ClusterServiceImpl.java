@@ -82,7 +82,11 @@ public class ClusterServiceImpl implements ClusterService {
 
     public Cluster create(ClusterDTO clusterDTO, User user) {
         Cluster cluster = clusterDTO.toCluster();
-        cluster.setCreator(user.getId());
+
+        cluster.setUser(user);
+
+//        TODO
+//        cluster.setCreator(user.getId());
         cluster = clusterDao.save(cluster);
 
         List<Server> servers = clusterDTO.getServers();

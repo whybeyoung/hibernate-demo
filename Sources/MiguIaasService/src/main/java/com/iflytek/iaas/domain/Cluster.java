@@ -22,17 +22,22 @@ import java.util.Objects;
 public class Cluster implements Serializable{
     private static final long serialVersionUID = -5352050506682810176L;
 
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    @Column(name = "id")
     private Integer id;
-    @ColumnDefault("default name")
     private String name;
     private String annotation;
-    @ColumnDefault("1")
     private boolean valid;
     private Date createtime;
-    @Column
-    private String creator;
-//    @OneToMany(mappedBy = "cluster")
-//    private List<Server> servers;
+
+    @JoinColumn(name = "creator")
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User user;
+
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Server> servers;
 
     public ClusterDTO toClusterDTO() {
         ClusterDTO clusterDTO = new ClusterDTO();
@@ -40,10 +45,6 @@ public class Cluster implements Serializable{
         return clusterDTO;
     }
 
-    @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -52,8 +53,7 @@ public class Cluster implements Serializable{
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name")
+    
     public String getName() {
         return name;
     }
@@ -62,8 +62,7 @@ public class Cluster implements Serializable{
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "annotation")
+    
     public String getAnnotation() {
         return annotation;
     }
@@ -72,9 +71,7 @@ public class Cluster implements Serializable{
         this.annotation = annotation;
     }
 
-    @Basic
-    @Column(name = "valid")
-    @ColumnDefault("true")
+    
     public boolean getValid() {
         return valid;
     }
@@ -83,8 +80,7 @@ public class Cluster implements Serializable{
         this.valid = valid;
     }
 
-    @Basic
-    @Column(name = "createtime")
+    
     public Date getCreatetime() {
         return createtime;
     }
@@ -93,19 +89,12 @@ public class Cluster implements Serializable{
         this.createtime = createtime;
     }
 
-    public String getCreator() {
-        return creator;
+    public User getUser() {
+        return user;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-//    public List<Server> getServers() {
-//        return servers;
-//    }
-//
-//    public void setServers(List<Server> servers) {
-//        this.servers = servers;
-//    }
 }

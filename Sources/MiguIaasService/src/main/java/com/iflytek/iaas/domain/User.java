@@ -58,8 +58,7 @@ public class User implements Serializable {
     @Column
     private boolean valid;
 
-    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="creator")
+    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Cluster> clusters;
 
     @Column

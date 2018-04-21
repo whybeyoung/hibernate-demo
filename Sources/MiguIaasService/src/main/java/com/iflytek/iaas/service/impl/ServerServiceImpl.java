@@ -34,7 +34,7 @@ public class ServerServiceImpl implements ServerService {
     public void deleteServerLabel(Server server) throws IOException, ApiException {
         List<LabelDTO> labels = new ArrayList<>();
         LabelDTO labelDTO = new LabelDTO();
-        ClusterLabel cl = clusterLabelDao.findOneByClusterId(server.getClusterId());
+        ClusterLabel cl = clusterLabelDao.findOneByClusterId(server.getCluster().getId());
         labelDTO.setKey(cl.getKey());
         labelDTO.setValue(cl.getValue());
         labels.add(labelDTO);
