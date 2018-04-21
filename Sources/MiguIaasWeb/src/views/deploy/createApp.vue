@@ -10,7 +10,8 @@
                     <el-input type="textarea" v-model="form.annotation"></el-input>
                 </el-form-item>
                 <el-form-item label="命名空间" prop="namespace">
-                    <el-select v-model="form.namespace">
+                    <el-select v-model="form.namespace" filterable remote
+                               :remote-method="searchNss">
                         <el-option
                                 v-for="item in nss"
                                 :key="item"
@@ -127,9 +128,21 @@ export default {
         this.loading = false;
       });
     },
+    searchNss(val) {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        this.$store.dispatch('searchNss', val).then((resp) => {
+          this.loading = false;
+          this.nss = resp;
+        }).catch(() => {
+          this.loading = false;
+        });
+      }, 200);
+    },
   },
   created() {
-    this.loadNss();
+    this.searchNss();
   },
 };
 </script>

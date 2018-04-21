@@ -106,14 +106,14 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/image/index',
     icon: 'docker',
-    name: '镜像管理',
+    name: 'image',
     meta: {
       displayName: '镜像管理',
     },
     children: [
       {
         path: 'index',
-        name: '镜像列表',
+        name: 'image.list',
         icon: 'list',
         component: dynamicImport('image/index'),
         meta: {
@@ -122,11 +122,32 @@ export const constantRouterMap = [
       },
       {
         path: 'upload',
-        name: '镜像上传',
+        name: 'image.upload',
         icon: 'upload',
         component: dynamicImport('image/upload'),
         meta: {
           displayName: '镜像上传',
+        },
+      },
+    ],
+  },
+  {
+    path: '/nss',
+    component: Layout,
+    redirect: '/nss/index',
+    icon: 'iconfontspace',
+    name: 'namespace',
+    meta: {
+      displayName: '命名空间',
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'nss.list',
+        icon: 'list',
+        component: dynamicImport('namespace/index'),
+        meta: {
+          displayName: '命名空间',
         },
       },
     ],
@@ -142,13 +163,13 @@ export const constantRouterMap = [
     },
     children: [
       {
-        path: 'index', name: 'apps', icon: 'list', component: dynamicImport('deploy/index'), meta: { role: ['admin'], displayName: '应用列表' },
+        path: 'index', name: 'deploy.apps', icon: 'list', component: dynamicImport('deploy/index'), meta: { role: ['admin'], displayName: '应用列表' },
       },
       {
-        path: 'app', name: 'appnew', icon: 'app', component: dynamicImport('deploy/createApp'), meta: { role: ['admin'], displayName: '新建应用' },
+        path: 'app', name: 'deploy.appnew', icon: 'app', component: dynamicImport('deploy/createApp'), meta: { role: ['admin'], displayName: '新建应用' },
       },
       {
-        path: 'depAdd', name: 'depAdd', hidden: true, icon: 'zonghe', component: dynamicImport('deploy/addDeploy'), meta: { role: ['admin'], displayName: '添加镜像部署' },
+        path: 'depAdd', name: 'deploy.depAdd', hidden: true, icon: 'zonghe', component: dynamicImport('deploy/addDeploy'), meta: { role: ['admin'], displayName: '添加镜像部署' },
       },
     ],
   },

@@ -32,6 +32,7 @@ public enum ReturnCode {
     IMAGE_NOTESISTS_FTPPATH("300006", "镜像文件路径不存在"),
     IMAGE_FAILED_LOAD("300007", "镜像加载失败"),
     IMAGE_FAILED_REMOVE("300008", "镜像文件删除失败"),
+    IMAGE_EXISTS("300009", "该镜像已存在"),
 
     //部署类
     DEPOY_APP_ILLEGALNAME("400001","应用名为空或不合法,只能由小写字母,数字,短横线组成"),
@@ -54,8 +55,16 @@ public enum ReturnCode {
     DEPOY_PORT_BINDING("400020","该外部端口已被占用"),
     DEPOY_REPEAT_IMAGE("400021","该镜像已经部署"),
     DEPOY_REPEAT_SERVICE("400022","该服务已经启动"),
+
+    //namespace
+    NS_EXIST("500001", "命名空间已经存在"),
+    NS_NOTEXIST("500002", "该命名空间不存在"),
+    NS_NULL("500003", "命名空间参数为空"),
+
     //参数类
-    PARAM_UNVALID("100001","参数不合法");
+    PARAM_UNVALID("100001","参数不合法"),
+    PARAM_ILLEGALNAME("100002","命名不合法,只能由小写字母,数字,短横线组成");
+
 
     private String code;
     private String msg;

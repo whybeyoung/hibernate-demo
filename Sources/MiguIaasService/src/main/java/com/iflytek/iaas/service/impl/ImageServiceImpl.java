@@ -78,6 +78,10 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Boolean saveImage(ImageVO imageVO) {
         Image image = new Image();
+
+        if(imageDao.countByNameAndVersionAndValid(imageVO.getName(), imageVO.getVersion(), true) > 0) {
+            throw new BusiException(ReturnCode.IMAGE_EXISTS);
+        }
         String hubPath = pushImage2Hub(imageVO.getFtpPath(), imageHubConfig);
         BeanUtils.copyProperties(imageVO, image);
         image.setHubPath(hubPath);
