@@ -12,6 +12,7 @@ import com.iflytek.iaas.consts.ReturnCode;
 import com.iflytek.iaas.exception.BusiException;
 import com.iflytek.iaas.exception.ControllerException;
 import com.iflytek.iaas.service.ImageService;
+import com.iflytek.iaas.utils.RegularUtils;
 import com.iflytek.iaas.vo.ImageVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -57,6 +58,9 @@ public class ImageController extends BaseController{
         if(StringUtils.isEmpty(image.getName())){
             throw new ControllerException(ReturnCode.IMAGE_NULL_NAME);
         }
+        if(!RegularUtils.isK8sAllowedName(image.getName())){
+            throw new ControllerException(ReturnCode.PARAM_ILLEGALNAME);
+        }
         if(StringUtils.isEmpty(image.getVersion())){
             throw new ControllerException(ReturnCode.IMAGE_NULL_VERSION);
         }
@@ -95,7 +99,7 @@ public class ImageController extends BaseController{
         return SUCCESS;
     }
 
-    @ApiOperation(value = "createImage",notes = "创建镜像")
+    @ApiOperation(value = "queryImage",notes = "查询镜像")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "name", value = "镜像名", paramType = "query", required = false, dataType = "String"),
             @ApiImplicitParam(name = "version", value = "版本", paramType = "query", required = false, dataType = "String"),

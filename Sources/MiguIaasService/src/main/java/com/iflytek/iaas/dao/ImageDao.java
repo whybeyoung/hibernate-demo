@@ -46,6 +46,14 @@ public interface ImageDao extends JpaRepository<Image,Integer> {
      */
     List<Image> findByName(String name);
 
+    /**
+     * 通过名字和版本EQ统计
+     * @param name
+     * @param version
+     * @return
+     */
+    Integer countByNameAndVersionAndValid(String name, String version, boolean valid);
+
 
 
 }

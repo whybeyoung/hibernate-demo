@@ -4,6 +4,7 @@ import app from './modules/app';
 import user from './modules/user';
 import image from './modules/image';
 import deploy from './modules/deploy';
+import nss from './modules/nss';
 import permission from './modules/permission';
 import getters from './getters';
 
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
     user,
     image,
     deploy,
+    nss,
     permission,
   },
   getters,

@@ -179,7 +179,7 @@ public class DeployApp {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DeployApp deployApp = (DeployApp) o;
-        return id == deployApp.id &&
+        return id.equals(deployApp.id) &&
                 status == deployApp.status &&
                 valid == deployApp.valid &&
                 Objects.equals(name, deployApp.name) &&
