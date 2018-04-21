@@ -34,6 +34,7 @@ public class ImageDeployVO {
     private String initCmd;
     private List<MountVolumeDTO> mountDirs;
     private String deployType;
+    private String creator;
 
 
     public Integer getImageId() {
@@ -180,4 +181,11 @@ public class ImageDeployVO {
         this.deployType = deployType;
     }
 
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 }

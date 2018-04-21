@@ -12,6 +12,8 @@ public class ServiceDeployVO {
     private List<Integer> imageDids;
     private Integer appId;
 
+    private String creator;
+
     public List<Integer> getImageDids() {
         return imageDids;
     }
@@ -26,5 +28,13 @@ public class ServiceDeployVO {
 
     public void setAppId(Integer appId) {
         this.appId = appId;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

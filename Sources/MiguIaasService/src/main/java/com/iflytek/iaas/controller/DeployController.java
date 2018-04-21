@@ -9,7 +9,6 @@ package com.iflytek.iaas.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.iflytek.iaas.consts.ReturnCode;
-import com.iflytek.iaas.domain.ImageDeploy;
 import com.iflytek.iaas.dto.k8s.ImageDeployInfoDTO;
 import com.iflytek.iaas.exception.BusiException;
 import com.iflytek.iaas.exception.ControllerException;
@@ -23,8 +22,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 〈镜像部署相关接口〉
@@ -187,7 +182,7 @@ public class DeployController extends BaseController {
     @DeleteMapping("/images/{deployId}")
     public String deleteDeployedImage(HttpServletRequest request, @PathVariable("deployId") Integer deployId) throws ControllerException {
         try {
-            deployService.deleteDeployedImage(deployId);
+            deployService.deleteDeployedImage(deployId, getCurrentUser(request).getNickname());
         } catch (BusiException e) {
             throw e;
         } catch (Exception e) {
@@ -201,7 +196,7 @@ public class DeployController extends BaseController {
     @DeleteMapping("/service/{appId}")
     public String deleteDeployedService(HttpServletRequest request, @PathVariable("appId") Integer appId) throws ControllerException {
         try {
-            deployService.deleteDeployedService(appId);
+            deployService.deleteDeployedService(appId, getCurrentUser(request).getNickname());
         } catch (BusiException e) {
             throw e;
         } catch (Exception e) {
@@ -230,7 +225,7 @@ public class DeployController extends BaseController {
     public String scale(HttpServletRequest request,
                         @PathVariable("deployId") Integer deployId,
                         @RequestParam(value = "pods") Integer pods) {
-        deployService.scaleDeployedImagePods(deployId, pods);
+        deployService.scaleDeployedImagePods(deployId, pods, getCurrentUser(request).getNickname());
         return SUCCESS;
     }
 
