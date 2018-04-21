@@ -5,23 +5,19 @@
 package com.iflytek.iaas.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.iflytek.iaas.consts.DeployStatus;
-import com.iflytek.iaas.consts.K8sAPPType;
-import com.iflytek.iaas.consts.K8sHCType;
-import com.iflytek.iaas.consts.ReturnCode;
+import com.alibaba.fastjson.JSONObject;
+import com.iflytek.iaas.consts.*;
 import com.iflytek.iaas.dao.*;
 import com.iflytek.iaas.domain.ClusterLabel;
 import com.iflytek.iaas.domain.DeployApp;
 import com.iflytek.iaas.domain.Image;
 import com.iflytek.iaas.domain.ImageDeploy;
-import com.iflytek.iaas.dto.DeployAppDTO;
-import com.iflytek.iaas.dto.ImageDeployDTO;
-import com.iflytek.iaas.dto.ImageDeployPodsDTO;
-import com.iflytek.iaas.dto.K8sHcDTO;
+import com.iflytek.iaas.dto.*;
 import com.iflytek.iaas.dto.k8s.*;
 import com.iflytek.iaas.exception.BusiException;
 import com.iflytek.iaas.service.DeployService;
 import com.iflytek.iaas.service.K8SService;
+import com.iflytek.iaas.service.LogService;
 import com.iflytek.iaas.utils.ToolUtils;
 import com.iflytek.iaas.vo.DeployAppVO;
 import com.iflytek.iaas.vo.ImageDeployVO;
@@ -65,6 +61,9 @@ public class DeployServiceImpl implements DeployService {
 
     @Autowired
     private ClusterLabelDao clusterLabelDao;
+
+    @Autowired
+    private LogService logService;
 
     @Override
     public Integer saveDeployApp(DeployAppVO appVO) {
@@ -160,7 +159,10 @@ public class DeployServiceImpl implements DeployService {
 
         //deploy image by K8s API
         DeployConfigDTO deployConf = buildDeployConfigDTO(app.getNamespace(), deployVO, image, serverLabel, deployLabel);
-        logger.info("Image [{}] deploy config => {}", deployName, JSON.toJSONString(deployConf));
+        String params = JSON.toJSONString(deployConf);
+        logger.info("Image [{}] deploy config => {}", deployName, params);
+        OperationLogDTO logDTO = new OperationLogDTO(LogType.NEW_DEPLOY, "新建镜像部署", deployName, params, deployVO.getCreator());
+        logService.saveOperationLog(logDTO);
         boolean deployed = k8SService.createImageDeployment(deployConf);
         if (!deployed) {
             throw new BusiException(ReturnCode.DEPOY_FAILED_IMAGE);
@@ -262,13 +264,15 @@ public class DeployServiceImpl implements DeployService {
     }
 
     @Override
-    public boolean deleteDeployedImage(Integer imageDeployId) {
+    public boolean deleteDeployedImage(Integer imageDeployId, String operator) {
         //获取镜像部署信息
         ImageDeploy deployedImage = imageDeployDao.findById(imageDeployId).get();
         LabelDTO deployLable = JSON.parseObject(deployedImage.getDeployLabel(), LabelDTO.class);
         int index = deployLable.getKey().indexOf(deployLable.getValue());
         try {
             boolean deleted = k8SService.deleteImageDeployment(deployLable.getKey().substring(0, index - 1), deployedImage.getName());
+            OperationLogDTO logDTO = new OperationLogDTO(LogType.DELETE, "删除镜像部署", deployedImage.getName(), JSON.toJSONString(deployLable), operator);
+            logService.saveOperationLog(logDTO);
             if (deleted) {
                 deployedImage.setValid(false);
                 imageDeployDao.saveAndFlush(deployedImage);
@@ -312,6 +316,9 @@ public class DeployServiceImpl implements DeployService {
         srvDeploy.setDeployLabels(labelDTOS);
         try {
             ServiceDeployInfoDTO deployInfo = k8SService.createServiceDeployment(srvDeploy);
+            //log
+            OperationLogDTO logDTO = new OperationLogDTO(LogType.NEW_DEPLOY, "新建服务部署", app.getName(), JSON.toJSONString(srvDeploy), deployVO.getCreator());
+            logService.saveOperationLog(logDTO);
             if(deployInfo == null){
                 throw new BusiException();
             }
@@ -328,12 +335,17 @@ public class DeployServiceImpl implements DeployService {
     }
 
     @Override
-    public boolean deleteDeployedService(Integer appId) {
+    public boolean deleteDeployedService(Integer appId, String operator) {
         DeployApp app = deployAppDao.findById(appId).get();
         try {
-            k8SService.deleteServiceDeployment(app.getNamespace(), app.getName());
-            app.setStatus(false);
-            deployAppDao.saveAndFlush(app);
+            boolean deleted = k8SService.deleteServiceDeployment(app.getNamespace(), app.getName());
+            //log
+            OperationLogDTO logDTO = new OperationLogDTO(LogType.OFFLINE, "服务下线", app.getName(), JSON.toJSONString(app), operator);
+            logService.saveOperationLog(logDTO);
+            if(deleted){
+                app.setStatus(false);
+                deployAppDao.saveAndFlush(app);
+            }
             return true;
         } catch (Exception e) {
             logger.error("k8s delete ServiceDeployment [{}] failed, info=>", app.getName(), e);
@@ -381,7 +393,7 @@ public class DeployServiceImpl implements DeployService {
     }
 
     @Override
-    public boolean scaleDeployedImagePods(Integer deployId, Integer pods) {
+    public boolean scaleDeployedImagePods(Integer deployId, Integer pods, String operator) {
         if(pods == null|| pods < 0){
             throw new BusiException(ReturnCode.DEPOY_SCALE_ILLEGALPODS);
         }
@@ -394,7 +406,15 @@ public class DeployServiceImpl implements DeployService {
         LabelDTO deployLabel = JSON.parseObject(deployedImage.getDeployLabel(), LabelDTO.class);
         int index = deployLabel.getKey().indexOf(deployLabel.getValue());
         try {
-            boolean scaled = k8SService.updateDeployPodsByName(deployLabel.getKey().substring(0, index -1), deployedImage.getName(), pods);
+            String ns = deployLabel.getKey().substring(0, index -1);
+            boolean scaled = k8SService.updateDeployPodsByName(ns, deployedImage.getName(), pods);
+            //log
+            JSONObject params = new JSONObject();
+            params.put("namespace", ns);
+            params.put("deployname",deployedImage.getName());
+            params.put("pods", pods);
+            OperationLogDTO logDTO = new OperationLogDTO(LogType.SCALE, "伸缩", deployedImage.getName(), params.toJSONString(), operator);
+            logService.saveOperationLog(logDTO);
             if(scaled){
                 deployedImage.setPods(pods);
                 imageDeployDao.saveAndFlush(deployedImage);

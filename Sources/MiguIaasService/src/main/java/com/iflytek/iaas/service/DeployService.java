@@ -9,7 +9,6 @@ package com.iflytek.iaas.service;
 
 
 import com.iflytek.iaas.dto.DeployAppDTO;
-import com.iflytek.iaas.dto.ImageDeployPodsDTO;
 import com.iflytek.iaas.dto.k8s.ImageDeployInfoDTO;
 import com.iflytek.iaas.dto.k8s.ServerInfoDTO;
 import com.iflytek.iaas.vo.DeployAppVO;
@@ -59,7 +58,7 @@ public interface DeployService {
      * @param imageDeployId　镜像部署id
      * @return
      */
-    boolean deleteDeployedImage(Integer imageDeployId);
+    boolean deleteDeployedImage(Integer imageDeployId, String operator);
 
     /**
      * 部署服务
@@ -73,7 +72,7 @@ public interface DeployService {
      * @param appId 应用id
      * @return
      */
-    boolean deleteDeployedService(Integer appId);
+    boolean deleteDeployedService(Integer appId, String operator);
 
     /**
      *获取已部署镜像的机器数
@@ -93,7 +92,8 @@ public interface DeployService {
      * 伸缩已部署镜像的pods
      * @param deployId 部署id
      * @param pods 伸缩到的pods
+     * @param operator
      * @return
      */
-    boolean scaleDeployedImagePods(Integer deployId, Integer pods);
+    boolean scaleDeployedImagePods(Integer deployId, Integer pods, String operator);
 }

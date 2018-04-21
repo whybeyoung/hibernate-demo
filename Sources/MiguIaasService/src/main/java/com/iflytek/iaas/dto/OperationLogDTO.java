@@ -23,6 +23,17 @@ public class OperationLogDTO {
     private String creator;
     private Date createtime;
 
+    public OperationLogDTO() {
+    }
+
+    public OperationLogDTO(LogType type, String detail, String obj, String param, String creator) {
+        this.type = type;
+        this.detail = detail;
+        this.obj = obj;
+        this.param = param;
+        this.creator = creator;
+    }
+
     public LogType getType() {
         return type;
     }
