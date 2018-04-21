@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,10 +98,17 @@ public class ClusterServiceImpl implements ClusterService {
         return serverDao.countByClusterIdAndStatus(clusterId, true);
     }
 
+    @Transactional
     public Cluster update(ClusterDTO clusterDTO) {
         Cluster cluster = clusterDTO.toCluster();
-        cluster.setServers(clusterDTO.getServers());
-        cluster.setClusterLabel(new ClusterLabel(clusterDTO.getLabelName(), clusterDTO.getLabelName()));
+
+//        ClusterLabel cl = clusterLabelDao.findOneByClusterId(cluster.getId());
+//        cl.setValue(clusterDTO.getLabelName());
+//        cluster.setClusterLabel(cl);
+
+//        serverDao.removeClusterId(cluster.getId());
+//        serverDao.setClusterIds(clusterDTO.getServers().stream().map(Server::getId).collect(Collectors.toList()), cluster.getId());
+
         return clusterDao.save(cluster);
     }
 

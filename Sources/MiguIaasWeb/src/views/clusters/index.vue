@@ -61,16 +61,17 @@ import ClusterApi from '@/api/cluster';
 import ServerApi from '@/api/server';
 
 function currentPercentage(usage) {
-  try {
-    (parseFloat(usage[0].values[0][1]) * 100).toFixed(2);
+  if (usage && usage[0] && usage[0].values && usage[0].values.length > 0) {
     return (parseFloat(usage[0].values[0][1]) * 100).toFixed(2);
-  } catch (error) {
-    return 0;
   }
+  return 0;
 }
 
 function currentNetwork(result) {
-  return (parseFloat(result[0].values[0][1]) / 1000).toFixed(2);
+  if (result && result[0] && result[0].values && result[0].values[0]) {
+    return (parseFloat(result[0].values[0][1]) / 1000).toFixed(2);
+  }
+  return null;
 }
 
 export default {
@@ -116,15 +117,6 @@ export default {
     this.getClusters();
     ServerApi.count().then((count) => {
       this.serversCount.total = count;
-    });
-  },
-  updated() {
-    this.$nextTick(function () {
-      // Code that will run only after the
-      const el = document.getElementsByClassName('cluster-card');
-      // entire view has been re-rendered
-      console.log('---', el && el[0].offsetHeight);
-      this.serversCountHeight = el.offsetHeight;
     });
   },
 };

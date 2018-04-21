@@ -56,6 +56,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!--<el-pagination-->
+        <!--@size-change="sizeChange"-->
+        <!--@current-change="pageChange"-->
+        <!--align="right"-->
+        <!--:current-page="qf.page"-->
+        <!--:page-sizes="[10, 20, 50, 100]"-->
+        <!--:page-size="qf.pagesize"-->
+        <!--layout="total, sizes, prev, pager, next, jumper"-->
+        <!--:total="total">-->
+    <!--</el-pagination>-->
+
   </div>
 </template>
 

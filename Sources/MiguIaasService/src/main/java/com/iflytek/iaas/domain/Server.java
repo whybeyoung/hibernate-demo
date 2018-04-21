@@ -35,7 +35,7 @@ public class Server implements Serializable {
     private Date createtime;
     private Date updatetime;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cluster_id")
     private Cluster cluster;
 

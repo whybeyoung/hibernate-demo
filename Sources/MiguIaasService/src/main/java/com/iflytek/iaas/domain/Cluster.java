@@ -36,7 +36,7 @@ public class Cluster implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @OneToMany(mappedBy = "cluster", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cluster", fetch = FetchType.LAZY)
     private List<Server> servers;
 
     @OneToOne(cascade = CascadeType.ALL)
